@@ -8,13 +8,13 @@ import com.kush.lib.service.api.Identifier;
 
 public interface Persistor<T extends Identifiable> {
 
-    T save(T object);
+    T save(T object) throws PersistorOperationFailedException;
 
-    T fetch(Identifier id);
+    T fetch(Identifier id) throws PersistorOperationFailedException;
 
-    Iterator<T> fetch(Collection<Identifier> ids);
+    Iterator<T> fetch(Collection<Identifier> ids) throws PersistorOperationFailedException;
 
-    Iterator<T> fetchAll();
+    Iterator<T> fetchAll() throws PersistorOperationFailedException;
 
-    boolean remove(Identifier id);
+    boolean remove(Identifier id) throws PersistorOperationFailedException;
 }
