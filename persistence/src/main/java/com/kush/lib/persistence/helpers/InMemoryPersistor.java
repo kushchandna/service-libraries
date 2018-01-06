@@ -7,21 +7,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.kush.lib.persistence.api.Persistable;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.service.api.IdGenerator;
+import com.kush.lib.service.api.Identifiable;
 import com.kush.lib.service.api.Identifier;
 
-public class InMemoryPersistor<T extends Persistable> implements Persistor<T> {
+public abstract class InMemoryPersistor<T extends Identifiable> implements Persistor<T> {
 
     private final Map<Identifier, T> savedObjects = new HashMap<>();
 
     private final IdGenerator idGenerator;
-    private final PersistableObjectCreator<T> objectCreator;
 
-    public InMemoryPersistor(IdGenerator idGenerator, PersistableObjectCreator<T> objectCreator) {
+    public InMemoryPersistor(IdGenerator idGenerator) {
         this.idGenerator = idGenerator;
-        this.objectCreator = objectCreator;
     }
 
     @Override
@@ -36,7 +34,7 @@ public class InMemoryPersistor<T extends Persistable> implements Persistor<T> {
         T persistableObject;
         if (Identifier.NULL.equals(id)) {
             id = idGenerator.next();
-            persistableObject = objectCreator.create(id, object);
+            persistableObject = createPersistableObject(id, object);
         } else {
             persistableObject = object;
         }
@@ -68,4 +66,6 @@ public class InMemoryPersistor<T extends Persistable> implements Persistor<T> {
     public boolean remove(Identifier id) {
         return savedObjects.remove(id) != null;
     }
+
+    protected abstract T createPersistableObject(Identifier id, T reference);
 }
