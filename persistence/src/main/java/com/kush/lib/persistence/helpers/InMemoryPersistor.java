@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.kush.lib.persistence.api.Persistor;
-import com.kush.lib.service.api.IdGenerator;
-import com.kush.lib.service.api.Identifiable;
-import com.kush.lib.service.api.Identifier;
+import com.kush.utils.id.IdGenerator;
+import com.kush.utils.id.Identifiable;
+import com.kush.utils.id.Identifier;
 
 public abstract class InMemoryPersistor<T extends Identifiable> implements Persistor<T> {
 

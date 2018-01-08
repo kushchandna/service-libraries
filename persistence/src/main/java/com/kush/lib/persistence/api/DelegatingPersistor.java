@@ -3,8 +3,8 @@ package com.kush.lib.persistence.api;
 import java.util.Collection;
 import java.util.Iterator;
 
-import com.kush.lib.service.api.Identifiable;
-import com.kush.lib.service.api.Identifier;
+import com.kush.utils.id.Identifiable;
+import com.kush.utils.id.Identifier;
 
 public class DelegatingPersistor<T extends Identifiable> implements Persistor<T> {
 
