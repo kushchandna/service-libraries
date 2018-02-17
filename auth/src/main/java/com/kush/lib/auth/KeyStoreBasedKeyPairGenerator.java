@@ -8,12 +8,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
-public class KeyToolBasedKeyPairGenerator implements KeyPairGenerator {
+public class KeyStoreBasedKeyPairGenerator implements KeyPairGenerator {
 
     private final char[] keyStorePassword;
     private final char[] keyPassword;
 
-    public KeyToolBasedKeyPairGenerator(char[] keyStorePassword, char[] keyPassword) {
+    public KeyStoreBasedKeyPairGenerator(char[] keyStorePassword, char[] keyPassword) {
         this.keyStorePassword = keyStorePassword;
         this.keyPassword = keyPassword;
     }
