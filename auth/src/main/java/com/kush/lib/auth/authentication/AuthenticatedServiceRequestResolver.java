@@ -23,6 +23,7 @@ public class AuthenticatedServiceRequestResolver implements ServiceRequestResolv
         AuthToken token = authServiceRequest.getToken();
         User user = token.getUser();
         user.toString();
+        underlyingResolver.toString();
         return null;
     }
 }
