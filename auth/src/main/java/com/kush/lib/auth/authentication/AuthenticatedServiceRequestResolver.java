@@ -1,5 +1,6 @@
 package com.kush.lib.auth.authentication;
 
+import com.kush.lib.auth.AuthToken;
 import com.kush.lib.auth.User;
 import com.kush.lib.service.remoting.api.ServiceRequest;
 import com.kush.lib.service.remoting.api.ServiceRequestFailedException;
@@ -16,10 +17,10 @@ public class AuthenticatedServiceRequestResolver implements ServiceRequestResolv
     @Override
     public <T> T resolve(ServiceRequest request, ReturnType<T> returnType) throws ServiceRequestFailedException {
         if (!(request instanceof AuthenticatedServiceRequest)) {
-            return underlyingResolver.resolve(request, returnType);
+            throw new ServiceRequestFailedException("Service request is not authenticated");
         }
         AuthenticatedServiceRequest authServiceRequest = (AuthenticatedServiceRequest) request;
-        Token token = authServiceRequest.getToken();
+        AuthToken token = authServiceRequest.getToken();
         User user = token.getUser();
         user.toString();
         return null;
