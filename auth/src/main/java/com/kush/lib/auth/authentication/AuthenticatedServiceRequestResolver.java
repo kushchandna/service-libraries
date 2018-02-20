@@ -15,11 +15,11 @@ public class AuthenticatedServiceRequestResolver implements ServiceRequestResolv
     }
 
     @Override
-    public <T> T resolve(ServiceRequest request, ReturnType<T> returnType) throws ServiceRequestFailedException {
+    public <T> T resolve(ServiceRequest<T> request) throws ServiceRequestFailedException {
         if (!(request instanceof AuthenticatedServiceRequest)) {
             throw new ServiceRequestFailedException("Service request is not authenticated");
         }
-        AuthenticatedServiceRequest authServiceRequest = (AuthenticatedServiceRequest) request;
+        AuthenticatedServiceRequest<T> authServiceRequest = (AuthenticatedServiceRequest<T>) request;
         AuthToken token = authServiceRequest.getToken();
         User user = token.getUser();
         user.toString();
