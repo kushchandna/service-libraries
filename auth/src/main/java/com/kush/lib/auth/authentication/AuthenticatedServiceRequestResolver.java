@@ -4,6 +4,8 @@ import com.kush.lib.auth.AuthToken;
 import com.kush.lib.service.remoting.api.ServiceRequest;
 import com.kush.lib.service.remoting.api.ServiceRequestFailedException;
 import com.kush.lib.service.remoting.api.ServiceRequestResolver;
+import com.kush.lib.service.server.api.ServiceInvokerProvider;
+import com.kush.lib.service.server.api.ServiceRequestResolverFactory;
 
 public class AuthenticatedServiceRequestResolver implements ServiceRequestResolver {
 
@@ -27,6 +29,23 @@ public class AuthenticatedServiceRequestResolver implements ServiceRequestResolv
             return underlyingResolver.resolve(request);
         } finally {
             authenticator.logout();
+        }
+    }
+
+    public static class Factory implements ServiceRequestResolverFactory {
+
+        private final Authenticator authenticator;
+        private final ServiceRequestResolverFactory underlyingResolverFactory;
+
+        public Factory(Authenticator authenticator, ServiceRequestResolverFactory underlyingResolverFactory) {
+            this.authenticator = authenticator;
+            this.underlyingResolverFactory = underlyingResolverFactory;
+        }
+
+        @Override
+        public ServiceRequestResolver create(ServiceInvokerProvider serviceInvokerProvider) {
+            ServiceRequestResolver resolver = underlyingResolverFactory.create(serviceInvokerProvider);
+            return new AuthenticatedServiceRequestResolver(authenticator, resolver);
         }
     }
 }
