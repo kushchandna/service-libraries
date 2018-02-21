@@ -4,8 +4,8 @@ import com.kush.lib.auth.AuthToken;
 import com.kush.lib.service.remoting.api.ServiceRequest;
 import com.kush.lib.service.remoting.api.ServiceRequestFailedException;
 import com.kush.lib.service.remoting.api.ServiceRequestResolver;
-import com.kush.lib.service.server.api.ServiceInvokerProvider;
-import com.kush.lib.service.server.api.ServiceRequestResolverFactory;
+import com.kush.lib.service.server.ServiceInvokerProvider;
+import com.kush.lib.service.server.ServiceRequestResolverFactory;
 
 public class AuthenticatedServiceRequestResolver implements ServiceRequestResolver {
 

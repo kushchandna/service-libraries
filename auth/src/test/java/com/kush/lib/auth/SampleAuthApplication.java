@@ -3,11 +3,11 @@ package com.kush.lib.auth;
 import com.kush.lib.auth.authentication.AuthenticatedServiceRequestResolver;
 import com.kush.lib.auth.authentication.Authenticator;
 import com.kush.lib.auth.authentication.ThreadBasedAuthenticator;
-import com.kush.lib.service.server.api.ApplicationServer;
-import com.kush.lib.service.server.api.Context;
-import com.kush.lib.service.server.api.ContextBuilder;
-import com.kush.lib.service.server.api.ServiceInitializationFailedException;
-import com.kush.lib.service.server.api.ServiceRequestResolverFactory;
+import com.kush.lib.service.server.ApplicationServer;
+import com.kush.lib.service.server.Context;
+import com.kush.lib.service.server.ContextBuilder;
+import com.kush.lib.service.server.ServiceInitializationFailedException;
+import com.kush.lib.service.server.ServiceRequestResolverFactory;
 
 public class SampleAuthApplication {
 
