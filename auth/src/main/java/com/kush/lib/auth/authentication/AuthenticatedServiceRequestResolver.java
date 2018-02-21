@@ -1,16 +1,17 @@
 package com.kush.lib.auth.authentication;
 
 import com.kush.lib.auth.AuthToken;
-import com.kush.lib.auth.User;
 import com.kush.lib.service.remoting.api.ServiceRequest;
 import com.kush.lib.service.remoting.api.ServiceRequestFailedException;
 import com.kush.lib.service.remoting.api.ServiceRequestResolver;
 
 public class AuthenticatedServiceRequestResolver implements ServiceRequestResolver {
 
+    private final Authenticator authenticator;
     private final ServiceRequestResolver underlyingResolver;
 
-    public AuthenticatedServiceRequestResolver(ServiceRequestResolver underlyingResolver) {
+    public AuthenticatedServiceRequestResolver(Authenticator authenticator, ServiceRequestResolver underlyingResolver) {
+        this.authenticator = authenticator;
         this.underlyingResolver = underlyingResolver;
     }
 
@@ -21,9 +22,11 @@ public class AuthenticatedServiceRequestResolver implements ServiceRequestResolv
         }
         AuthenticatedServiceRequest<T> authServiceRequest = (AuthenticatedServiceRequest<T>) request;
         AuthToken token = authServiceRequest.getToken();
-        User user = token.getUser();
-        user.toString();
-        underlyingResolver.toString();
-        return null;
+        authenticator.login(token);
+        try {
+            return underlyingResolver.resolve(request);
+        } finally {
+            authenticator.logout();
+        }
     }
 }
