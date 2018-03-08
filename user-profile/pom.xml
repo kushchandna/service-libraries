@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>user-profile</artifactId>
-	<packaging>jar</packaging>
 	<groupId>com.kush.lib</groupId>
 	<name>user-profile</name>
 	<url>http://maven.apache.org</url>
+	<packaging>jar</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,20 +18,37 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<!-- <build>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>com.kush</groupId>
 				<artifactId>serviceclient-maven-plugin</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-					</execution>
-				</executions>
+				<dependencies>
+					<dependency>
+						<artifactId>user-profile</artifactId>
+						<groupId>com.kush.lib</groupId>
+						<version>0.0.1-SNAPSHOT</version>
+					</dependency>
+					<dependency>
+						<artifactId>service-client</artifactId>
+						<groupId>com.kush</groupId>
+						<version>0.0.1-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<targetDirectory>target/service-clients</targetDirectory>
+					<targetJarName>user-profile-serviceclients.jar</targetJarName>
+					<serviceClients>
+						<serviceClient>
+							<serviceClassName>com.kush.lib.userprofile.UserProfileService</serviceClassName>
+							<targetPackage>com.kush.lib.generated.serviceclients.userprofile</targetPackage>
+						</serviceClient>
+					</serviceClients>
+				</configuration>
 			</plugin>
 		</plugins>
-	</build> -->
+	</build>
 
 	<dependencies>
 		<dependency>
