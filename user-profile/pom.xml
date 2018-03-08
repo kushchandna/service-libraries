@@ -26,18 +26,13 @@
 				<version>0.0.1-SNAPSHOT</version>
 				<dependencies>
 					<dependency>
-						<artifactId>user-profile</artifactId>
-						<groupId>com.kush.lib</groupId>
-						<version>0.0.1-SNAPSHOT</version>
-					</dependency>
-					<dependency>
-						<artifactId>service-client</artifactId>
-						<groupId>com.kush</groupId>
-						<version>0.0.1-SNAPSHOT</version>
+						<groupId>${project.groupId}</groupId>
+						<artifactId>${project.artifactId}</artifactId>
+						<version>${project.version}</version>
 					</dependency>
 				</dependencies>
 				<configuration>
-					<targetDirectory>target/service-clients</targetDirectory>
+					<targetDirectory>${project.build.directory}</targetDirectory>
 					<targetJarName>user-profile-serviceclients.jar</targetJarName>
 					<serviceClients>
 						<serviceClient>
@@ -46,6 +41,14 @@
 						</serviceClient>
 					</serviceClients>
 				</configuration>
+				<executions>
+					<execution>
+						<id>generate-service-clients</id>
+						<goals>
+							<goal>generate-service-clients</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
