@@ -33,8 +33,6 @@
 					</dependency>
 				</dependencies>
 				<configuration>
-					<targetDirectory>${project.build.directory}</targetDirectory>
-					<targetJarName>${userprofile.serviceclient.jar.name}</targetJarName>
 					<serviceClients>
 						<serviceClient>
 							<serviceClassName>com.kush.lib.userprofile.UserProfileService</serviceClassName>
