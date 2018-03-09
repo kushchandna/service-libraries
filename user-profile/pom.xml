@@ -33,7 +33,7 @@
 				</dependencies>
 				<configuration>
 					<targetDirectory>${project.build.directory}</targetDirectory>
-					<targetJarName>user-profile-serviceclients.jar</targetJarName>
+					<targetJarName>user-profile-serviceclients-${project.version}.jar</targetJarName>
 					<serviceClients>
 						<serviceClient>
 							<serviceClassName>com.kush.lib.userprofile.UserProfileService</serviceClassName>
@@ -43,7 +43,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>generate-service-clients</id>
+						<id>generate service clients</id>
 						<goals>
 							<goal>generate-service-clients</goal>
 						</goals>
