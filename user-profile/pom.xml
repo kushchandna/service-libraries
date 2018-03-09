@@ -10,6 +10,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<userprofile.serviceclient.jar.name>user-profile-serviceclients-${project.version}.jar</userprofile.serviceclient.jar.name>
 	</properties>
 
 	<parent>
@@ -17,7 +18,7 @@
 		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -33,7 +34,7 @@
 				</dependencies>
 				<configuration>
 					<targetDirectory>${project.build.directory}</targetDirectory>
-					<targetJarName>user-profile-serviceclients-${project.version}.jar</targetJarName>
+					<targetJarName>${userprofile.serviceclient.jar.name}</targetJarName>
 					<serviceClients>
 						<serviceClient>
 							<serviceClassName>com.kush.lib.userprofile.UserProfileService</serviceClassName>
@@ -47,6 +48,27 @@
 						<goals>
 							<goal>generate-service-clients</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
+				<configuration>
+					<groupId>com.kush.lib.clients</groupId>
+					<artifactId>user-profile-serviceclients</artifactId>
+					<version>${project.version}</version>
+					<packaging>jar</packaging>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>${project.build.directory}/${userprofile.serviceclient.jar.name}</file>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
