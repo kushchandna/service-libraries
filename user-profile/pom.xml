@@ -10,7 +10,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<userprofile.serviceclient.jar.name>user-profile-serviceclients-${project.version}.jar</userprofile.serviceclient.jar.name>
 	</properties>
 
 	<parent>
@@ -62,7 +61,7 @@
 							<goal>install-file</goal>
 						</goals>
 						<configuration>
-							<file>${project.build.directory}/${userprofile.serviceclient.jar.name}</file>
+							<file>${generated.service.client.jar.path}</file>
 						</configuration>
 					</execution>
 				</executions>

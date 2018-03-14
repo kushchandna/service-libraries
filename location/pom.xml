@@ -10,7 +10,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<location.serviceclient.jar.name>location-serviceclients-${project.version}.jar</location.serviceclient.jar.name>
 	</properties>
 
 	<parent>
@@ -32,10 +31,6 @@
 						<version>${project.version}</version>
 					</dependency>
 				</dependencies>
-				<configuration>
-					<serviceClients>
-					</serviceClients>
-				</configuration>
 				<executions>
 					<execution>
 						<id>generate service clients</id>
@@ -61,7 +56,7 @@
 							<goal>install-file</goal>
 						</goals>
 						<configuration>
-							<file>${project.build.directory}/${location.serviceclient.jar.name}</file>
+							<file>${generated.service.client.jar.path}</file>
 						</configuration>
 					</execution>
 				</executions>
