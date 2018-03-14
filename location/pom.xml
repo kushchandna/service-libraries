@@ -31,6 +31,14 @@
 						<version>${project.version}</version>
 					</dependency>
 				</dependencies>
+				<configuration>
+					<services>
+						<service>com.kush.lib.location.services.PlaceService</service>
+					</services>
+					<additionalClasses>
+						<additionalClass>com.kush.lib.location.api.Location</additionalClass>
+					</additionalClasses>
+				</configuration>
 				<executions>
 					<execution>
 						<id>generate service clients</id>
