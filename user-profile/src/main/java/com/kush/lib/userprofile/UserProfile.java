@@ -1,5 +1,8 @@
 package com.kush.lib.userprofile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.kush.lib.service.server.annotations.Exportable;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
@@ -9,16 +12,16 @@ public class UserProfile implements Identifiable {
 
     private final Identifier profileId;
     private final Identifier userId;
-    private final String name;
+    private final Map<String, Object> profileFields;
 
-    public UserProfile(Identifier userId, String name) {
-        this(Identifier.NULL, userId, name);
+    public UserProfile(Identifier userId, Map<String, Object> profileFields) {
+        this(Identifier.NULL, userId, profileFields);
     }
 
-    public UserProfile(Identifier profileId, Identifier userId, String name) {
+    public UserProfile(Identifier profileId, Identifier userId, Map<String, Object> profileFields) {
         this.profileId = profileId;
         this.userId = userId;
-        this.name = name;
+        this.profileFields = new HashMap<>(profileFields);
     }
 
     @Override
@@ -30,7 +33,7 @@ public class UserProfile implements Identifiable {
         return userId;
     }
 
-    public String getName() {
-        return name;
+    public <T> T getFieldValue(String key, Class<T> type) {
+        return type.cast(profileFields.get(key));
     }
 }

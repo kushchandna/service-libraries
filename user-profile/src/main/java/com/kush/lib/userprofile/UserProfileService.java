@@ -1,5 +1,7 @@
 package com.kush.lib.userprofile;
 
+import java.util.Map;
+
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.lib.service.remoting.auth.User;
@@ -13,10 +15,10 @@ public class UserProfileService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod(name = "Update")
-    public UserProfile updateProfile(String name) throws ServiceRequestFailedException {
+    public UserProfile updateProfile(Map<String, Object> profileFields) throws ServiceRequestFailedException {
         User user = getCurrentUser();
         UserProfilePersistor profilePersistor = getUserProfilePersistor();
-        UserProfile profile = new UserProfile(user.getId(), name);
+        UserProfile profile = new UserProfile(user.getId(), profileFields);
         try {
             return profilePersistor.save(profile);
         } catch (PersistorOperationFailedException e) {
