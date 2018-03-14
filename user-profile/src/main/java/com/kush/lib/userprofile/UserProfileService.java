@@ -17,7 +17,7 @@ public class UserProfileService extends BaseService {
     @ServiceMethod(name = "Update")
     public UserProfile updateProfile(Map<String, Object> profileFields) throws ServiceRequestFailedException {
         User user = getCurrentUser();
-        UserProfilePersistor profilePersistor = getUserProfilePersistor();
+        UserProfilePersistor profilePersistor = getInstance(UserProfilePersistor.class);
         UserProfile profile = new UserProfile(user.getId(), profileFields);
         try {
             return profilePersistor.save(profile);
@@ -30,15 +30,11 @@ public class UserProfileService extends BaseService {
     @ServiceMethod(name = "Get")
     public UserProfile getProfile() throws ServiceRequestFailedException {
         User user = getCurrentUser();
-        UserProfilePersistor profilePersistor = getUserProfilePersistor();
+        UserProfilePersistor profilePersistor = getInstance(UserProfilePersistor.class);
         try {
             return profilePersistor.getProfileForUser(user);
         } catch (PersistorOperationFailedException e) {
             throw new ServiceRequestFailedException(e.getMessage(), e);
         }
-    }
-
-    private UserProfilePersistor getUserProfilePersistor() {
-        return getContext().getInstance(UserProfilePersistor.class);
     }
 }

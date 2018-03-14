@@ -1,5 +1,6 @@
 package com.kush.lib.userprofile;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,5 +36,9 @@ public class UserProfile implements Identifiable {
 
     public <T> T getFieldValue(String key, Class<T> type) {
         return type.cast(profileFields.get(key));
+    }
+
+    public Map<String, Object> getAllFields() {
+        return Collections.unmodifiableMap(profileFields);
     }
 }
