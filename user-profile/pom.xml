@@ -33,12 +33,9 @@
 					</dependency>
 				</dependencies>
 				<configuration>
-					<serviceClients>
-						<serviceClient>
-							<serviceClassName>com.kush.lib.userprofile.UserProfileService</serviceClassName>
-							<targetPackage>com.kush.lib.generated.serviceclients.userprofile</targetPackage>
-						</serviceClient>
-					</serviceClients>
+					<services>
+						<service>com.kush.lib.userprofile.UserProfileService</service>
+					</services>
 				</configuration>
 				<executions>
 					<execution>
