@@ -1,9 +1,13 @@
 package com.kush.lib.location.api;
 
+import java.io.Serializable;
+
 import com.kush.lib.service.server.annotations.Exportable;
 
 @Exportable
-public class Location {
+public class Location implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final double latitude;
     private final double longitude;
