@@ -53,7 +53,7 @@
 				<version>2.5.2</version>
 				<configuration>
 					<groupId>com.kush.lib.clients</groupId>
-					<artifactId>location-serviceclients</artifactId>
+					<artifactId>${project.name}-serviceclients</artifactId>
 					<version>${project.version}</version>
 					<packaging>jar</packaging>
 				</configuration>
