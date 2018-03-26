@@ -1,4 +1,4 @@
-package com.kush.messaging;
+package com.kush.messaging.services;
 
 import com.kush.lib.service.server.BaseService;
 

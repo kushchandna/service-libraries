@@ -1,4 +1,4 @@
-package com.kush.messaging;
+package com.kush.messaging.core;
 
 import java.io.Serializable;
 
