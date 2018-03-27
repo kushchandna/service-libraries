@@ -1,12 +1,11 @@
-package com.kush.messaging.core;
+package com.kush.messaging.message;
 
 import java.io.Serializable;
 
 import com.kush.messaging.content.Content;
 import com.kush.messaging.metadata.Metadata;
-import com.kush.utils.id.Identifiable;
 
-public interface Message extends Identifiable, Serializable {
+public interface Message extends Serializable {
 
     Content getContent();
 

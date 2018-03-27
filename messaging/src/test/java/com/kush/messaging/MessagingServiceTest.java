@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -16,34 +15,44 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.kush.lib.persistence.api.Persistor;
+import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.server.ContextBuilder;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.content.TextContent;
-import com.kush.messaging.core.Message;
+import com.kush.messaging.destination.DefaultDestinationUserIdFinder;
 import com.kush.messaging.destination.Destination;
+import com.kush.messaging.destination.DestinationUserIdFinder;
 import com.kush.messaging.destination.UserIdBasedDestination;
+import com.kush.messaging.message.Message;
 import com.kush.messaging.metadata.Metadata;
 import com.kush.messaging.metadata.MetadataConstants;
+import com.kush.messaging.persistors.DefaultUserMessagePersistor;
+import com.kush.messaging.persistors.UserMessage;
+import com.kush.messaging.persistors.UserMessagePersistor;
 import com.kush.messaging.services.MessagingService;
 import com.kush.service.TestApplicationServer;
 import com.kush.utils.id.Identifier;
 
 public class MessagingServiceTest {
 
-    @Mock
-    private Clock clock;
+    private static final Instant CURRENT_TIME = Instant.now();
+    private static final ZoneId CURRENT_ZONE = ZoneId.systemDefault();
+    private final Clock clock = Clock.fixed(CURRENT_TIME, CURRENT_ZONE);
 
     @Rule
     public TestApplicationServer server = new TestApplicationServer(5) {
 
         @Override
         protected ContextBuilder createContextBuilder() {
+            Persistor<UserMessage> delegate = InMemoryPersistor.forType(UserMessage.class);
             return ContextBuilder.create()
-                .withInstance(Clock.class, clock);
+                .withInstance(Clock.class, clock)
+                .withInstance(DestinationUserIdFinder.class, new DefaultDestinationUserIdFinder())
+                .withInstance(UserMessagePersistor.class, new DefaultUserMessagePersistor(delegate));
         };
     };
 
@@ -61,9 +70,6 @@ public class MessagingServiceTest {
         User[] users = server.getUsers();
         User user1 = users[0];
         User user2 = users[1];
-
-        long currentTimeInMillis = System.currentTimeMillis();
-        when(clock.millis()).thenReturn(currentTimeInMillis);
 
         server.beginSession(user1);
         Content content1 = new TextContent("Message 1");
@@ -85,8 +91,7 @@ public class MessagingServiceTest {
         Identifier valueSender1 = metadata1.getValue(MetadataConstants.KEY_SENDER, Identifier.class);
         assertThat(valueSender1, is(equalTo(user1.getId())));
         LocalDateTime valueSentTime1 = metadata1.getValue(MetadataConstants.KEY_SENT_TIME, LocalDateTime.class);
-        assertThat(valueSentTime1,
-                is(equalTo(LocalDateTime.ofInstant(Instant.ofEpochMilli(currentTimeInMillis), ZoneId.systemDefault()))));
+        assertThat(valueSentTime1, is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
         server.endSession();
     }
 }

@@ -7,13 +7,19 @@ import java.util.List;
 import com.kush.lib.persistence.api.DelegatingPersistor;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
-import com.kush.messaging.core.Message;
+import com.kush.messaging.message.Message;
 import com.kush.utils.id.Identifier;
 
 public class DefaultUserMessagePersistor extends DelegatingPersistor<UserMessage> implements UserMessagePersistor {
 
     public DefaultUserMessagePersistor(Persistor<UserMessage> delegate) {
         super(delegate);
+    }
+
+    @Override
+    public void addMessage(Identifier senderUserId, Message message) throws PersistorOperationFailedException {
+        UserMessage userMessage = new UserMessage(senderUserId, message);
+        save(userMessage);
     }
 
     // TODO add message ordering

@@ -1,6 +1,6 @@
 package com.kush.messaging.persistors;
 
-import com.kush.messaging.core.Message;
+import com.kush.messaging.message.Message;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 
