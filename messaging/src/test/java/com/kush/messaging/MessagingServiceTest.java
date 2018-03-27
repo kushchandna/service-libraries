@@ -1,22 +1,57 @@
 package com.kush.messaging;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.kush.lib.service.remoting.auth.User;
+import com.kush.lib.service.server.ContextBuilder;
+import com.kush.messaging.content.Content;
+import com.kush.messaging.content.TextContent;
+import com.kush.messaging.core.Message;
+import com.kush.messaging.destination.Destination;
+import com.kush.messaging.destination.UserIdBasedDestination;
+import com.kush.messaging.metadata.Metadata;
+import com.kush.messaging.metadata.MetadataConstants;
 import com.kush.messaging.services.MessagingService;
 import com.kush.service.TestApplicationServer;
+import com.kush.utils.id.Identifier;
 
 public class MessagingServiceTest {
 
+    @Mock
+    private Clock clock;
+
     @Rule
-    public TestApplicationServer server = new TestApplicationServer(5);
+    public TestApplicationServer server = new TestApplicationServer(5) {
+
+        @Override
+        protected ContextBuilder createContextBuilder() {
+            return ContextBuilder.create()
+                .withInstance(Clock.class, clock);
+        };
+    };
 
     private MessagingService messagingService;
 
     @Before
     public void beforeEachTest() throws Exception {
+        MockitoAnnotations.initMocks(this);
         messagingService = new MessagingService();
         server.registerService(messagingService);
     }
@@ -27,10 +62,31 @@ public class MessagingServiceTest {
         User user1 = users[0];
         User user2 = users[1];
 
+        long currentTimeInMillis = System.currentTimeMillis();
+        when(clock.millis()).thenReturn(currentTimeInMillis);
+
         server.beginSession(user1);
+        Content content1 = new TextContent("Message 1");
+        Destination destination1 = new UserIdBasedDestination(user2.getId());
+        messagingService.sendMessage(content1, destination1);
         server.endSession();
 
         server.beginSession(user2);
+        List<Message> recentMessages = messagingService.getRecentMessages(5);
+        assertThat(recentMessages, hasSize(1));
+        Message message1 = recentMessages.get(0);
+
+        Content receivedContent1 = message1.getContent();
+        assertThat(receivedContent1, is(instanceOf(TextContent.class)));
+        TextContent receivedTextContent1 = (TextContent) receivedContent1;
+        assertThat(receivedTextContent1.getText(), is(equalTo("Message 1")));
+
+        Metadata metadata1 = message1.getMetadata();
+        Identifier valueSender1 = metadata1.getValue(MetadataConstants.KEY_SENDER, Identifier.class);
+        assertThat(valueSender1, is(equalTo(user1.getId())));
+        LocalDateTime valueSentTime1 = metadata1.getValue(MetadataConstants.KEY_SENT_TIME, LocalDateTime.class);
+        assertThat(valueSentTime1,
+                is(equalTo(LocalDateTime.ofInstant(Instant.ofEpochMilli(currentTimeInMillis), ZoneId.systemDefault()))));
         server.endSession();
     }
 }
