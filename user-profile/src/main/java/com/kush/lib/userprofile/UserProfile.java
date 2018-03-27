@@ -19,6 +19,10 @@ public class UserProfile implements Identifiable {
         this(Identifier.NULL, userId, profileFields);
     }
 
+    public UserProfile(Identifier profileId, UserProfile userProfile) {
+        this(profileId, userProfile.getUserId(), userProfile.getAllFields());
+    }
+
     public UserProfile(Identifier profileId, Identifier userId, Map<String, Object> profileFields) {
         this.profileId = profileId;
         this.userId = userId;
