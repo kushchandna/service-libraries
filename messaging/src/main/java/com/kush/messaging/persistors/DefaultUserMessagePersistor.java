@@ -17,20 +17,39 @@ public class DefaultUserMessagePersistor extends DelegatingPersistor<UserMessage
     }
 
     @Override
-    public void addMessage(Identifier senderUserId, Message message) throws PersistorOperationFailedException {
-        UserMessage userMessage = new UserMessage(senderUserId, message);
+    public void addMessage(Identifier receiverUserId, Identifier senderUserId, Message message)
+            throws PersistorOperationFailedException {
+        UserMessage userMessage = new UserMessage(receiverUserId, senderUserId, message);
         save(userMessage);
     }
 
     // TODO add message ordering
     @Override
-    public List<Message> fetchRecentMessages(Identifier userId, int count) throws PersistorOperationFailedException {
+    public List<Message> fetchRecentlyReceivedMessages(Identifier userId, int count) throws PersistorOperationFailedException {
         List<Message> recentMessages = new ArrayList<>();
         Iterator<UserMessage> allUserMessage = fetchAll();
         int messagesFound = 0;
         while (allUserMessage.hasNext()) {
             UserMessage userMessage = allUserMessage.next();
-            if (userMessage.getUserId().equals(userId)) {
+            if (userMessage.getReceiverUserId().equals(userId)) {
+                recentMessages.add(userMessage.getMessage());
+                messagesFound++;
+                if (messagesFound == count) {
+                    break;
+                }
+            }
+        }
+        return recentMessages;
+    }
+
+    @Override
+    public List<Message> fetchRecentlySentMessages(Identifier userId, int count) throws PersistorOperationFailedException {
+        List<Message> recentMessages = new ArrayList<>();
+        Iterator<UserMessage> allUserMessage = fetchAll();
+        int messagesFound = 0;
+        while (allUserMessage.hasNext()) {
+            UserMessage userMessage = allUserMessage.next();
+            if (userMessage.getSenderUserId().equals(userId)) {
                 recentMessages.add(userMessage.getMessage());
                 messagesFound++;
                 if (messagesFound == count) {

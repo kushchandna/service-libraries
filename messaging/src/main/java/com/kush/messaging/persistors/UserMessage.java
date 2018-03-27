@@ -7,20 +7,22 @@ import com.kush.utils.id.Identifier;
 public class UserMessage implements Identifiable {
 
     private final Identifier id;
-    private final Identifier userId;
+    private final Identifier receiverUserId;
+    private final Identifier senderUserId;
     private final Message message;
 
-    public UserMessage(Identifier userId, Message message) {
-        this(Identifier.NULL, userId, message);
+    public UserMessage(Identifier receiverUserId, Identifier senderUserId, Message message) {
+        this(Identifier.NULL, receiverUserId, senderUserId, message);
     }
 
     public UserMessage(Identifier id, UserMessage userMessage) {
-        this(id, userMessage.getUserId(), userMessage.getMessage());
+        this(id, userMessage.getReceiverUserId(), userMessage.getSenderUserId(), userMessage.getMessage());
     }
 
-    public UserMessage(Identifier id, Identifier userId, Message message) {
+    public UserMessage(Identifier id, Identifier receiverUserId, Identifier senderUserId, Message message) {
         this.id = id;
-        this.userId = userId;
+        this.receiverUserId = receiverUserId;
+        this.senderUserId = senderUserId;
         this.message = message;
     }
 
@@ -29,8 +31,12 @@ public class UserMessage implements Identifiable {
         return id;
     }
 
-    public Identifier getUserId() {
-        return userId;
+    public Identifier getReceiverUserId() {
+        return receiverUserId;
+    }
+
+    public Identifier getSenderUserId() {
+        return senderUserId;
     }
 
     public Message getMessage() {

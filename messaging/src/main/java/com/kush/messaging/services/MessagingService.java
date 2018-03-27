@@ -30,17 +30,27 @@ public class MessagingService extends BaseService {
         DestinationUserIdFinder userIdFinder = getInstance(DestinationUserIdFinder.class);
         Identifier destinationUserId = userIdFinder.getUserId(destination);
         try {
-            persistor.addMessage(destinationUserId, message);
+            persistor.addMessage(destinationUserId, currentUserId, message);
         } catch (PersistorOperationFailedException e) {
             throw new ServiceRequestFailedException(e);
         }
     }
 
-    public List<Message> getRecentMessages(int count) throws ServiceRequestFailedException {
+    public List<Message> getRecentlyReceivedMessages(int count) throws ServiceRequestFailedException {
         Identifier userId = getCurrentUser().getId();
         UserMessagePersistor persistor = getInstance(UserMessagePersistor.class);
         try {
-            return persistor.fetchRecentMessages(userId, count);
+            return persistor.fetchRecentlyReceivedMessages(userId, count);
+        } catch (PersistorOperationFailedException e) {
+            throw new ServiceRequestFailedException(e);
+        }
+    }
+
+    public List<Message> getRecentlySentMessages(int count) throws ServiceRequestFailedException {
+        Identifier userId = getCurrentUser().getId();
+        UserMessagePersistor persistor = getInstance(UserMessagePersistor.class);
+        try {
+            return persistor.fetchRecentlySentMessages(userId, count);
         } catch (PersistorOperationFailedException e) {
             throw new ServiceRequestFailedException(e);
         }

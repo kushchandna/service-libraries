@@ -78,7 +78,7 @@ public class MessagingServiceTest {
         server.endSession();
 
         server.beginSession(user2);
-        List<Message> recentMessages = messagingService.getRecentMessages(5);
+        List<Message> recentMessages = messagingService.getRecentlyReceivedMessages(5);
         assertThat(recentMessages, hasSize(1));
         Message message1 = recentMessages.get(0);
 
