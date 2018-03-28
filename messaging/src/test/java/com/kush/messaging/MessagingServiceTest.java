@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
@@ -38,9 +40,12 @@ import com.kush.messaging.persistors.DefaultUserMessagePersistor;
 import com.kush.messaging.persistors.UserMessage;
 import com.kush.messaging.persistors.UserMessagePersistor;
 import com.kush.messaging.push.MessageHandler;
+import com.kush.messaging.push.SignalSpaceProvider;
 import com.kush.messaging.services.MessagingService;
 import com.kush.service.TestApplicationServer;
 import com.kush.utils.id.Identifier;
+import com.kush.utils.signaling.DefaultSignalEmitterFactory;
+import com.kush.utils.signaling.SignalEmitterFactory;
 
 public class MessagingServiceTest {
 
@@ -51,13 +56,30 @@ public class MessagingServiceTest {
     @Rule
     public TestApplicationServer server = new TestApplicationServer(5) {
 
+        private ExecutorService emitterExecutor;
+
+        @Override
+        protected void before() throws Throwable {
+            emitterExecutor = Executors.newSingleThreadExecutor();
+            super.before();
+        };
+
+        @Override
+        protected void after() {
+            super.after();
+            emitterExecutor.shutdown();
+        };
+
         @Override
         protected ContextBuilder createContextBuilder() {
             Persistor<UserMessage> delegate = InMemoryPersistor.forType(UserMessage.class);
+            SignalEmitterFactory emitterFactory = new DefaultSignalEmitterFactory();
+            SignalSpaceProvider signalSpaceProvider = new SignalSpaceProvider(emitterExecutor, emitterFactory);
             return ContextBuilder.create()
                 .withInstance(Clock.class, clock)
                 .withInstance(DestinationUserIdFinder.class, new DefaultDestinationUserIdFinder())
-                .withInstance(UserMessagePersistor.class, new DefaultUserMessagePersistor(delegate));
+                .withInstance(UserMessagePersistor.class, new DefaultUserMessagePersistor(delegate))
+                .withInstance(SignalSpaceProvider.class, signalSpaceProvider);
         };
     };
 

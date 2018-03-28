@@ -19,7 +19,10 @@ import com.kush.messaging.metadata.Metadata;
 import com.kush.messaging.metadata.MetadataConstants;
 import com.kush.messaging.persistors.UserMessagePersistor;
 import com.kush.messaging.push.MessageHandler;
+import com.kush.messaging.push.MessageSignal;
+import com.kush.messaging.push.SignalSpaceProvider;
 import com.kush.utils.id.Identifier;
+import com.kush.utils.signaling.SignalSpace;
 
 public class MessagingService extends BaseService {
 
@@ -35,6 +38,8 @@ public class MessagingService extends BaseService {
         } catch (PersistorOperationFailedException e) {
             throw new ServiceRequestFailedException(e);
         }
+        SignalSpace signalSpace = getSignalSpace(destinationUserId);
+        signalSpace.emit(new MessageSignal(message));
     }
 
     public List<Message> getRecentlyReceivedMessages(int count) throws ServiceRequestFailedException {
@@ -57,6 +62,17 @@ public class MessagingService extends BaseService {
         }
     }
 
+    public void registerMessageHandler(MessageHandler messageHandler) {
+        Identifier currentUserId = getCurrentUser().getId();
+        SignalSpace signalSpace = getSignalSpace(currentUserId);
+        signalSpace.register(MessageSignal.class, messageHandler);
+    }
+
+    private SignalSpace getSignalSpace(Identifier userId) {
+        SignalSpaceProvider signalSpaceProvider = getInstance(SignalSpaceProvider.class);
+        return signalSpaceProvider.getSignalSpace(userId);
+    }
+
     private Metadata prepareMetadata(Identifier currentUserId) {
         Map<String, Object> metadataProperties = new HashMap<>();
         metadataProperties.put(MetadataConstants.KEY_SENDER, currentUserId);
@@ -64,8 +80,5 @@ public class MessagingService extends BaseService {
         LocalDateTime dateTime = LocalDateTime.now(clock);
         metadataProperties.put(MetadataConstants.KEY_SENT_TIME, dateTime);
         return new MapBasedMetadata(metadataProperties);
-    }
-
-    public void registerMessageHandler(MessageHandler messageHandler) {
     }
 }
