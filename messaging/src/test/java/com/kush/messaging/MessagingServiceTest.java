@@ -119,26 +119,24 @@ public class MessagingServiceTest {
         User user1 = users[0];
         User user2 = users[1];
 
-        String testMessage = "Test Message";
+        String testMessage1 = "Test Message 1";
+        String testMessage2 = "Test Message 2";
 
         CountDownLatch latch = new CountDownLatch(1);
-        MessageHandler messageHandler = new MessageHandler() {
-
-            @Override
-            public void handleMessage(Message message) {
-                System.out.println("Message received with content - " + message.getContent());
-                validateMessageContentAndMetadata(message, user2, testMessage);
-                latch.countDown();
-            }
-        };
+        TestMessageHandler messageHandler = new TestMessageHandler(latch, testMessage1, user2);
 
         server.runAuthenticatedOperation(user1, () -> {
             messagingService.registerMessageHandler(messageHandler);
+            messageHandler.setRegistered(true);
         });
 
 
         server.runAuthenticatedOperation(user2, () -> {
-            sendTestMessage(user1, testMessage);
+            sendTestMessage(user1, testMessage1);
+        });
+
+        server.runAuthenticatedOperation(user1, () -> {
+            validateMessageReceived(user2, testMessage1);
         });
 
         boolean messageHandled = latch.await(100, TimeUnit.MILLISECONDS);
@@ -147,22 +145,35 @@ public class MessagingServiceTest {
         }
 
         server.runAuthenticatedOperation(user1, () -> {
-            messagingService.registerMessageHandler(messageHandler);
+            messagingService.unregisterMessageHandler(messageHandler);
+            messageHandler.setRegistered(false);
+        });
+
+        server.runAuthenticatedOperation(user2, () -> {
+            sendTestMessage(user1, testMessage2);
+        });
+
+        server.runAuthenticatedOperation(user1, () -> {
+            validateMessageReceived(user2, testMessage1, testMessage2);
         });
     }
 
-    private void validateMessageSent(User user, String expectedContentText) throws ServiceRequestFailedException {
+    private void validateMessageSent(User sender, String... expectedContentTexts) throws ServiceRequestFailedException {
         List<Message> recentlySentMessages = messagingService.getRecentlySentMessages(5);
-        assertThat(recentlySentMessages, hasSize(1));
-        Message sentMessage = recentlySentMessages.get(0);
-        validateMessageContentAndMetadata(sentMessage, user, expectedContentText);
+        assertThat(recentlySentMessages, hasSize(expectedContentTexts.length));
+        for (int i = 0; i < expectedContentTexts.length; i++) {
+            Message sentMessage = recentlySentMessages.get(i);
+            validateMessageContentAndMetadata(sentMessage, sender, expectedContentTexts[i]);
+        }
     }
 
-    private void validateMessageReceived(User user, String expectedContentText) throws ServiceRequestFailedException {
+    private void validateMessageReceived(User sender, String... expectedContentTexts) throws ServiceRequestFailedException {
         List<Message> recentlyReceivedMessages = messagingService.getRecentlyReceivedMessages(5);
-        assertThat(recentlyReceivedMessages, hasSize(1));
-        Message receivedMessage = recentlyReceivedMessages.get(0);
-        validateMessageContentAndMetadata(receivedMessage, user, expectedContentText);
+        assertThat(recentlyReceivedMessages, hasSize(expectedContentTexts.length));
+        for (int i = 0; i < expectedContentTexts.length; i++) {
+            Message receivedMessage = recentlyReceivedMessages.get(i);
+            validateMessageContentAndMetadata(receivedMessage, sender, expectedContentTexts[i]);
+        }
     }
 
     private void validateMessageContentAndMetadata(Message message, User sender, String expectedContentText) {
@@ -182,5 +193,36 @@ public class MessagingServiceTest {
         Content content1 = new TextContent(text);
         Destination destination1 = new UserIdBasedDestination(user2.getId());
         messagingService.sendMessage(content1, destination1);
+    }
+
+    private final class TestMessageHandler implements MessageHandler {
+
+        private final CountDownLatch latch;
+        private final String testMessage;
+        private final User user;
+
+        private boolean registered = false;
+
+        private TestMessageHandler(CountDownLatch latch, String testMessage, User user) {
+            this.latch = latch;
+            this.testMessage = testMessage;
+            this.user = user;
+        }
+
+        @Override
+        public void handleMessage(Message message) {
+            System.out.println("Message received with content - " + message.getContent());
+            validateMessageContentAndMetadata(message, user, testMessage);
+            if (latch.getCount() == 1) {
+                latch.countDown();
+            }
+            if (!registered) {
+                fail("Should not have received message after unregistration");
+            }
+        }
+
+        public void setRegistered(boolean registered) {
+            this.registered = registered;
+        }
     }
 }
