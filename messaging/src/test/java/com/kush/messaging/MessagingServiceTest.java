@@ -103,7 +103,7 @@ public class MessagingServiceTest {
         MessageHandler messageHandler = new MessageHandler() {
 
             @Override
-            public void handleNewMessage(Message message) {
+            public void handleMessage(Message message) {
                 System.out.println("Message received with content - " + message.getContent());
                 validateMessageContentAndMetadata(message, user2, testMessage);
                 latch.countDown();

@@ -1,9 +1,9 @@
-package com.kush.messaging.push.signaling;
+package com.kush.messaging.push;
 
 import com.kush.messaging.message.Message;
 import com.kush.utils.signaling.Signal;
 
-public class MessageSignal extends Signal<MessageSignalReceiver> {
+public class MessageSignal extends Signal<MessageHandler> {
 
     private final Message message;
 
@@ -12,7 +12,7 @@ public class MessageSignal extends Signal<MessageSignalReceiver> {
     }
 
     @Override
-    protected void handleSignal(MessageSignalReceiver receiver) {
-        receiver.onMessageReceived(message);
+    protected void handleSignal(MessageHandler messageHandler) {
+        messageHandler.handleMessage(message);
     }
 }
