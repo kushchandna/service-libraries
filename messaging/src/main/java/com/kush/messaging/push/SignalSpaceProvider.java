@@ -28,4 +28,8 @@ public class SignalSpaceProvider {
         }
         return signalSpace;
     }
+
+    public void removeSignalSpace(Identifier userId) {
+        signalSpaces.remove(userId);
+    }
 }

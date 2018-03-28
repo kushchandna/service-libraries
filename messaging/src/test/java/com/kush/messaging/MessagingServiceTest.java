@@ -118,43 +118,70 @@ public class MessagingServiceTest {
         User[] users = server.getUsers();
         User user1 = users[0];
         User user2 = users[1];
+        User user3 = users[2];
 
         String testMessage1 = "Test Message 1";
         String testMessage2 = "Test Message 2";
+        String testMessage3 = "Test Message 3";
+        String testMessage4 = "Test Message 4";
 
-        CountDownLatch latch = new CountDownLatch(1);
-        TestMessageHandler messageHandler = new TestMessageHandler(latch, testMessage1, user2);
+        CountDownLatch latch1 = new CountDownLatch(1);
+        TestMessageHandler messageHandlerUser1 = new TestMessageHandler(latch1);
+        CountDownLatch latch2 = new CountDownLatch(2);
+        TestMessageHandler messageHandlerUser2 = new TestMessageHandler(latch2);
 
         server.runAuthenticatedOperation(user1, () -> {
-            messagingService.registerMessageHandler(messageHandler);
-            messageHandler.setRegistered(true);
+            messagingService.registerMessageHandler(messageHandlerUser1);
+            messageHandlerUser1.setRegistered(true);
         });
-
 
         server.runAuthenticatedOperation(user2, () -> {
+            messagingService.registerMessageHandler(messageHandlerUser2);
+            messageHandlerUser2.setRegistered(true);
+        });
+
+        server.runAuthenticatedOperation(user3, () -> {
+            messageHandlerUser1.setExpectedMessage(testMessage1, user3);
             sendTestMessage(user1, testMessage1);
+            messageHandlerUser2.setExpectedMessage(testMessage2, user3);
+            sendTestMessage(user2, testMessage2);
         });
 
         server.runAuthenticatedOperation(user1, () -> {
-            validateMessageReceived(user2, testMessage1);
+            validateMessageReceived(user3, testMessage1);
         });
 
-        boolean messageHandled = latch.await(100, TimeUnit.MILLISECONDS);
-        if (!messageHandled) {
-            fail("Message handler didn't got any call");
+        server.runAuthenticatedOperation(user2, () -> {
+            validateMessageReceived(user3, testMessage2);
+        });
+
+        boolean messageHandledUser1 = latch1.await(1, TimeUnit.SECONDS);
+        if (!messageHandledUser1) {
+            fail("Message handler for user 1 didn't got any call");
         }
 
         server.runAuthenticatedOperation(user1, () -> {
-            messagingService.unregisterMessageHandler(messageHandler);
-            messageHandler.setRegistered(false);
+            messagingService.unregisterMessageHandler(messageHandlerUser1);
+            messageHandlerUser1.setRegistered(false);
+        });
+
+        server.runAuthenticatedOperation(user3, () -> {
+            sendTestMessage(user1, testMessage3);
+            messageHandlerUser2.setExpectedMessage(testMessage4, user3);
+            sendTestMessage(user2, testMessage4);
+        });
+
+        boolean messageHandledUser2 = latch2.await(1, TimeUnit.SECONDS);
+        if (!messageHandledUser2) {
+            fail("Message handler for user 2 didn't got any call");
+        }
+
+        server.runAuthenticatedOperation(user1, () -> {
+            validateMessageReceived(user3, testMessage1, testMessage3);
         });
 
         server.runAuthenticatedOperation(user2, () -> {
-            sendTestMessage(user1, testMessage2);
-        });
-
-        server.runAuthenticatedOperation(user1, () -> {
-            validateMessageReceived(user2, testMessage1, testMessage2);
+            validateMessageReceived(user3, testMessage2, testMessage4);
         });
     }
 
@@ -189,31 +216,29 @@ public class MessagingServiceTest {
         assertThat(sentMsgSentTime, is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
     }
 
-    private void sendTestMessage(User user2, String text) throws ServiceRequestFailedException {
-        Content content1 = new TextContent(text);
-        Destination destination1 = new UserIdBasedDestination(user2.getId());
-        messagingService.sendMessage(content1, destination1);
+    private void sendTestMessage(User user, String text) throws ServiceRequestFailedException {
+        Content content = new TextContent(text);
+        Destination destination = new UserIdBasedDestination(user.getId());
+        messagingService.sendMessage(content, destination);
     }
 
     private final class TestMessageHandler implements MessageHandler {
 
         private final CountDownLatch latch;
-        private final String testMessage;
-        private final User user;
 
         private boolean registered = false;
+        private String expectedMessage;
+        private User expectedMessageSender;
 
-        private TestMessageHandler(CountDownLatch latch, String testMessage, User user) {
+        private TestMessageHandler(CountDownLatch latch) {
             this.latch = latch;
-            this.testMessage = testMessage;
-            this.user = user;
         }
 
         @Override
         public void handleMessage(Message message) {
             System.out.println("Message received with content - " + message.getContent());
-            validateMessageContentAndMetadata(message, user, testMessage);
-            if (latch.getCount() == 1) {
+            validateMessageContentAndMetadata(message, expectedMessageSender, expectedMessage);
+            if (latch.getCount() > 0) {
                 latch.countDown();
             }
             if (!registered) {
@@ -223,6 +248,11 @@ public class MessagingServiceTest {
 
         public void setRegistered(boolean registered) {
             this.registered = registered;
+        }
+
+        public void setExpectedMessage(String expectedMessage, User expectedMessageSender) {
+            this.expectedMessage = expectedMessage;
+            this.expectedMessageSender = expectedMessageSender;
         }
     }
 }

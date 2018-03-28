@@ -70,8 +70,12 @@ public class MessagingService extends BaseService {
 
     public void unregisterMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
-        SignalSpace signalSpace = getSignalSpace(currentUserId);
+        SignalSpaceProvider signalSpaceProvider = getInstance(SignalSpaceProvider.class);
+        SignalSpace signalSpace = signalSpaceProvider.getSignalSpace(currentUserId);
         signalSpace.unregister(MessageSignal.class, messageHandler);
+        if (!signalSpace.hasReceiverForSignal(MessageSignal.class)) {
+            signalSpaceProvider.removeSignalSpace(currentUserId);
+        }
     }
 
     private SignalSpace getSignalSpace(Identifier userId) {
