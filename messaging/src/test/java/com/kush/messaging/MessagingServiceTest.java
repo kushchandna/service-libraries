@@ -37,6 +37,7 @@ import com.kush.messaging.metadata.MetadataConstants;
 import com.kush.messaging.persistors.DefaultUserMessagePersistor;
 import com.kush.messaging.persistors.UserMessage;
 import com.kush.messaging.persistors.UserMessagePersistor;
+import com.kush.messaging.push.MessageHandler;
 import com.kush.messaging.services.MessagingService;
 import com.kush.service.TestApplicationServer;
 import com.kush.utils.id.Identifier;

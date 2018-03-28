@@ -9,7 +9,6 @@ import java.util.Map;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.lib.service.server.BaseService;
-import com.kush.messaging.MessageHandler;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.destination.Destination;
 import com.kush.messaging.destination.DestinationUserIdFinder;
@@ -19,6 +18,7 @@ import com.kush.messaging.metadata.MapBasedMetadata;
 import com.kush.messaging.metadata.Metadata;
 import com.kush.messaging.metadata.MetadataConstants;
 import com.kush.messaging.persistors.UserMessagePersistor;
+import com.kush.messaging.push.MessageHandler;
 import com.kush.utils.id.Identifier;
 
 public class MessagingService extends BaseService {

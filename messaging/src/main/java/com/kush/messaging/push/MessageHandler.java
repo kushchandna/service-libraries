@@ -1,4 +1,4 @@
-package com.kush.messaging;
+package com.kush.messaging.push;
 
 import com.kush.messaging.message.Message;
 
