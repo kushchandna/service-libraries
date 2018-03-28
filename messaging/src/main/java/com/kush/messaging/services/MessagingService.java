@@ -9,6 +9,7 @@ import java.util.Map;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.lib.service.server.BaseService;
+import com.kush.messaging.MessageHandler;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.destination.Destination;
 import com.kush.messaging.destination.DestinationUserIdFinder;
@@ -63,5 +64,8 @@ public class MessagingService extends BaseService {
         LocalDateTime dateTime = LocalDateTime.now(clock);
         metadataProperties.put(MetadataConstants.KEY_SENT_TIME, dateTime);
         return new MapBasedMetadata(metadataProperties);
+    }
+
+    public void registerMessageHandler(MessageHandler messageHandler) {
     }
 }
