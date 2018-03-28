@@ -72,26 +72,43 @@ public class MessagingServiceTest {
         User user2 = users[1];
 
         server.beginSession(user1);
-        Content content1 = new TextContent("Message 1");
+        Content content1 = new TextContent("Test Message");
         Destination destination1 = new UserIdBasedDestination(user2.getId());
         messagingService.sendMessage(content1, destination1);
         server.endSession();
 
         server.beginSession(user2);
-        List<Message> recentMessages = messagingService.getRecentlyReceivedMessages(5);
-        assertThat(recentMessages, hasSize(1));
-        Message message1 = recentMessages.get(0);
+        List<Message> recentlyReceivedMessages = messagingService.getRecentlyReceivedMessages(5);
+        assertThat(recentlyReceivedMessages, hasSize(1));
+        Message receivedMessage = recentlyReceivedMessages.get(0);
 
-        Content receivedContent1 = message1.getContent();
-        assertThat(receivedContent1, is(instanceOf(TextContent.class)));
-        TextContent receivedTextContent1 = (TextContent) receivedContent1;
-        assertThat(receivedTextContent1.getText(), is(equalTo("Message 1")));
+        Content receivedContent = receivedMessage.getContent();
+        assertThat(receivedContent, is(instanceOf(TextContent.class)));
+        TextContent receivedTextContent = (TextContent) receivedContent;
+        assertThat(receivedTextContent.getText(), is(equalTo("Test Message")));
 
-        Metadata metadata1 = message1.getMetadata();
-        Identifier valueSender1 = metadata1.getValue(MetadataConstants.KEY_SENDER, Identifier.class);
-        assertThat(valueSender1, is(equalTo(user1.getId())));
-        LocalDateTime valueSentTime1 = metadata1.getValue(MetadataConstants.KEY_SENT_TIME, LocalDateTime.class);
-        assertThat(valueSentTime1, is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
+        Metadata receivedMetadata = receivedMessage.getMetadata();
+        Identifier rcvdMsgSender = receivedMetadata.getValue(MetadataConstants.KEY_SENDER, Identifier.class);
+        assertThat(rcvdMsgSender, is(equalTo(user1.getId())));
+        LocalDateTime rcvdMsgSentTime = receivedMetadata.getValue(MetadataConstants.KEY_SENT_TIME, LocalDateTime.class);
+        assertThat(rcvdMsgSentTime, is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
+        server.endSession();
+
+        server.beginSession(user1);
+        List<Message> recentlySentMessages = messagingService.getRecentlySentMessages(5);
+        assertThat(recentlySentMessages, hasSize(1));
+        Message sentMessage = recentlySentMessages.get(0);
+
+        Content sentContent = sentMessage.getContent();
+        assertThat(sentContent, is(instanceOf(TextContent.class)));
+        TextContent sentTextContent = (TextContent) sentContent;
+        assertThat(sentTextContent.getText(), is(equalTo("Test Message")));
+
+        Metadata sentMetadata = sentMessage.getMetadata();
+        Identifier sentMsgSender = sentMetadata.getValue(MetadataConstants.KEY_SENDER, Identifier.class);
+        assertThat(sentMsgSender, is(equalTo(user1.getId())));
+        LocalDateTime sentMsgSentTime = sentMetadata.getValue(MetadataConstants.KEY_SENT_TIME, LocalDateTime.class);
+        assertThat(sentMsgSentTime, is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
         server.endSession();
     }
 }
