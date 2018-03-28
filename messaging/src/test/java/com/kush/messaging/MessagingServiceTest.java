@@ -51,7 +51,7 @@ public class MessagingServiceTest {
 
     private static final Instant CURRENT_TIME = Instant.now();
     private static final ZoneId CURRENT_ZONE = ZoneId.systemDefault();
-    private final Clock clock = Clock.fixed(CURRENT_TIME, CURRENT_ZONE);
+    private static final Clock clock = Clock.fixed(CURRENT_TIME, CURRENT_ZONE);
 
     @Rule
     public TestApplicationServer server = new TestApplicationServer(5) {
