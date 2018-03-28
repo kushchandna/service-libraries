@@ -51,7 +51,7 @@ public class MessagingServiceTest {
 
     private static final Instant CURRENT_TIME = Instant.now();
     private static final ZoneId CURRENT_ZONE = ZoneId.systemDefault();
-    private static final Clock clock = Clock.fixed(CURRENT_TIME, CURRENT_ZONE);
+    private static final Clock CLOCK = Clock.fixed(CURRENT_TIME, CURRENT_ZONE);
 
     @Rule
     public TestApplicationServer server = new TestApplicationServer(5) {
@@ -76,7 +76,7 @@ public class MessagingServiceTest {
             SignalEmitterFactory emitterFactory = new DefaultSignalEmitterFactory();
             SignalSpaceProvider signalSpaceProvider = new SignalSpaceProvider(emitterExecutor, emitterFactory);
             return ContextBuilder.create()
-                .withInstance(Clock.class, clock)
+                .withInstance(Clock.class, CLOCK)
                 .withInstance(DestinationUserIdFinder.class, new DefaultDestinationUserIdFinder())
                 .withInstance(UserMessagePersistor.class, new DefaultUserMessagePersistor(delegate))
                 .withInstance(SignalSpaceProvider.class, signalSpaceProvider);
