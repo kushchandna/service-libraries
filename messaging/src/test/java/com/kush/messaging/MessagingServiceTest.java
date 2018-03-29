@@ -125,10 +125,8 @@ public class MessagingServiceTest {
         String testMessage3 = "Test Message 3";
         String testMessage4 = "Test Message 4";
 
-        CountDownLatch latch1 = new CountDownLatch(1);
-        TestMessageHandler messageHandlerUser1 = new TestMessageHandler(latch1);
-        CountDownLatch latch2 = new CountDownLatch(2);
-        TestMessageHandler messageHandlerUser2 = new TestMessageHandler(latch2);
+        TestMessageHandler messageHandlerUser1 = new TestMessageHandler();
+        TestMessageHandler messageHandlerUser2 = new TestMessageHandler();
 
         server.runAuthenticatedOperation(user1, () -> {
             messagingService.registerMessageHandler(messageHandlerUser1);
@@ -140,6 +138,8 @@ public class MessagingServiceTest {
             messageHandlerUser2.setRegistered(true);
         });
 
+        CountDownLatch latchUser1 = messageHandlerUser1.resetLatch();
+        CountDownLatch latchUser2 = messageHandlerUser2.resetLatch();
         server.runAuthenticatedOperation(user3, () -> {
             messageHandlerUser1.setExpectedMessage(testMessage1, user3);
             sendTestMessage(user1, testMessage1);
@@ -155,9 +155,14 @@ public class MessagingServiceTest {
             validateMessageReceived(user3, testMessage2);
         });
 
-        boolean messageHandledUser1 = latch1.await(1, TimeUnit.SECONDS);
+        boolean messageHandledUser1 = latchUser1.await(1, TimeUnit.SECONDS);
         if (!messageHandledUser1) {
             fail("Message handler for user 1 didn't got any call");
+        }
+
+        boolean messageHandledUser2 = latchUser2.await(1, TimeUnit.SECONDS);
+        if (!messageHandledUser2) {
+            fail("Message handler for user 2 didn't got any call");
         }
 
         server.runAuthenticatedOperation(user1, () -> {
@@ -165,16 +170,12 @@ public class MessagingServiceTest {
             messageHandlerUser1.setRegistered(false);
         });
 
+        latchUser2 = messageHandlerUser2.resetLatch();
         server.runAuthenticatedOperation(user3, () -> {
             sendTestMessage(user1, testMessage3);
             messageHandlerUser2.setExpectedMessage(testMessage4, user3);
             sendTestMessage(user2, testMessage4);
         });
-
-        boolean messageHandledUser2 = latch2.await(1, TimeUnit.SECONDS);
-        if (!messageHandledUser2) {
-            fail("Message handler for user 2 didn't got any call");
-        }
 
         server.runAuthenticatedOperation(user1, () -> {
             validateMessageReceived(user3, testMessage1, testMessage3);
@@ -183,6 +184,11 @@ public class MessagingServiceTest {
         server.runAuthenticatedOperation(user2, () -> {
             validateMessageReceived(user3, testMessage2, testMessage4);
         });
+
+        messageHandledUser2 = latchUser2.await(1, TimeUnit.SECONDS);
+        if (!messageHandledUser2) {
+            fail("Message handler for user 2 didn't got second call");
+        }
     }
 
     private void validateMessageSent(User sender, String... expectedContentTexts) throws ServiceRequestFailedException {
@@ -224,15 +230,11 @@ public class MessagingServiceTest {
 
     private final class TestMessageHandler implements MessageHandler {
 
-        private final CountDownLatch latch;
 
+        private CountDownLatch latch;
         private boolean registered = false;
         private String expectedMessage;
         private User expectedMessageSender;
-
-        private TestMessageHandler(CountDownLatch latch) {
-            this.latch = latch;
-        }
 
         @Override
         public void handleMessage(Message message) {
@@ -244,6 +246,11 @@ public class MessagingServiceTest {
             if (!registered) {
                 fail("Should not have received message after unregistration");
             }
+        }
+
+        public CountDownLatch resetLatch() {
+            latch = new CountDownLatch(1);
+            return latch;
         }
 
         public void setRegistered(boolean registered) {
