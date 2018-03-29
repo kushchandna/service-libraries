@@ -7,32 +7,35 @@ import java.util.List;
 import com.kush.lib.persistence.api.DelegatingPersistor;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.messaging.content.Content;
 import com.kush.messaging.message.Message;
+import com.kush.messaging.metadata.Metadata;
+import com.kush.messaging.metadata.MetadataConstants;
 import com.kush.utils.id.Identifier;
 
-public class DefaultUserMessagePersistor extends DelegatingPersistor<UserMessage> implements UserMessagePersistor {
+public class DefaultMessagePersistor extends DelegatingPersistor<Message> implements MessagePersistor {
 
-    public DefaultUserMessagePersistor(Persistor<UserMessage> delegate) {
+    public DefaultMessagePersistor(Persistor<Message> delegate) {
         super(delegate);
     }
 
     @Override
-    public void addMessage(Identifier receiverUserId, Identifier senderUserId, Message message)
+    public Message addMessage(Identifier destinationUserId, Content content, Metadata metadata)
             throws PersistorOperationFailedException {
-        UserMessage userMessage = new UserMessage(receiverUserId, senderUserId, message);
-        save(userMessage);
+        Message message = new Message(destinationUserId, content, metadata);
+        return save(message);
     }
 
     // TODO add message ordering
     @Override
     public List<Message> fetchRecentlyReceivedMessages(Identifier userId, int count) throws PersistorOperationFailedException {
         List<Message> recentMessages = new ArrayList<>();
-        Iterator<UserMessage> allUserMessage = fetchAll();
+        Iterator<Message> allMessage = fetchAll();
         int messagesFound = 0;
-        while (allUserMessage.hasNext()) {
-            UserMessage userMessage = allUserMessage.next();
-            if (userMessage.getReceiverUserId().equals(userId)) {
-                recentMessages.add(userMessage.getMessage());
+        while (allMessage.hasNext()) {
+            Message message = allMessage.next();
+            if (message.getReceiver().equals(userId)) {
+                recentMessages.add(message);
                 messagesFound++;
                 if (messagesFound == count) {
                     break;
@@ -45,12 +48,13 @@ public class DefaultUserMessagePersistor extends DelegatingPersistor<UserMessage
     @Override
     public List<Message> fetchRecentlySentMessages(Identifier userId, int count) throws PersistorOperationFailedException {
         List<Message> recentMessages = new ArrayList<>();
-        Iterator<UserMessage> allUserMessage = fetchAll();
+        Iterator<Message> allMessage = fetchAll();
         int messagesFound = 0;
-        while (allUserMessage.hasNext()) {
-            UserMessage userMessage = allUserMessage.next();
-            if (userMessage.getSenderUserId().equals(userId)) {
-                recentMessages.add(userMessage.getMessage());
+        while (allMessage.hasNext()) {
+            Message message = allMessage.next();
+            Identifier sender = getSenderUserId(message);
+            if (sender.equals(userId)) {
+                recentMessages.add(message);
                 messagesFound++;
                 if (messagesFound == count) {
                     break;
@@ -58,5 +62,10 @@ public class DefaultUserMessagePersistor extends DelegatingPersistor<UserMessage
             }
         }
         return recentMessages;
+    }
+
+    private Identifier getSenderUserId(Message message) {
+        Metadata metadata = message.getMetadata();
+        return metadata.getValue(MetadataConstants.KEY_SENDER, Identifier.class);
     }
 }

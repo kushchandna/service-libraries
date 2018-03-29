@@ -12,12 +12,11 @@ import com.kush.lib.service.server.BaseService;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.destination.Destination;
 import com.kush.messaging.destination.DestinationUserIdFinder;
-import com.kush.messaging.message.DefaultMessage;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.metadata.MapBasedMetadata;
 import com.kush.messaging.metadata.Metadata;
 import com.kush.messaging.metadata.MetadataConstants;
-import com.kush.messaging.persistors.UserMessagePersistor;
+import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.messaging.push.MessageSignal;
 import com.kush.messaging.push.SignalSpaceProvider;
@@ -26,25 +25,23 @@ import com.kush.utils.signaling.SignalSpace;
 
 public class MessagingService extends BaseService {
 
-    public void sendMessage(Content content, Destination destination) throws ServiceRequestFailedException {
+    public Message sendMessage(Content content, Destination destination) throws ServiceRequestFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         Metadata metadata = prepareMetadata(currentUserId);
-        Message message = new DefaultMessage(content, metadata);
-        UserMessagePersistor persistor = getInstance(UserMessagePersistor.class);
-        DestinationUserIdFinder userIdFinder = getInstance(DestinationUserIdFinder.class);
-        Identifier destinationUserId = userIdFinder.getUserId(destination);
+        Identifier destinationUserId = findDestinationUserId(destination);
+        MessagePersistor persistor = getInstance(MessagePersistor.class);
         try {
-            persistor.addMessage(destinationUserId, currentUserId, message);
+            Message sentMessage = persistor.addMessage(destinationUserId, content, metadata);
+            sendMessageSignal(destinationUserId, sentMessage);
+            return sentMessage;
         } catch (PersistorOperationFailedException e) {
             throw new ServiceRequestFailedException(e);
         }
-        SignalSpace signalSpace = getSignalSpace(destinationUserId);
-        signalSpace.emit(new MessageSignal(message));
     }
 
     public List<Message> getRecentlyReceivedMessages(int count) throws ServiceRequestFailedException {
         Identifier userId = getCurrentUser().getId();
-        UserMessagePersistor persistor = getInstance(UserMessagePersistor.class);
+        MessagePersistor persistor = getInstance(MessagePersistor.class);
         try {
             return persistor.fetchRecentlyReceivedMessages(userId, count);
         } catch (PersistorOperationFailedException e) {
@@ -54,7 +51,7 @@ public class MessagingService extends BaseService {
 
     public List<Message> getRecentlySentMessages(int count) throws ServiceRequestFailedException {
         Identifier userId = getCurrentUser().getId();
-        UserMessagePersistor persistor = getInstance(UserMessagePersistor.class);
+        MessagePersistor persistor = getInstance(MessagePersistor.class);
         try {
             return persistor.fetchRecentlySentMessages(userId, count);
         } catch (PersistorOperationFailedException e) {
@@ -90,5 +87,15 @@ public class MessagingService extends BaseService {
         LocalDateTime dateTime = LocalDateTime.now(clock);
         metadataProperties.put(MetadataConstants.KEY_SENT_TIME, dateTime);
         return new MapBasedMetadata(metadataProperties);
+    }
+
+    private Identifier findDestinationUserId(Destination destination) {
+        DestinationUserIdFinder userIdFinder = getInstance(DestinationUserIdFinder.class);
+        return userIdFinder.getUserId(destination);
+    }
+
+    private void sendMessageSignal(Identifier destinationUserId, Message sentMessage) {
+        SignalSpace signalSpace = getSignalSpace(destinationUserId);
+        signalSpace.emit(new MessageSignal(sentMessage));
     }
 }

@@ -36,9 +36,8 @@ import com.kush.messaging.destination.UserIdBasedDestination;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.metadata.Metadata;
 import com.kush.messaging.metadata.MetadataConstants;
-import com.kush.messaging.persistors.DefaultUserMessagePersistor;
-import com.kush.messaging.persistors.UserMessage;
-import com.kush.messaging.persistors.UserMessagePersistor;
+import com.kush.messaging.persistors.DefaultMessagePersistor;
+import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.messaging.push.SignalSpaceProvider;
 import com.kush.messaging.services.MessagingService;
@@ -72,13 +71,13 @@ public class MessagingServiceTest {
 
         @Override
         protected ContextBuilder createContextBuilder() {
-            Persistor<UserMessage> delegate = InMemoryPersistor.forType(UserMessage.class);
+            Persistor<Message> delegate = InMemoryPersistor.forType(Message.class);
             SignalEmitterFactory emitterFactory = new DefaultSignalEmitterFactory();
             SignalSpaceProvider signalSpaceProvider = new SignalSpaceProvider(emitterExecutor, emitterFactory);
             return ContextBuilder.create()
                 .withInstance(Clock.class, CLOCK)
                 .withInstance(DestinationUserIdFinder.class, new DefaultDestinationUserIdFinder())
-                .withInstance(UserMessagePersistor.class, new DefaultUserMessagePersistor(delegate))
+                .withInstance(MessagePersistor.class, new DefaultMessagePersistor(delegate))
                 .withInstance(SignalSpaceProvider.class, signalSpaceProvider);
         };
     };
