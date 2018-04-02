@@ -229,7 +229,6 @@ public class MessagingServiceTest {
 
     private final class TestMessageHandler implements MessageHandler {
 
-
         private CountDownLatch latch;
         private boolean registered = false;
         private String expectedMessage;
@@ -238,12 +237,12 @@ public class MessagingServiceTest {
         @Override
         public void handleMessage(Message message) {
             System.out.println("Message received with content - " + message.getContent());
+            if (!registered) {
+                fail("Should not have received message after unregistration");
+            }
             validateMessageContentAndMetadata(message, expectedMessageSender, expectedMessage);
             if (latch.getCount() > 0) {
                 latch.countDown();
-            }
-            if (!registered) {
-                fail("Should not have received message after unregistration");
             }
         }
 
