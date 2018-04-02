@@ -100,7 +100,7 @@ public class MessagingServiceTest {
         String testMessage = "Test Message";
 
         testEnv.runAuthenticatedOperation(user1, () -> {
-            sendTestMessage(user2, testMessage);
+            sendTextMessage(user2, testMessage);
         });
 
         testEnv.runAuthenticatedOperation(user2, () -> {
@@ -140,9 +140,9 @@ public class MessagingServiceTest {
         CountDownLatch latchUser1 = messageHandlerUser1.resetLatch();
         CountDownLatch latchUser2 = messageHandlerUser2.resetLatch();
         testEnv.runAuthenticatedOperation(user3, () -> {
-            sendTestMessage(user1, testMessage1);
+            sendTextMessage(user1, testMessage1);
             messageHandlerUser1.setExpectedMessage(testMessage1, user3);
-            sendTestMessage(user2, testMessage2);
+            sendTextMessage(user2, testMessage2);
             messageHandlerUser2.setExpectedMessage(testMessage2, user3);
         });
 
@@ -171,8 +171,8 @@ public class MessagingServiceTest {
 
         latchUser2 = messageHandlerUser2.resetLatch();
         testEnv.runAuthenticatedOperation(user3, () -> {
-            sendTestMessage(user1, testMessage3);
-            sendTestMessage(user2, testMessage4);
+            sendTextMessage(user1, testMessage3);
+            sendTextMessage(user2, testMessage4);
             messageHandlerUser2.setExpectedMessage(testMessage4, user3);
         });
 
@@ -221,7 +221,7 @@ public class MessagingServiceTest {
         assertThat(sentMsgSentTime, is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
     }
 
-    private void sendTestMessage(User user, String text) throws ServiceRequestFailedException {
+    private void sendTextMessage(User user, String text) throws ServiceRequestFailedException {
         Content content = new TextContent(text);
         Destination destination = new UserIdBasedDestination(user.getId());
         messagingService.sendMessage(content, destination);
