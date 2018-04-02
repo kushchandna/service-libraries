@@ -140,10 +140,10 @@ public class MessagingServiceTest {
         CountDownLatch latchUser1 = messageHandlerUser1.resetLatch();
         CountDownLatch latchUser2 = messageHandlerUser2.resetLatch();
         server.runAuthenticatedOperation(user3, () -> {
-            messageHandlerUser1.setExpectedMessage(testMessage1, user3);
             sendTestMessage(user1, testMessage1);
-            messageHandlerUser2.setExpectedMessage(testMessage2, user3);
+            messageHandlerUser1.setExpectedMessage(testMessage1, user3);
             sendTestMessage(user2, testMessage2);
+            messageHandlerUser2.setExpectedMessage(testMessage2, user3);
         });
 
         server.runAuthenticatedOperation(user1, () -> {
@@ -172,8 +172,8 @@ public class MessagingServiceTest {
         latchUser2 = messageHandlerUser2.resetLatch();
         server.runAuthenticatedOperation(user3, () -> {
             sendTestMessage(user1, testMessage3);
-            messageHandlerUser2.setExpectedMessage(testMessage4, user3);
             sendTestMessage(user2, testMessage4);
+            messageHandlerUser2.setExpectedMessage(testMessage4, user3);
         });
 
         server.runAuthenticatedOperation(user1, () -> {
