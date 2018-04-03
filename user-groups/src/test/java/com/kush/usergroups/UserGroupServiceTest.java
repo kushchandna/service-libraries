@@ -1,7 +1,7 @@
 package com.kush.usergroups;
 
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
@@ -36,9 +36,10 @@ public class UserGroupServiceTest {
         @Override
         protected ContextBuilder createContextBuilder() {
             Persistor<UserGroup> delegate = InMemoryPersistor.forType(UserGroup.class);
+            Persistor<UserGroupMember> memberPersistor = InMemoryPersistor.forType(UserGroupMember.class);
             return ContextBuilder.create()
                 .withInstance(Clock.class, CLOCK)
-                .withInstance(UserGroupPersistor.class, new DefaultUserGroupPersistor(delegate));
+                .withInstance(UserGroupPersistor.class, new DefaultUserGroupPersistor(delegate, memberPersistor));
         };
     };
     private UserGroupService userGroupService;
@@ -62,13 +63,37 @@ public class UserGroupServiceTest {
             assertThat(group.getOwner(), is(equalTo(testUser.getId())));
 
             List<UserGroupMember> groupMembers = userGroupService.getGroupMembers(group.getId());
-            assertThat(groupMembers, is(empty()));
+            assertThat(groupMembers, hasSize(1));
+            UserGroupMember onlyGroupMember = groupMembers.get(0);
+            assertThat(onlyGroupMember.getId(), is(not(equalTo(Identifier.NULL))));
+            assertThat(onlyGroupMember.getGroupId(), is(equalTo(group.getId())));
+            assertThat(onlyGroupMember.getUserId(), is(equalTo(testUser.getId())));
+            assertThat(onlyGroupMember.getMemberSince(), is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
+            assertThat(onlyGroupMember.getAddedBy(), is(equalTo(testUser.getId())));
 
             UserGroup savedGroup = userGroupService.getGroup(group.getId());
             assertThat(savedGroup.getId(), is(equalTo(group.getId())));
             assertThat(savedGroup.getName(), is(equalTo(testGroupName)));
             assertThat(savedGroup.getCreationDate(), is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
             assertThat(savedGroup.getOwner(), is(equalTo(testUser.getId())));
+        });
+    }
+
+    @Test
+    public void manageMembersInGroup() throws Exception {
+        User[] users = testEnv.getUsers();
+
+        testEnv.runAuthenticatedOperation(users[0], () -> {
+            UserGroup group = userGroupService.createGroup("Test Group");
+
+            List<UserGroupMember> groupMembers = userGroupService.getGroupMembers(group.getId());
+            assertThat(groupMembers, hasSize(1));
+            UserGroupMember onlyGroupMember = groupMembers.get(0);
+            assertThat(onlyGroupMember.getId(), is(not(equalTo(Identifier.NULL))));
+            assertThat(onlyGroupMember.getGroupId(), is(equalTo(group.getId())));
+            assertThat(onlyGroupMember.getUserId(), is(equalTo(users[0].getId())));
+            assertThat(onlyGroupMember.getMemberSince(), is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
+            assertThat(onlyGroupMember.getAddedBy(), is(equalTo(users[0].getId())));
         });
     }
 }

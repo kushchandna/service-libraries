@@ -2,7 +2,6 @@ package com.kush.usergroups;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
@@ -16,8 +15,11 @@ public class UserGroupService extends BaseService {
         Identifier currentUser = getCurrentUser().getId();
         Clock clock = getInstance(Clock.class);
         UserGroupPersistor persistor = getInstance(UserGroupPersistor.class);
+        LocalDateTime creationDate = LocalDateTime.now(clock);
         try {
-            return persistor.createGroup(groupName, currentUser, LocalDateTime.now(clock));
+            UserGroup createdGroup = persistor.createGroup(groupName, currentUser, creationDate);
+            persistor.addGroupMember(createdGroup.getId(), currentUser, creationDate, currentUser);
+            return createdGroup;
         } catch (PersistorOperationFailedException e) {
             throw new ServiceRequestFailedException(e);
         }
@@ -32,7 +34,12 @@ public class UserGroupService extends BaseService {
         }
     }
 
-    public List<UserGroupMember> getGroupMembers(Identifier id) {
-        return Collections.emptyList();
+    public List<UserGroupMember> getGroupMembers(Identifier groupId) throws ServiceRequestFailedException {
+        UserGroupPersistor persistor = getInstance(UserGroupPersistor.class);
+        try {
+            return persistor.getGroupMembers(groupId);
+        } catch (PersistorOperationFailedException e) {
+            throw new ServiceRequestFailedException(e);
+        }
     }
 }
