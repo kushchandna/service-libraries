@@ -33,7 +33,6 @@
 				</dependencies>
 				<configuration>
 					<services>
-						<service>com.kush.lib.userprofile.UserProfileService</service>
 					</services>
 				</configuration>
 				<executions>
