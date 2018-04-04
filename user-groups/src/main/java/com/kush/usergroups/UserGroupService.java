@@ -13,9 +13,8 @@ public class UserGroupService extends BaseService {
 
     public UserGroup createGroup(String groupName) throws ServiceRequestFailedException {
         Identifier currentUser = getCurrentUser().getId();
-        Clock clock = getInstance(Clock.class);
         UserGroupPersistor persistor = getInstance(UserGroupPersistor.class);
-        LocalDateTime creationDate = LocalDateTime.now(clock);
+        LocalDateTime creationDate = LocalDateTime.now(getClock());
         try {
             UserGroup createdGroup = persistor.createGroup(groupName, currentUser, creationDate);
             persistor.addGroupMember(createdGroup.getId(), currentUser, creationDate, currentUser);
@@ -41,5 +40,20 @@ public class UserGroupService extends BaseService {
         } catch (PersistorOperationFailedException e) {
             throw new ServiceRequestFailedException(e);
         }
+    }
+
+    public UserGroupMember addMemberToGroup(Identifier groupId, Identifier userId) throws ServiceRequestFailedException {
+        Identifier currentUser = getCurrentUser().getId();
+        LocalDateTime memberSince = LocalDateTime.now(getClock());
+        UserGroupPersistor persistor = getInstance(UserGroupPersistor.class);
+        try {
+            return persistor.addGroupMember(groupId, userId, memberSince, currentUser);
+        } catch (PersistorOperationFailedException e) {
+            throw new ServiceRequestFailedException(e);
+        }
+    }
+
+    private Clock getClock() {
+        return getInstance(Clock.class);
     }
 }
