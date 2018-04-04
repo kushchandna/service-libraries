@@ -1,4 +1,4 @@
-package com.kush.lib.userprofile;
+package com.kush.lib.userprofile.service;
 
 import com.kush.lib.service.server.BaseService;
 

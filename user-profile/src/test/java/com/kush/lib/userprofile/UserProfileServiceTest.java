@@ -9,6 +9,10 @@ import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.server.ContextBuilder;
 import com.kush.lib.service.server.TestApplicationEnvironment;
+import com.kush.lib.userprofile.persistor.DefaultUserProfilePersistor;
+import com.kush.lib.userprofile.persistor.UserProfilePersistor;
+import com.kush.lib.userprofile.profile.UserProfile;
+import com.kush.lib.userprofile.service.UserProfileService;
 
 public class UserProfileServiceTest {
 

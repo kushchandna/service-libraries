@@ -1,4 +1,4 @@
-package com.kush.lib.userprofile;
+package com.kush.lib.userprofile.profile;
 
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
