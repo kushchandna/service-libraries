@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>search</artifactId>
+	<groupId>com.kush.lib</groupId>
+	<name>search</name>
+	<url>http://maven.apache.org</url>
+	<packaging>jar</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<parent>
+		<groupId>com.kush</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.kush</groupId>
+				<artifactId>serviceclient-maven-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<dependencies>
+					<dependency>
+						<groupId>${project.groupId}</groupId>
+						<artifactId>${project.artifactId}</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<services>
+					</services>
+				</configuration>
+				<executions>
+					<execution>
+						<id>generate service clients</id>
+						<goals>
+							<goal>generate-service-clients</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
+				<configuration>
+					<groupId>com.kush.lib.clients</groupId>
+					<artifactId>${project.name}-serviceclients</artifactId>
+					<version>${project.version}</version>
+					<packaging>jar</packaging>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>${generated.service.client.jar.path}</file>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.kush</groupId>
+			<artifactId>service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>
