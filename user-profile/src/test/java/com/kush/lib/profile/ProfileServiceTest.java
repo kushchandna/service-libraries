@@ -27,13 +27,13 @@ public class ProfileServiceTest {
         };
     };
 
-    private ProfileService userProfileService;
+    private ProfileService profileService;
 
     @Before
     public void beforeEachTest() throws Exception {
         MockitoAnnotations.initMocks(this);
-        userProfileService = new ProfileService();
-        testEnv.registerService(userProfileService);
+        profileService = new ProfileService();
+        testEnv.registerService(profileService);
     }
 
     @Test
