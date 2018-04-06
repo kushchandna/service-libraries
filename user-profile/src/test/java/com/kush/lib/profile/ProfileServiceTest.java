@@ -1,4 +1,4 @@
-package com.kush.lib.userprofile;
+package com.kush.lib.profile;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -7,32 +7,32 @@ import org.mockito.MockitoAnnotations;
 
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.profile.persistors.DefaultProfilePersistor;
+import com.kush.lib.profile.persistors.ProfilePersistor;
+import com.kush.lib.profile.profile.Profile;
+import com.kush.lib.profile.services.ProfileService;
 import com.kush.lib.service.server.ContextBuilder;
 import com.kush.lib.service.server.TestApplicationEnvironment;
-import com.kush.lib.userprofile.persistor.DefaultUserProfilePersistor;
-import com.kush.lib.userprofile.persistor.UserProfilePersistor;
-import com.kush.lib.userprofile.profile.UserProfile;
-import com.kush.lib.userprofile.service.UserProfileService;
 
-public class UserProfileServiceTest {
+public class ProfileServiceTest {
 
     @Rule
     public TestApplicationEnvironment testEnv = new TestApplicationEnvironment() {
 
         @Override
         protected ContextBuilder createContextBuilder() {
-            Persistor<UserProfile> delegate = InMemoryPersistor.forType(UserProfile.class);
+            Persistor<Profile> delegate = InMemoryPersistor.forType(Profile.class);
             return ContextBuilder.create()
-                .withInstance(UserProfilePersistor.class, new DefaultUserProfilePersistor(delegate));
+                .withInstance(ProfilePersistor.class, new DefaultProfilePersistor(delegate));
         };
     };
 
-    private UserProfileService userProfileService;
+    private ProfileService userProfileService;
 
     @Before
     public void beforeEachTest() throws Exception {
         MockitoAnnotations.initMocks(this);
-        userProfileService = new UserProfileService();
+        userProfileService = new ProfileService();
         testEnv.registerService(userProfileService);
     }
 

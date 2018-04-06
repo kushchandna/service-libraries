@@ -1,21 +1,21 @@
-package com.kush.lib.userprofile.profile;
+package com.kush.lib.profile.profile;
 
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 
-public class UserProfile implements Identifiable {
+public class Profile implements Identifiable {
 
     private final Identifier profileId;
 
-    public UserProfile() {
+    public Profile() {
         this(Identifier.NULL);
     }
 
-    public UserProfile(Identifier profileId, UserProfile userProfile) {
+    public Profile(Identifier profileId, Profile userProfile) {
         this(profileId);
     }
 
-    public UserProfile(Identifier profileId) {
+    public Profile(Identifier profileId) {
         this.profileId = profileId;
     }
 
