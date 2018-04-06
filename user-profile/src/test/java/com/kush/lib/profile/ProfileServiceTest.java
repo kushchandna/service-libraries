@@ -7,9 +7,9 @@ import org.mockito.MockitoAnnotations;
 
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.persistors.DefaultProfilePersistor;
 import com.kush.lib.profile.persistors.ProfilePersistor;
-import com.kush.lib.profile.profile.Profile;
 import com.kush.lib.profile.services.ProfileService;
 import com.kush.lib.service.server.ContextBuilder;
 import com.kush.lib.service.server.TestApplicationEnvironment;
