@@ -63,7 +63,7 @@ public class ValueValidatorTest {
     @Test
     public void emailTextField_WithInvalidValue() throws Exception {
         Field<String> field = Fields.createTextFieldBuilder()
-            .addValidator(EmailValidator.INSTANCE)
+            .addValidator(new EmailValidator())
             .build();
         expected.expect(ValidationFailedException.class);
         valueValidator.validate(field, "invalid-email");
@@ -72,7 +72,7 @@ public class ValueValidatorTest {
     @Test
     public void emailTextField_WithValidValue() throws Exception {
         Field<String> field = Fields.createTextFieldBuilder()
-            .addValidator(EmailValidator.INSTANCE)
+            .addValidator(new EmailValidator())
             .build();
         valueValidator.validate(field, "testuser@domain.org");
     }
