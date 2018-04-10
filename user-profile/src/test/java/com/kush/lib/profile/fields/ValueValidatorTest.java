@@ -12,6 +12,7 @@ import com.kush.lib.profile.fields.validators.standard.EmailValidator;
 import com.kush.lib.profile.fields.validators.standard.MaximumLengthValidator;
 import com.kush.lib.profile.fields.validators.standard.MaximumValueValidator;
 import com.kush.lib.profile.fields.validators.standard.MinimumLengthValidator;
+import com.kush.lib.profile.fields.validators.standard.RangeValidator;
 
 public class ValueValidatorTest {
 

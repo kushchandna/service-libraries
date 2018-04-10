@@ -1,4 +1,4 @@
-package com.kush.lib.profile.fields;
+package com.kush.lib.profile.fields.validators.standard;
 
 import com.kush.lib.profile.fields.validators.ValidationFailedException;
 import com.kush.lib.profile.fields.validators.Validator;
