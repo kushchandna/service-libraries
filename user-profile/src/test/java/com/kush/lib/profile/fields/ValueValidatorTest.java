@@ -1,5 +1,8 @@
 package com.kush.lib.profile.fields;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,59 +22,59 @@ public class ValueValidatorTest {
 
     @Test
     public void freeTextFieldBuilder() throws Exception {
-        Field<String> textField = Fields.createTextFieldBuilder().build();
-        valueValidator.validate(textField, "This is a text field with no bounds");
+        Field<String> field = Fields.createTextFieldBuilder().build();
+        valueValidator.validate(field, "This is a text field with no bounds");
     }
 
     @Test
     public void freeTextWithUpperBoundFieldBuilder_WithValidValue() throws Exception {
-        Field<String> textField = Fields.createTextFieldBuilder()
+        Field<String> field = Fields.createTextFieldBuilder()
             .addValidator(new MaximumLengthValidator(10))
             .build();
-        valueValidator.validate(textField, "ten");
+        valueValidator.validate(field, "ten");
     }
 
     @Test
     public void freeTextWithUpperBoundFieldBuilder_WithInvalidValue() throws Exception {
-        Field<String> textField = Fields.createTextFieldBuilder()
+        Field<String> field = Fields.createTextFieldBuilder()
             .addValidator(new MaximumLengthValidator(10))
             .build();
         expected.expect(ValidationFailedException.class);
-        valueValidator.validate(textField, "Long value will be rejected here");
+        valueValidator.validate(field, "Long value will be rejected here");
     }
 
     @Test
     public void freeTextWithLowerBoundField_WithValidValue() throws Exception {
-        Field<String> textField = Fields.createTextFieldBuilder()
+        Field<String> field = Fields.createTextFieldBuilder()
             .addValidator(new MinimumLengthValidator(10))
             .build();
-        valueValidator.validate(textField, "Long value will be accepted here");
+        valueValidator.validate(field, "Long value will be accepted here");
     }
 
     @Test
     public void freeTextWithLowerBoundField_WithInvalidValue() throws Exception {
-        Field<String> textField = Fields.createTextFieldBuilder()
+        Field<String> field = Fields.createTextFieldBuilder()
             .addValidator(new MinimumLengthValidator(10))
             .build();
         expected.expect(ValidationFailedException.class);
-        valueValidator.validate(textField, "ten");
+        valueValidator.validate(field, "ten");
     }
 
     @Test
     public void emailTextField_WithInvalidValue() throws Exception {
-        Field<String> textField = Fields.createTextFieldBuilder()
+        Field<String> field = Fields.createTextFieldBuilder()
             .addValidator(EmailValidator.INSTANCE)
             .build();
         expected.expect(ValidationFailedException.class);
-        valueValidator.validate(textField, "invalid-email");
+        valueValidator.validate(field, "invalid-email");
     }
 
     @Test
     public void emailTextField_WithValidValue() throws Exception {
-        Field<String> textField = Fields.createTextFieldBuilder()
+        Field<String> field = Fields.createTextFieldBuilder()
             .addValidator(EmailValidator.INSTANCE)
             .build();
-        valueValidator.validate(textField, "testuser@domain.org");
+        valueValidator.validate(field, "testuser@domain.org");
     }
 
     @Test
@@ -81,99 +84,82 @@ public class ValueValidatorTest {
 
     @Test
     public void integerFieldBuilder() throws Exception {
-        Field<Integer> intField = Fields.createIntegerFieldBuilder().build();
-        valueValidator.validate(intField, 100);
+        Field<Integer> field = Fields.createIntegerFieldBuilder().build();
+        valueValidator.validate(field, 100);
     }
 
     @Test
     public void integerFieldBuilder_WithMaxValidation_WithValidValue() throws Exception {
-        Field<Integer> intField = Fields.createIntegerFieldBuilder()
+        Field<Integer> field = Fields.createIntegerFieldBuilder()
             .addValidator(new MaximumValueValidator<>(150))
             .build();
-        valueValidator.validate(intField, 100);
+        valueValidator.validate(field, 100);
     }
 
     @Test
     public void integerFieldBuilder_WithMaxValidation_WithInvalidValue() throws Exception {
-        Field<Integer> intField = Fields.createIntegerFieldBuilder()
+        Field<Integer> field = Fields.createIntegerFieldBuilder()
             .addValidator(new MaximumValueValidator<>(10))
             .build();
         expected.expect(ValidationFailedException.class);
-        valueValidator.validate(intField, 100);
+        valueValidator.validate(field, 100);
     }
 
     @Test
     public void numericFieldBuilder() throws Exception {
-        Field<Double> numericField = Fields.createNumericFieldBuilder().build();
-        valueValidator.validate(numericField, 100.5);
+        Field<Double> field = Fields.createNumericFieldBuilder().build();
+        valueValidator.validate(field, 100.5);
     }
 
     @Test
     public void numericFieldBuilder_WithMaxValidation_WithValidValue() throws Exception {
-        Field<Double> numericField = Fields.createNumericFieldBuilder()
+        Field<Double> field = Fields.createNumericFieldBuilder()
             .addValidator(new MaximumValueValidator<>(150.0))
             .build();
-        valueValidator.validate(numericField, 100.5);
+        valueValidator.validate(field, 100.5);
     }
 
     @Test
     public void numericFieldBuilder_WithMaxValidation_WithInvalidValue() throws Exception {
-        Field<Double> numericField = Fields.createNumericFieldBuilder()
+        Field<Double> field = Fields.createNumericFieldBuilder()
             .addValidator(new MaximumValueValidator<>(10.5))
             .build();
         expected.expect(ValidationFailedException.class);
-        valueValidator.validate(numericField, 100.5);
+        valueValidator.validate(field, 100.5);
     }
 
     @Test
     public void numericRangeFieldBuilder_WithValidValue() throws Exception {
-        Field<Double> numericField = Fields.createNumericFieldBuilder()
+        Field<Double> field = Fields.createNumericFieldBuilder()
             .addValidator(new RangeValidator<>(10.5, 150.5))
             .build();
-        valueValidator.validate(numericField, 100.5);
+        valueValidator.validate(field, 100.5);
     }
 
     @Test
     public void numericRangeFieldBuilder_WithInvalidValue() throws Exception {
-        Field<Double> numericField = Fields.createNumericFieldBuilder()
+        Field<Double> field = Fields.createNumericFieldBuilder()
             .addValidator(new RangeValidator<>(10.5, 50.5))
             .build();
         expected.expect(ValidationFailedException.class);
-        valueValidator.validate(numericField, 100.5);
+        valueValidator.validate(field, 100.5);
     }
 
     @Test
     public void booleanFieldBuilder() throws Exception {
-        // opt for a feature
+        Field<Boolean> field = Fields.createBooleanFieldBuilder().build();
+        valueValidator.validate(field, true);
     }
 
     @Test
     public void dateFieldBuilder() throws Exception {
-        // birth date
+        Field<LocalDate> field = Fields.createDateFieldBuilder().build();
+        valueValidator.validate(field, LocalDate.now());
     }
 
     @Test
     public void dateTimeFieldBuilder() throws Exception {
-        // birth date time
-    }
-
-    @Test
-    public void yearFieldBuilder() throws Exception {
-        // birth year
-    }
-
-    @Test
-    public void fixedValuesFieldBuilder() throws Exception {
-        // gender - MALE / FEMALE
-    }
-
-    @Test
-    public void fixedAndFreeValueFieldBuilder() throws Exception {
-        // gender - MALE / FEMALE / Others (text)
-    }
-
-    @Test
-    public void locationFieldBuilder() throws Exception {
-        // home address
+        Field<LocalDateTime> field = Fields.createDateTimeFieldBuilder().build();
+        valueValidator.validate(field, LocalDateTime.now());
     }
 }
