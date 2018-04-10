@@ -3,20 +3,21 @@ package com.kush.lib.profile.fields.validators.standard;
 import com.kush.lib.profile.fields.validators.ValidationFailedException;
 import com.kush.lib.profile.fields.validators.Validator;
 
-public class RangeValidator<N extends Number> implements Validator<N> {
+public class RangeValidator<T extends Comparable<? super T>> implements Validator<T> {
 
-    private final N minimum;
-    private final N maximum;
+    private final T minimum;
+    private final T maximum;
 
-    public RangeValidator(N minimum, N maximum) {
+    public RangeValidator(T minimum, T maximum) {
         this.minimum = minimum;
         this.maximum = maximum;
     }
 
     @Override
-    public void validate(N value) throws ValidationFailedException {
-        if (value.doubleValue() < minimum.doubleValue() || value.doubleValue() > maximum.doubleValue()) {
-            throw new ValidationFailedException("Only values in range %s and %s are allowed", minimum, maximum);
+    public void validate(T value) throws ValidationFailedException {
+        if (value.compareTo(minimum) < 0 || value.compareTo(maximum) > 0) {
+            throw new ValidationFailedException("Given value [%s] is not in allowed range of [%s] and [%s]", value, minimum,
+                    maximum);
         }
     }
 }

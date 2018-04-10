@@ -3,18 +3,18 @@ package com.kush.lib.profile.fields.validators.standard;
 import com.kush.lib.profile.fields.validators.ValidationFailedException;
 import com.kush.lib.profile.fields.validators.Validator;
 
-public class MinimumValueValidator<N extends Number> implements Validator<N> {
+public class MinimumValueValidator<T extends Comparable<T>> implements Validator<T> {
 
-    private final N minimumValue;
+    private final T minimumValue;
 
-    public MinimumValueValidator(N minimumValue) {
+    public MinimumValueValidator(T minimumValue) {
         this.minimumValue = minimumValue;
     }
 
     @Override
-    public void validate(N value) throws ValidationFailedException {
-        if (value.doubleValue() < minimumValue.doubleValue()) {
-            throw new ValidationFailedException("Only values greater than %d are allowed", minimumValue);
+    public void validate(T value) throws ValidationFailedException {
+        if (value.compareTo(minimumValue) < 0) {
+            throw new ValidationFailedException("Given value [%s] is less than minimum allowed [%s]", value, minimumValue);
         }
     }
 }

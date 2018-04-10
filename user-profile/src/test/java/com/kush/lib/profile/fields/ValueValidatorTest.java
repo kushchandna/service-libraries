@@ -2,6 +2,7 @@ package com.kush.lib.profile.fields;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -159,8 +160,44 @@ public class ValueValidatorTest {
     }
 
     @Test
+    public void dateFieldBuilder_WithPassingRangeValidation() throws Exception {
+        Field<LocalDate> field = Fields.createDateFieldBuilder()
+            .addValidator(new RangeValidator<>(LocalDate.of(2018, 1, 1), LocalDate.now()))
+            .build();
+        valueValidator.validate(field, LocalDate.now().minusDays(1));
+    }
+
+    @Test
+    public void dateFieldBuilder_WithFailingRangeValidation() throws Exception {
+        Field<LocalDate> field = Fields.createDateFieldBuilder()
+            .addValidator(new RangeValidator<>(LocalDate.of(2018, 1, 1), LocalDate.now()))
+            .build();
+        expected.expect(ValidationFailedException.class);
+        valueValidator.validate(field, LocalDate.now().plusDays(1));
+    }
+
+    @Test
     public void dateTimeFieldBuilder() throws Exception {
         Field<LocalDateTime> field = Fields.createDateTimeFieldBuilder().build();
         valueValidator.validate(field, LocalDateTime.now());
+    }
+
+    @Test
+    public void dateTimeFieldBuilder_WithPassingRangeValidation() throws Exception {
+        Field<LocalDateTime> field = Fields.createDateTimeFieldBuilder()
+            .addValidator(new RangeValidator<>(LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0)),
+                    LocalDateTime.of(LocalDate.now(), LocalTime.now())))
+            .build();
+        valueValidator.validate(field, LocalDateTime.now().minusHours(1));
+    }
+
+    @Test
+    public void dateTimeFieldBuilder_WithFailingRangeValidation() throws Exception {
+        Field<LocalDateTime> field = Fields.createDateTimeFieldBuilder()
+            .addValidator(new RangeValidator<>(LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0)),
+                    LocalDateTime.of(LocalDate.now(), LocalTime.now())))
+            .build();
+        expected.expect(ValidationFailedException.class);
+        valueValidator.validate(field, LocalDateTime.now().plusHours(1));
     }
 }

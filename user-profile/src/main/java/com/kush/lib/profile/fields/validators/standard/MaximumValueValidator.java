@@ -3,18 +3,18 @@ package com.kush.lib.profile.fields.validators.standard;
 import com.kush.lib.profile.fields.validators.ValidationFailedException;
 import com.kush.lib.profile.fields.validators.Validator;
 
-public class MaximumValueValidator<N extends Number> implements Validator<N> {
+public class MaximumValueValidator<T extends Comparable<T>> implements Validator<T> {
 
-    private final N maximumValue;
+    private final T maximumValue;
 
-    public MaximumValueValidator(N maximumValue) {
+    public MaximumValueValidator(T maximumValue) {
         this.maximumValue = maximumValue;
     }
 
     @Override
-    public void validate(N value) throws ValidationFailedException {
-        if (value.doubleValue() > maximumValue.doubleValue()) {
-            throw new ValidationFailedException("Only values less than %s are allowed", maximumValue);
+    public void validate(T value) throws ValidationFailedException {
+        if (value.compareTo(maximumValue) > 0) {
+            throw new ValidationFailedException("Given value [%s] exceeds maximum allowed [%s]", value, maximumValue);
         }
     }
 }
