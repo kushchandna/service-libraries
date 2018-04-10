@@ -17,60 +17,6 @@
 		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>com.kush</groupId>
-				<artifactId>serviceclient-maven-plugin</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
-				<dependencies>
-					<dependency>
-						<groupId>${project.groupId}</groupId>
-						<artifactId>${project.artifactId}</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-				</dependencies>
-				<configuration>
-					<services>
-						<service>com.kush.lib.location.services.PlaceService</service>
-					</services>
-					<additionalClasses>
-						<additionalClass>com.kush.lib.location.api.Location</additionalClass>
-					</additionalClasses>
-				</configuration>
-				<executions>
-					<execution>
-						<id>generate service clients</id>
-						<goals>
-							<goal>generate-service-clients</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>2.5.2</version>
-				<configuration>
-					<groupId>com.kush.lib.clients</groupId>
-					<artifactId>${project.name}-serviceclients</artifactId>
-					<version>${project.version}</version>
-					<packaging>jar</packaging>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>install</phase>
-						<goals>
-							<goal>install-file</goal>
-						</goals>
-						<configuration>
-							<file>${generated.service.client.jar.path}</file>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
 	<dependencies>
 		<dependency>
