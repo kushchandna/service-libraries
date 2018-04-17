@@ -7,6 +7,7 @@ import java.util.List;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.lib.service.server.BaseService;
+import com.kush.lib.service.server.authentication.AuthenticationRequired;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.destination.Destination;
 import com.kush.messaging.destination.DestinationUserIdFinder;
@@ -21,6 +22,7 @@ import com.kush.utils.signaling.SignalSpace;
 
 public class MessagingService extends BaseService {
 
+    @AuthenticationRequired
     public Message sendMessage(Content content, Destination destination) throws ServiceRequestFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         Metadata metadata = prepareMetadata(currentUserId);
@@ -35,6 +37,7 @@ public class MessagingService extends BaseService {
         }
     }
 
+    @AuthenticationRequired
     public List<Message> getRecentlyReceivedMessages(int count) throws ServiceRequestFailedException {
         Identifier userId = getCurrentUser().getId();
         MessagePersistor persistor = getInstance(MessagePersistor.class);
@@ -45,6 +48,7 @@ public class MessagingService extends BaseService {
         }
     }
 
+    @AuthenticationRequired
     public List<Message> getRecentlySentMessages(int count) throws ServiceRequestFailedException {
         Identifier userId = getCurrentUser().getId();
         MessagePersistor persistor = getInstance(MessagePersistor.class);
@@ -55,12 +59,14 @@ public class MessagingService extends BaseService {
         }
     }
 
+    @AuthenticationRequired
     public void registerMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
         SignalSpace signalSpace = getSignalSpace(currentUserId);
         signalSpace.register(MessageSignal.class, messageHandler);
     }
 
+    @AuthenticationRequired
     public void unregisterMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
         SignalSpaceProvider signalSpaceProvider = getInstance(SignalSpaceProvider.class);
