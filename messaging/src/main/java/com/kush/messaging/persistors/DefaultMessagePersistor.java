@@ -10,7 +10,6 @@ import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.metadata.Metadata;
-import com.kush.messaging.metadata.MetadataConstants;
 import com.kush.utils.id.Identifier;
 
 public class DefaultMessagePersistor extends DelegatingPersistor<Message> implements MessagePersistor {
@@ -66,6 +65,6 @@ public class DefaultMessagePersistor extends DelegatingPersistor<Message> implem
 
     private Identifier getSenderUserId(Message message) {
         Metadata metadata = message.getMetadata();
-        return metadata.getValue(MetadataConstants.KEY_SENDER, Identifier.class);
+        return metadata.getSender();
     }
 }

@@ -36,7 +36,6 @@ import com.kush.messaging.destination.DestinationUserIdFinder;
 import com.kush.messaging.destination.UserIdBasedDestination;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.metadata.Metadata;
-import com.kush.messaging.metadata.MetadataConstants;
 import com.kush.messaging.persistors.DefaultMessagePersistor;
 import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
@@ -215,9 +214,9 @@ public class MessagingServiceTest {
         assertThat(sentTextContent.getText(), is(equalTo(expectedContentText)));
 
         Metadata sentMetadata = message.getMetadata();
-        Identifier sentMsgSender = sentMetadata.getValue(MetadataConstants.KEY_SENDER, Identifier.class);
+        Identifier sentMsgSender = sentMetadata.getSender();
         assertThat(sentMsgSender, is(equalTo(sender.getId())));
-        LocalDateTime sentMsgSentTime = sentMetadata.getValue(MetadataConstants.KEY_SENT_TIME, LocalDateTime.class);
+        LocalDateTime sentMsgSentTime = sentMetadata.getSentTime();
         assertThat(sentMsgSentTime, is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
     }
 
