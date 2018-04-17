@@ -1,5 +1,6 @@
 package com.kush.messaging.content;
 
-public interface Content {
+import java.io.Serializable;
 
+public interface Content extends Serializable {
 }
