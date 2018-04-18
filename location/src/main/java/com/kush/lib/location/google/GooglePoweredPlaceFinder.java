@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.google.common.collect.ImmutableMap;
 import com.kush.lib.location.api.Place;
 import com.kush.lib.location.api.PlaceFinder;
-import com.kush.utils.commons.adapters.StringConvertor;
+import com.kush.utils.convertor.StringConvertor;
 import com.kush.utils.http.HttpClient;
 
 public class GooglePoweredPlaceFinder implements PlaceFinder {
