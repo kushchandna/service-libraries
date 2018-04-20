@@ -5,31 +5,31 @@ import java.time.LocalDateTime;
 
 public class Fields {
 
-    public static FieldBuilder<String> createTextFieldBuilder() {
-        return createFieldBuilder();
+    public static FieldBuilder<String> createTextFieldBuilder(String fieldName) {
+        return createFieldBuilder(fieldName);
     }
 
-    public static FieldBuilder<Integer> createIntegerFieldBuilder() {
-        return createFieldBuilder();
+    public static FieldBuilder<Integer> createIntegerFieldBuilder(String fieldName) {
+        return createFieldBuilder(fieldName);
     }
 
-    public static FieldBuilder<Double> createNumericFieldBuilder() {
-        return createFieldBuilder();
+    public static FieldBuilder<Double> createNumericFieldBuilder(String fieldName) {
+        return createFieldBuilder(fieldName);
     }
 
-    public static FieldBuilder<Boolean> createBooleanFieldBuilder() {
-        return createFieldBuilder();
+    public static FieldBuilder<Boolean> createBooleanFieldBuilder(String fieldName) {
+        return createFieldBuilder(fieldName);
     }
 
-    public static FieldBuilder<LocalDate> createDateFieldBuilder() {
-        return createFieldBuilder();
+    public static FieldBuilder<LocalDate> createDateFieldBuilder(String fieldName) {
+        return createFieldBuilder(fieldName);
     }
 
-    public static FieldBuilder<LocalDateTime> createDateTimeFieldBuilder() {
-        return createFieldBuilder();
+    public static FieldBuilder<LocalDateTime> createDateTimeFieldBuilder(String fieldName) {
+        return createFieldBuilder(fieldName);
     }
 
-    private static <T> FieldBuilder<T> createFieldBuilder() {
-        return new FieldBuilder<>();
+    private static <T> FieldBuilder<T> createFieldBuilder(String fieldName) {
+        return new FieldBuilder<>(fieldName);
     }
 }
