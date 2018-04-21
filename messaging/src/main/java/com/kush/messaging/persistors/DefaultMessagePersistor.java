@@ -1,10 +1,8 @@
 package com.kush.messaging.persistors;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.google.common.collect.Lists;
 import com.kush.lib.persistence.api.DelegatingPersistor;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
@@ -38,7 +36,6 @@ public class DefaultMessagePersistor extends DelegatingPersistor<Message> implem
     }
 
     private List<Message> filterAndLimit(Predicate<Message> filter, int count) throws PersistorOperationFailedException {
-        Iterator<Message> messages = fetch(filter, RecentFirst.INSTANCE, count);
-        return Lists.newArrayList(messages);
+        return fetch(filter, RecentFirst.INSTANCE, count);
     }
 }

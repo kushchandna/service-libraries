@@ -26,8 +26,8 @@ public class DefaultProfilePersistor extends DelegatingPersistor<Profile> implem
 
     @Override
     public Profile getProfile(Identifier owner) throws PersistorOperationFailedException {
-        Iterator<Profile> filteredProfiles = fetch(p -> p.getOwner().equals(owner));
-        return filteredProfiles.hasNext() ? filteredProfiles.next() : null;
+        List<Profile> filteredProfiles = fetch(p -> p.getOwner().equals(owner));
+        return filteredProfiles.isEmpty() ? null : filteredProfiles.get(0);
     }
 
     @Override
@@ -39,10 +39,9 @@ public class DefaultProfilePersistor extends DelegatingPersistor<Profile> implem
 
     @Override
     public Iterator<Profile> getMatchingProfiles(String fieldName, Object value) throws PersistorOperationFailedException {
-        Iterator<Profile> allProfiles = fetchAll();
+        List<Profile> allProfiles = fetchAll();
         List<Profile> matchingProfiles = new ArrayList<>();
-        while (allProfiles.hasNext()) {
-            Profile profile = allProfiles.next();
+        for (Profile profile : allProfiles) {
             Map<String, Object> fields = profile.getFields();
             Object savedValue = fields.get(fieldName);
             if (value.equals(savedValue)) {
