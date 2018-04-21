@@ -6,5 +6,9 @@ public interface Field {
 
     String getName();
 
+    String getDisplayName();
+
+    boolean isNoRepeatitionAllowed();
+
     Validator getValidator();
 }

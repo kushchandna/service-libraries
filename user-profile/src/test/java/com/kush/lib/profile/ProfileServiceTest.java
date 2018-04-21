@@ -7,7 +7,9 @@ import static org.junit.Assert.assertThat;
 import java.util.Iterator;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
@@ -16,6 +18,7 @@ import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.fields.Field;
 import com.kush.lib.profile.fields.Fields;
 import com.kush.lib.profile.fields.ValueValidator;
+import com.kush.lib.profile.fields.validators.ValidationFailedException;
 import com.kush.lib.profile.fields.validators.standard.EmailValidator;
 import com.kush.lib.profile.persistors.ProfilePersistor;
 import com.kush.lib.profile.services.UserProfileService;
@@ -28,6 +31,9 @@ import com.kush.utils.id.Identifier;
 public class ProfileServiceTest extends BaseServiceTest {
 
     private static final String FIELD_EMAIL = "emailField";
+
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
     private UserProfileService profileService;
 
@@ -53,6 +59,21 @@ public class ProfileServiceTest extends BaseServiceTest {
         });
     }
 
+    @Test
+    public void addRepeatedValueWhenNotAllowed() throws Exception {
+        User user1 = getUser(0);
+        runAuthenticatedOperation(user1, () -> {
+            profileService.updateProfileField(FIELD_EMAIL, "testuser@domain.com");
+        });
+
+        User user2 = getUser(1);
+        runAuthenticatedOperation(user2, () -> {
+            expected.expect(ValidationFailedException.class);
+            expected.expectMessage("User with Email Id 'testuser@domain.com' already exists.");
+            profileService.updateProfileField(FIELD_EMAIL, "testuser@domain.com");
+        });
+    }
+
     private void setupProfilePersistor() {
         Persistor<Profile> delegate = InMemoryPersistor.forType(Profile.class);
         addToContext(ProfilePersistor.class, new DefaultProfilePersistor(delegate));
@@ -66,6 +87,8 @@ public class ProfileServiceTest extends BaseServiceTest {
     private ProfileTemplate createProfileTemplate() {
         Field emailField = Fields.createTextFieldBuilder(FIELD_EMAIL)
             .addValidator(new EmailValidator())
+            .withDisplayName("Email Id")
+            .withNoRepeatitionAllowed()
             .build();
         return ProfileTemplateBuilder.create()
             .withField(emailField)
