@@ -13,7 +13,11 @@ public class ProfileTemplate {
         this.fields.putAll(fields);
     }
 
-    public Field getField(String fieldName) {
-        return fields.get(fieldName);
+    public Field getField(String fieldName) throws NoSuchFieldException {
+        Field field = fields.get(fieldName);
+        if (field == null) {
+            throw new NoSuchFieldException(fieldName);
+        }
+        return field;
     }
 }

@@ -17,7 +17,7 @@ import com.kush.utils.id.Identifier;
 public class UserProfileService extends BaseService {
 
     public void updateProfileField(String fieldName, Object value)
-            throws ValidationFailedException, PersistorOperationFailedException {
+            throws ValidationFailedException, PersistorOperationFailedException, NoSuchFieldException {
         Identifier currentUserId = getCurrentUser().getId();
         ProfileTemplate template = getInstance(ProfileTemplate.class);
         ValueValidator valueValidator = getInstance(ValueValidator.class);
