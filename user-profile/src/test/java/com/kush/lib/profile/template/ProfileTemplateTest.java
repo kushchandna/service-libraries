@@ -13,8 +13,8 @@ public class ProfileTemplateTest {
         Field<String> emailField = Fields.createTextFieldBuilder("emailField")
             .addValidator(new EmailValidator())
             .build();
-        emailField.toString();
         ProfileTemplate profileTemplate = ProfileTemplateBuilder.create()
+            .withField(emailField)
             .build();
         profileTemplate.toString();
     }
