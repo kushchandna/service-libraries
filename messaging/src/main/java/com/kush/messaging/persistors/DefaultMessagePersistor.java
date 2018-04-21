@@ -2,6 +2,7 @@ package com.kush.messaging.persistors;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import com.google.common.collect.Lists;
 import com.kush.lib.persistence.api.DelegatingPersistor;
@@ -28,13 +29,16 @@ public class DefaultMessagePersistor extends DelegatingPersistor<Message> implem
 
     @Override
     public List<Message> fetchRecentlyReceivedMessages(Identifier userId, int count) throws PersistorOperationFailedException {
-        Iterator<Message> messages = fetch(m -> m.getReceiver().equals(userId), RecentFirst.INSTANCE, count);
-        return Lists.newArrayList(messages);
+        return filterAndLimit(m -> m.getReceiver().equals(userId), count);
     }
 
     @Override
     public List<Message> fetchRecentlySentMessages(Identifier userId, int count) throws PersistorOperationFailedException {
-        Iterator<Message> messages = fetch(m -> m.getMetadata().getSender().equals(userId), RecentFirst.INSTANCE, count);
+        return filterAndLimit(m -> m.getMetadata().getSender().equals(userId), count);
+    }
+
+    private List<Message> filterAndLimit(Predicate<Message> filter, int count) throws PersistorOperationFailedException {
+        Iterator<Message> messages = fetch(filter, RecentFirst.INSTANCE, count);
         return Lists.newArrayList(messages);
     }
 }
