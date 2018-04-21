@@ -1,6 +1,6 @@
 package com.kush.lib.profile.fields.validators;
 
-public interface Validator<T> {
+public interface Validator {
 
-    void validate(T value) throws ValidationFailedException;
+    void validate(Object value) throws ValidationFailedException;
 }

@@ -2,9 +2,9 @@ package com.kush.lib.profile.fields;
 
 import com.kush.lib.profile.fields.validators.Validator;
 
-public class FieldBuilder<T> {
+public class FieldBuilder {
 
-    private final ComboValidator<T> comboValidator = new ComboValidator<>();
+    private final ComboValidator comboValidator = new ComboValidator();
 
     private final String name;
 
@@ -12,13 +12,13 @@ public class FieldBuilder<T> {
         this.name = name;
     }
 
-    public FieldBuilder<T> addValidator(Validator<T> validator) {
+    public FieldBuilder addValidator(Validator validator) {
         comboValidator.addValidator(validator);
         return this;
     }
 
-    public Field<T> build() {
-        return new Field<T>() {
+    public Field build() {
+        return new Field() {
 
             @Override
             public String getName() {
@@ -26,7 +26,7 @@ public class FieldBuilder<T> {
             }
 
             @Override
-            public Validator<T> getValidator() {
+            public Validator getValidator() {
                 return comboValidator;
             }
         };

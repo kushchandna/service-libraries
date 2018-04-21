@@ -5,8 +5,8 @@ import com.kush.lib.profile.fields.validators.Validator;
 
 public class ValueValidator {
 
-    public <T> void validate(Field<T> field, T value) throws ValidationFailedException {
-        Validator<T> validator = field.getValidator();
+    public void validate(Field field, Object value) throws ValidationFailedException {
+        Validator validator = field.getValidator();
         if (validator != null) {
             validator.validate(value);
         }

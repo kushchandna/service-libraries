@@ -2,9 +2,9 @@ package com.kush.lib.profile.fields;
 
 import com.kush.lib.profile.fields.validators.Validator;
 
-public interface Field<T> {
+public interface Field {
 
     String getName();
 
-    Validator<T> getValidator();
+    Validator getValidator();
 }

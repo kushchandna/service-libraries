@@ -6,18 +6,18 @@ import java.util.List;
 import com.kush.lib.profile.fields.validators.ValidationFailedException;
 import com.kush.lib.profile.fields.validators.Validator;
 
-public class ComboValidator<T> implements Validator<T> {
+public class ComboValidator implements Validator {
 
-    private final List<Validator<T>> delegates = new ArrayList<>();
+    private final List<Validator> delegates = new ArrayList<>();
 
     @Override
-    public void validate(T value) throws ValidationFailedException {
-        for (Validator<T> validator : delegates) {
+    public void validate(Object value) throws ValidationFailedException {
+        for (Validator validator : delegates) {
             validator.validate(value);
         }
     }
 
-    void addValidator(Validator<T> validator) {
+    void addValidator(Validator validator) {
         delegates.add(validator);
     }
 }
