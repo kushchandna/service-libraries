@@ -1,5 +1,9 @@
 package com.kush.lib.profile.services;
 
+import static com.google.common.collect.Streams.stream;
+
+import java.util.Iterator;
+
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.fields.Field;
@@ -17,7 +21,7 @@ public class UserProfileService extends BaseService {
         Identifier currentUserId = getCurrentUser().getId();
         ProfileTemplate template = getInstance(ProfileTemplate.class);
         ValueValidator valueValidator = getInstance(ValueValidator.class);
-        ProfilePersistor profilePersistor = getInstance(ProfilePersistor.class);
+        ProfilePersistor profilePersistor = getProfilePersistor();
 
         Field field = template.getField(fieldName);
         valueValidator.validate(field, value);
@@ -31,7 +35,18 @@ public class UserProfileService extends BaseService {
 
     public Profile getProfile() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
-        ProfilePersistor profilePersistor = getInstance(ProfilePersistor.class);
+        ProfilePersistor profilePersistor = getProfilePersistor();
         return profilePersistor.getProfile(currentUserId);
+    }
+
+    public Iterator<Identifier> findMatchingUsers(String fieldName, Object value) throws PersistorOperationFailedException {
+        checkSessionActive();
+        ProfilePersistor profilePersistor = getProfilePersistor();
+        Iterator<Profile> profiles = profilePersistor.getMatchingProfiles(fieldName, value);
+        return stream(profiles).map(p -> p.getOwner()).iterator();
+    }
+
+    private ProfilePersistor getProfilePersistor() {
+        return getInstance(ProfilePersistor.class);
     }
 }
