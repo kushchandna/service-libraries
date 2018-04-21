@@ -25,11 +25,7 @@ public class UserProfileService extends BaseService {
 
         Field field = template.getField(fieldName);
         valueValidator.validate(field, value);
-
-        Profile profile = profilePersistor.getProfile(currentUserId);
-        if (profile == null) {
-            profile = profilePersistor.createProfile(currentUserId);
-        }
+        Profile profile = getOrCreateProfile(profilePersistor, currentUserId);
         profilePersistor.updateProfileField(profile.getId(), fieldName, value);
     }
 
@@ -44,6 +40,15 @@ public class UserProfileService extends BaseService {
         ProfilePersistor profilePersistor = getProfilePersistor();
         Iterator<Profile> profiles = profilePersistor.getMatchingProfiles(fieldName, value);
         return stream(profiles).map(p -> p.getOwner()).iterator();
+    }
+
+    private Profile getOrCreateProfile(ProfilePersistor profilePersistor, Identifier currentUserId)
+            throws PersistorOperationFailedException {
+        Profile profile = profilePersistor.getProfile(currentUserId);
+        if (profile == null) {
+            profile = profilePersistor.createProfile(currentUserId);
+        }
+        return profile;
     }
 
     private ProfilePersistor getProfilePersistor() {
