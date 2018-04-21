@@ -7,27 +7,22 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.lib.service.remoting.auth.User;
-import com.kush.lib.service.server.ContextBuilder;
-import com.kush.lib.service.server.TestApplicationEnvironment;
+import com.kush.lib.service.server.BaseServiceTest;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.content.TextContent;
 import com.kush.messaging.destination.DefaultDestinationUserIdFinder;
@@ -45,75 +40,57 @@ import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.DefaultSignalEmitterFactory;
 import com.kush.utils.signaling.SignalEmitterFactory;
 
-public class MessagingServiceTest {
-
-    private static final Instant CURRENT_TIME = Instant.now();
-    private static final ZoneId CURRENT_ZONE = ZoneId.systemDefault();
-    private static final Clock CLOCK = Clock.fixed(CURRENT_TIME, CURRENT_ZONE);
-
-    @Rule
-    public TestApplicationEnvironment testEnv = new TestApplicationEnvironment(5) {
-
-        private ExecutorService emitterExecutor;
-
-        @Override
-        protected void before() throws Throwable {
-            emitterExecutor = Executors.newSingleThreadExecutor();
-            super.before();
-        };
-
-        @Override
-        protected void after() {
-            super.after();
-            emitterExecutor.shutdown();
-        };
-
-        @Override
-        protected ContextBuilder createContextBuilder() {
-            Persistor<Message> delegate = InMemoryPersistor.forType(Message.class);
-            SignalEmitterFactory emitterFactory = new DefaultSignalEmitterFactory();
-            SignalSpaceProvider signalSpaceProvider = new SignalSpaceProvider(emitterExecutor, emitterFactory);
-            return ContextBuilder.create()
-                .withInstance(Clock.class, CLOCK)
-                .withInstance(DestinationUserIdFinder.class, new DefaultDestinationUserIdFinder())
-                .withInstance(MessagePersistor.class, new DefaultMessagePersistor(delegate))
-                .withInstance(SignalSpaceProvider.class, signalSpaceProvider);
-        };
-    };
+public class MessagingServiceTest extends BaseServiceTest {
 
     private MessagingService messagingService;
 
+    private ExecutorService emitterExecutor;
+
     @Before
     public void beforeEachTest() throws Exception {
-        MockitoAnnotations.initMocks(this);
         messagingService = new MessagingService();
-        testEnv.registerService(messagingService);
+        registerService(messagingService);
+
+        Persistor<Message> delegate = InMemoryPersistor.forType(Message.class);
+        addToContext(MessagePersistor.class, new DefaultMessagePersistor(delegate));
+
+        emitterExecutor = Executors.newSingleThreadExecutor();
+        SignalEmitterFactory emitterFactory = new DefaultSignalEmitterFactory();
+        SignalSpaceProvider signalSpaceProvider = new SignalSpaceProvider(emitterExecutor, emitterFactory);
+        addToContext(SignalSpaceProvider.class, signalSpaceProvider);
+
+        addToContext(DestinationUserIdFinder.class, new DefaultDestinationUserIdFinder());
+    }
+
+    @After
+    public void afterEachTest() throws Exception {
+        emitterExecutor.shutdown();
     }
 
     @Test
     public void sendMessage() throws Exception {
-        User[] users = testEnv.getUsers();
+        User[] users = getUsers();
         User user1 = users[0];
         User user2 = users[1];
 
         String testMessage = "Test Message";
 
-        testEnv.runAuthenticatedOperation(user1, () -> {
+        runAuthenticatedOperation(user1, () -> {
             sendTextMessage(user2, testMessage);
         });
 
-        testEnv.runAuthenticatedOperation(user2, () -> {
+        runAuthenticatedOperation(user2, () -> {
             validateMessageReceived(user1, testMessage);
         });
 
-        testEnv.runAuthenticatedOperation(user1, () -> {
+        runAuthenticatedOperation(user1, () -> {
             validateMessageSent(user1, testMessage);
         });
     }
 
     @Test
     public void pushNotification() throws Exception {
-        User[] users = testEnv.getUsers();
+        User[] users = getUsers();
         User user1 = users[0];
         User user2 = users[1];
         User user3 = users[2];
@@ -126,30 +103,30 @@ public class MessagingServiceTest {
         TestMessageHandler messageHandlerUser1 = new TestMessageHandler();
         TestMessageHandler messageHandlerUser2 = new TestMessageHandler();
 
-        testEnv.runAuthenticatedOperation(user1, () -> {
+        runAuthenticatedOperation(user1, () -> {
             messagingService.registerMessageHandler(messageHandlerUser1);
             messageHandlerUser1.setRegistered(true);
         });
 
-        testEnv.runAuthenticatedOperation(user2, () -> {
+        runAuthenticatedOperation(user2, () -> {
             messagingService.registerMessageHandler(messageHandlerUser2);
             messageHandlerUser2.setRegistered(true);
         });
 
         CountDownLatch latchUser1 = messageHandlerUser1.resetLatch();
         CountDownLatch latchUser2 = messageHandlerUser2.resetLatch();
-        testEnv.runAuthenticatedOperation(user3, () -> {
+        runAuthenticatedOperation(user3, () -> {
             sendTextMessage(user1, testMessage1);
             messageHandlerUser1.setExpectedMessage(testMessage1, user3);
             sendTextMessage(user2, testMessage2);
             messageHandlerUser2.setExpectedMessage(testMessage2, user3);
         });
 
-        testEnv.runAuthenticatedOperation(user1, () -> {
+        runAuthenticatedOperation(user1, () -> {
             validateMessageReceived(user3, testMessage1);
         });
 
-        testEnv.runAuthenticatedOperation(user2, () -> {
+        runAuthenticatedOperation(user2, () -> {
             validateMessageReceived(user3, testMessage2);
         });
 
@@ -163,23 +140,23 @@ public class MessagingServiceTest {
             fail("Message handler for user 2 didn't got any call");
         }
 
-        testEnv.runAuthenticatedOperation(user1, () -> {
+        runAuthenticatedOperation(user1, () -> {
             messagingService.unregisterMessageHandler(messageHandlerUser1);
             messageHandlerUser1.setRegistered(false);
         });
 
         latchUser2 = messageHandlerUser2.resetLatch();
-        testEnv.runAuthenticatedOperation(user3, () -> {
+        runAuthenticatedOperation(user3, () -> {
             sendTextMessage(user1, testMessage3);
             sendTextMessage(user2, testMessage4);
             messageHandlerUser2.setExpectedMessage(testMessage4, user3);
         });
 
-        testEnv.runAuthenticatedOperation(user1, () -> {
+        runAuthenticatedOperation(user1, () -> {
             validateMessageReceived(user3, testMessage1, testMessage3);
         });
 
-        testEnv.runAuthenticatedOperation(user2, () -> {
+        runAuthenticatedOperation(user2, () -> {
             validateMessageReceived(user3, testMessage2, testMessage4);
         });
 
