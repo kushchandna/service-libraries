@@ -20,7 +20,6 @@ import org.junit.Test;
 
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
-import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.server.BaseServiceTest;
 import com.kush.messaging.content.Content;
@@ -35,20 +34,20 @@ import com.kush.messaging.persistors.DefaultMessagePersistor;
 import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.messaging.push.SignalSpaceProvider;
-import com.kush.messaging.services.MessagingService;
+import com.kush.messaging.services.UserMessagingService;
 import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.DefaultSignalEmitterFactory;
 import com.kush.utils.signaling.SignalEmitterFactory;
 
-public class MessagingServiceTest extends BaseServiceTest {
+public class UserMessagingServiceTest extends BaseServiceTest {
 
-    private MessagingService messagingService;
+    private UserMessagingService messagingService;
 
     private ExecutorService emitterExecutor;
 
     @Before
     public void beforeEachTest() throws Exception {
-        messagingService = new MessagingService();
+        messagingService = new UserMessagingService();
         registerService(messagingService);
 
         Persistor<Message> delegate = InMemoryPersistor.forType(Message.class);
@@ -166,7 +165,7 @@ public class MessagingServiceTest extends BaseServiceTest {
         }
     }
 
-    private void validateMessageSent(User sender, String... expectedContentTexts) throws ServiceRequestFailedException {
+    private void validateMessageSent(User sender, String... expectedContentTexts) throws Exception {
         List<Message> recentlySentMessages = messagingService.getRecentlySentMessages(5);
         assertThat(recentlySentMessages, hasSize(expectedContentTexts.length));
         for (int i = 0; i < expectedContentTexts.length; i++) {
@@ -175,7 +174,7 @@ public class MessagingServiceTest extends BaseServiceTest {
         }
     }
 
-    private void validateMessageReceived(User sender, String... expectedContentTexts) throws ServiceRequestFailedException {
+    private void validateMessageReceived(User sender, String... expectedContentTexts) throws Exception {
         List<Message> recentlyReceivedMessages = messagingService.getRecentlyReceivedMessages(5);
         assertThat(recentlyReceivedMessages, hasSize(expectedContentTexts.length));
         for (int i = 0; i < expectedContentTexts.length; i++) {
@@ -197,7 +196,7 @@ public class MessagingServiceTest extends BaseServiceTest {
         assertThat(sentMsgSentTime, is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
     }
 
-    private void sendTextMessage(User user, String text) throws ServiceRequestFailedException {
+    private void sendTextMessage(User user, String text) throws Exception {
         Content content = new TextContent(text);
         Destination destination = new UserIdBasedDestination(user.getId());
         messagingService.sendMessage(content, destination);

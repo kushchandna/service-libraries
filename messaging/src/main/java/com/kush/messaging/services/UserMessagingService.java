@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
-import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.lib.service.server.BaseService;
 import com.kush.lib.service.server.authentication.AuthenticationRequired;
 import com.kush.messaging.content.Content;
@@ -20,43 +19,31 @@ import com.kush.messaging.push.SignalSpaceProvider;
 import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.SignalSpace;
 
-public class MessagingService extends BaseService {
+public class UserMessagingService extends BaseService {
 
     @AuthenticationRequired
-    public Message sendMessage(Content content, Destination destination) throws ServiceRequestFailedException {
+    public Message sendMessage(Content content, Destination destination) throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         Metadata metadata = prepareMetadata(currentUserId);
         Identifier destinationUserId = findDestinationUserId(destination);
         MessagePersistor persistor = getInstance(MessagePersistor.class);
-        try {
-            Message sentMessage = persistor.addMessage(destinationUserId, content, metadata);
-            sendMessageSignal(destinationUserId, sentMessage);
-            return sentMessage;
-        } catch (PersistorOperationFailedException e) {
-            throw new ServiceRequestFailedException(e);
-        }
+        Message sentMessage = persistor.addMessage(destinationUserId, content, metadata);
+        sendMessageSignal(destinationUserId, sentMessage);
+        return sentMessage;
     }
 
     @AuthenticationRequired
-    public List<Message> getRecentlyReceivedMessages(int count) throws ServiceRequestFailedException {
+    public List<Message> getRecentlyReceivedMessages(int count) throws PersistorOperationFailedException {
         Identifier userId = getCurrentUser().getId();
         MessagePersistor persistor = getInstance(MessagePersistor.class);
-        try {
-            return persistor.fetchRecentlyReceivedMessages(userId, count);
-        } catch (PersistorOperationFailedException e) {
-            throw new ServiceRequestFailedException(e);
-        }
+        return persistor.fetchRecentlyReceivedMessages(userId, count);
     }
 
     @AuthenticationRequired
-    public List<Message> getRecentlySentMessages(int count) throws ServiceRequestFailedException {
+    public List<Message> getRecentlySentMessages(int count) throws PersistorOperationFailedException {
         Identifier userId = getCurrentUser().getId();
         MessagePersistor persistor = getInstance(MessagePersistor.class);
-        try {
-            return persistor.fetchRecentlySentMessages(userId, count);
-        } catch (PersistorOperationFailedException e) {
-            throw new ServiceRequestFailedException(e);
-        }
+        return persistor.fetchRecentlySentMessages(userId, count);
     }
 
     @AuthenticationRequired
