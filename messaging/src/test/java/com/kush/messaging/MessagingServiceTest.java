@@ -130,14 +130,14 @@ public class MessagingServiceTest extends BaseServiceTest {
             validateMessageReceived(user3, testMessage2);
         });
 
-        boolean messageHandledUser1 = latchUser1.await(1, TimeUnit.SECONDS);
+        boolean messageHandledUser1 = latchUser1.await(100, TimeUnit.MILLISECONDS);
         if (!messageHandledUser1) {
-            fail("Message handler for user 1 didn't got any call");
+            fail("Message handler for user 1 didn't get any call");
         }
 
-        boolean messageHandledUser2 = latchUser2.await(1, TimeUnit.SECONDS);
+        boolean messageHandledUser2 = latchUser1.await(100, TimeUnit.MILLISECONDS);
         if (!messageHandledUser2) {
-            fail("Message handler for user 2 didn't got any call");
+            fail("Message handler for user 2 didn't get any call");
         }
 
         runAuthenticatedOperation(user1, () -> {
@@ -160,7 +160,7 @@ public class MessagingServiceTest extends BaseServiceTest {
             validateMessageReceived(user3, testMessage2, testMessage4);
         });
 
-        messageHandledUser2 = latchUser2.await(1, TimeUnit.SECONDS);
+        messageHandledUser2 = latchUser2.await(100, TimeUnit.MILLISECONDS);
         if (!messageHandledUser2) {
             fail("Message handler for user 2 didn't got second call");
         }
