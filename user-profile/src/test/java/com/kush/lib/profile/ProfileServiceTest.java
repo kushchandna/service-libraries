@@ -30,7 +30,8 @@ import com.kush.utils.id.Identifier;
 
 public class ProfileServiceTest extends BaseServiceTest {
 
-    private static final String FIELD_EMAIL = "emailField";
+    private static final String FIELD_EMAIL = "emailId";
+    private static final String FIELD_NAME = "fullName";
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -56,6 +57,27 @@ public class ProfileServiceTest extends BaseServiceTest {
         runAuthenticatedOperation(user2, () -> {
             Iterator<Identifier> users = profileService.findMatchingUsers(FIELD_EMAIL, "testuser@domain.com");
             assertThat(users.next(), is(equalTo(user1.getId())));
+        });
+    }
+
+    @Test
+    public void addRepeatedValueWhenAllowed() throws Exception {
+        User user1 = getUser(0);
+        runAuthenticatedOperation(user1, () -> {
+            profileService.updateProfileField(FIELD_NAME, "Test User");
+        });
+
+        User user2 = getUser(1);
+        runAuthenticatedOperation(user2, () -> {
+            profileService.updateProfileField(FIELD_NAME, "Test User");
+        });
+
+        User user3 = getUser(2);
+        runAuthenticatedOperation(user3, () -> {
+            Iterator<Identifier> matchingUsers = profileService.findMatchingUsers(FIELD_NAME, "Test User");
+            assertThat(matchingUsers.next(), is(equalTo(user1.getId())));
+            assertThat(matchingUsers.next(), is(equalTo(user2.getId())));
+            assertThat(matchingUsers.hasNext(), is(equalTo(false)));
         });
     }
 
@@ -90,7 +112,11 @@ public class ProfileServiceTest extends BaseServiceTest {
             .withDisplayName("Email Id")
             .withNoRepeatitionAllowed()
             .build();
+        Field nameField = Fields.createTextFieldBuilder(FIELD_NAME)
+            .withDisplayName("Name")
+            .build();
         return ProfileTemplateBuilder.create()
+            .withField(nameField)
             .withField(emailField)
             .build();
     }
