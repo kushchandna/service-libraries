@@ -11,9 +11,9 @@ import com.kush.utils.id.Identifier;
 
 public interface MessagePersistor extends Persistor<Message> {
 
-    Message addMessage(Identifier destinationUserId, Content content, Metadata metadata) throws PersistorOperationFailedException;
+    Message addMessage(Content content, Metadata metadata) throws PersistorOperationFailedException;
 
-    List<Message> fetchRecentlyReceivedMessages(Identifier userId, int count) throws PersistorOperationFailedException;
+    List<Message> fetchIndividualMessages(Identifier userId) throws PersistorOperationFailedException;
 
-    List<Message> fetchRecentlySentMessages(Identifier userId, int count) throws PersistorOperationFailedException;
+    List<Message> fetchMessagesInGroup(Identifier groupId) throws PersistorOperationFailedException;
 }

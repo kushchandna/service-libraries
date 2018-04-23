@@ -19,4 +19,6 @@ public interface GroupPersistor extends Persistor<Group> {
             throws PersistorOperationFailedException;
 
     List<GroupMembership> getGroupMembers(Identifier groupId) throws PersistorOperationFailedException;
+
+    List<Group> getGroups(Identifier memberUserId) throws PersistorOperationFailedException;
 }

@@ -19,15 +19,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.kush.lib.group.entities.DefaultGroupPersistor;
+import com.kush.lib.group.entities.Group;
+import com.kush.lib.group.entities.GroupMembership;
+import com.kush.lib.group.persistors.GroupPersistor;
+import com.kush.lib.group.service.UserGroupService;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.server.BaseServiceTest;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.content.TextContent;
-import com.kush.messaging.destination.DefaultDestinationUserIdFinder;
 import com.kush.messaging.destination.Destination;
-import com.kush.messaging.destination.DestinationUserIdFinder;
 import com.kush.messaging.destination.UserIdBasedDestination;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.metadata.Metadata;
@@ -51,15 +54,20 @@ public class MessagingServiceTest extends BaseServiceTest {
         messagingService = new MessagingService();
         registerService(messagingService);
 
-        Persistor<Message> delegate = InMemoryPersistor.forType(Message.class);
-        addToContext(MessagePersistor.class, new DefaultMessagePersistor(delegate));
+        UserGroupService groupService = new UserGroupService();
+        registerService(groupService);
+
+        Persistor<Group> groupPersistor = InMemoryPersistor.forType(Group.class);
+        Persistor<GroupMembership> groupMembershipPersistor = InMemoryPersistor.forType(GroupMembership.class);
+        addToContext(GroupPersistor.class, new DefaultGroupPersistor(groupPersistor, groupMembershipPersistor));
+
+        Persistor<Message> messagePersistor = InMemoryPersistor.forType(Message.class);
+        addToContext(MessagePersistor.class, new DefaultMessagePersistor(messagePersistor));
 
         emitterExecutor = Executors.newSingleThreadExecutor();
         SignalEmitterFactory emitterFactory = new DefaultSignalEmitterFactory();
         SignalSpaceProvider signalSpaceProvider = new SignalSpaceProvider(emitterExecutor, emitterFactory);
         addToContext(SignalSpaceProvider.class, signalSpaceProvider);
-
-        addToContext(DestinationUserIdFinder.class, new DefaultDestinationUserIdFinder());
     }
 
     @After
@@ -173,20 +181,20 @@ public class MessagingServiceTest extends BaseServiceTest {
     }
 
     private void validateMessagesReceived(User sender, String... expectedContentTexts) throws Exception {
-        List<Message> allReceivedMessages = messagingService.getAllReceivedMessages();
+        List<Message> allReceivedMessages = messagingService.getAllMessages();
         assertThat(allReceivedMessages, hasSize(expectedContentTexts.length));
         for (int i = 0; i < expectedContentTexts.length; i++) {
-            Message sentMessage = allReceivedMessages.get(i);
-            validateMessageContentAndMetadata(sentMessage, sender, expectedContentTexts[i]);
+            Message message = allReceivedMessages.get(i);
+            validateMessageContentAndMetadata(message, sender, expectedContentTexts[i]);
         }
     }
 
     private void validateMessagesSent(User sender, String... expectedContentTexts) throws Exception {
-        List<Message> allSentMessages = messagingService.getAllSentMessages();
+        List<Message> allSentMessages = messagingService.getAllMessages();
         assertThat(allSentMessages, hasSize(expectedContentTexts.length));
         for (int i = 0; i < expectedContentTexts.length; i++) {
-            Message sentMessage = allSentMessages.get(i);
-            validateMessageContentAndMetadata(sentMessage, sender, expectedContentTexts[i]);
+            Message message = allSentMessages.get(i);
+            validateMessageContentAndMetadata(message, sender, expectedContentTexts[i]);
         }
     }
 

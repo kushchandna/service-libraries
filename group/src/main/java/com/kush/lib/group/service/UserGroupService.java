@@ -35,6 +35,12 @@ public class UserGroupService extends BaseService {
         return groupMembers;
     }
 
+    public List<Group> getGroups() throws PersistorOperationFailedException {
+        Identifier currentUserId = getCurrentUser().getId();
+        GroupPersistor groupPersistor = getGroupPersistor();
+        return groupPersistor.getGroups(currentUserId);
+    }
+
     private GroupPersistor getGroupPersistor() {
         return getInstance(GroupPersistor.class);
     }

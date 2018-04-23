@@ -1,6 +1,7 @@
 package com.kush.lib.group.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.kush.lib.group.persistors.GroupPersistor;
@@ -40,5 +41,16 @@ public class DefaultGroupPersistor extends DelegatingPersistor<Group> implements
     @Override
     public List<GroupMembership> getGroupMembers(Identifier groupId) throws PersistorOperationFailedException {
         return groupMembershipPersistor.fetch(m -> m.getGroupId().equals(groupId));
+    }
+
+    @Override
+    public List<Group> getGroups(Identifier memberUserId) throws PersistorOperationFailedException {
+        List<GroupMembership> selfMemberships = groupMembershipPersistor.fetch(gm -> gm.getMember().equals(memberUserId));
+        List<Group> groups = new ArrayList<>();
+        for (GroupMembership membership : selfMemberships) {
+            Group group = getGroup(membership.getGroupId());
+            groups.add(group);
+        }
+        return groups;
     }
 }

@@ -79,5 +79,10 @@
 			<scope>test</scope>
 			<classifier>tests</classifier>
 		</dependency>
+		<dependency>
+			<groupId>com.kush.lib</groupId>
+			<artifactId>group</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>
