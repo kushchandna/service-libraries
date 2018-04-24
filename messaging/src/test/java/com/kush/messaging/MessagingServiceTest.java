@@ -1,5 +1,6 @@
 package com.kush.messaging;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static com.kush.messaging.destination.Destination.DestinationType.GROUP;
 import static com.kush.messaging.destination.Destination.DestinationType.USER;
 import static java.util.Arrays.stream;
@@ -53,6 +54,7 @@ import com.kush.utils.signaling.SignalEmitterFactory;
 public class MessagingServiceTest extends BaseServiceTest {
 
     private MessagingService messagingService;
+    private UserGroupService groupService;
 
     private ExecutorService emitterExecutor;
 
@@ -61,7 +63,7 @@ public class MessagingServiceTest extends BaseServiceTest {
         messagingService = new MessagingService();
         registerService(messagingService);
 
-        UserGroupService groupService = new UserGroupService();
+        groupService = new UserGroupService();
         registerService(groupService);
 
         Persistor<Group> groupPersistor = InMemoryPersistor.forType(Group.class);
@@ -244,6 +246,32 @@ public class MessagingServiceTest extends BaseServiceTest {
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(1));
             validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage2, user4, user3);
+        });
+    }
+
+    @Test
+    public void sendMessageToGroupAndUsersTogether() throws Exception {
+        User sender = getUser(0);
+        User user1 = getUser(1);
+        User user2 = getUser(2);
+        User user3 = getUser(3);
+        User user4 = getUser(4);
+
+        String testMessage1 = "Test Message 1";
+
+        runAuthenticatedOperation(user1, () -> {
+            Group group = groupService.createGroup("Test Group");
+            groupService.addMembers(group.getId(), newHashSet(sender.getId(), user2.getId(), user3.getId()));
+        });
+
+        runAuthenticatedOperation(sender, () -> {
+            List<Group> groups = groupService.getGroups();
+            Group group = groups.get(0);
+            sendTextMessageToUsers(testMessage1, group, user4);
+
+            List<Message> allMessages = messagingService.getAllMessages();
+            assertThat(allMessages, hasSize(1));
+            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage1, user4, group);
         });
     }
 

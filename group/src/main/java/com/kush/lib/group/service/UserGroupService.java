@@ -3,6 +3,7 @@ package com.kush.lib.group.service;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
@@ -21,6 +22,19 @@ public class UserGroupService extends BaseService {
         Group group = groupPersistor.createGroup(groupName, currentUserId, currentDateTime);
         groupPersistor.addGroupMember(group.getId(), currentUserId, currentDateTime);
         return group;
+    }
+
+    public void addMembers(Identifier groupId, Set<Identifier> userIds) {
+        checkSessionActive();
+        LocalDateTime currentDateTime = getCurrentDateTime();
+        GroupPersistor groupPersistor = getGroupPersistor();
+        for (Identifier userId : userIds) {
+            try {
+                groupPersistor.addGroupMember(groupId, userId, currentDateTime);
+            } catch (PersistorOperationFailedException e) {
+                // notify partial failure
+            }
+        }
     }
 
     public List<GroupMembership> getGroupMembers(Identifier groupId)

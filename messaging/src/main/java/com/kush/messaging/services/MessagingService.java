@@ -3,6 +3,7 @@ package com.kush.messaging.services;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -42,14 +43,14 @@ public class MessagingService extends BaseService {
     public List<Message> getAllMessages() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         MessagePersistor persistor = getInstance(MessagePersistor.class);
-        List<Message> allMessages = new ArrayList<>();
+        Set<Message> allMessages = new LinkedHashSet<>();
         allMessages.addAll(persistor.fetchIndividualMessages(currentUserId));
         UserGroupService groupService = getInstance(UserGroupService.class);
         List<Group> groups = groupService.getGroups();
         for (Group group : groups) {
             allMessages.addAll(persistor.fetchMessagesInGroup(group.getId()));
         }
-        return allMessages;
+        return new ArrayList<>(allMessages);
     }
 
     public void registerMessageHandler(MessageHandler messageHandler) {
