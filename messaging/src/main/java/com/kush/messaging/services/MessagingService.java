@@ -52,32 +52,6 @@ public class MessagingService extends BaseService {
         return allMessages;
     }
 
-    public List<Message> getAllReceivedMessages() throws PersistorOperationFailedException {
-        Identifier currentUserId = getCurrentUser().getId();
-        MessagePersistor persistor = getInstance(MessagePersistor.class);
-        List<Message> allMessages = new ArrayList<>();
-        allMessages.addAll(persistor.fetchIndividualMessages(currentUserId));
-        UserGroupService groupService = getInstance(UserGroupService.class);
-        List<Group> groups = groupService.getGroups();
-        for (Group group : groups) {
-            allMessages.addAll(persistor.fetchMessagesInGroup(group.getId()));
-        }
-        return allMessages;
-    }
-
-    public List<Message> getAllSentMessages() throws PersistorOperationFailedException {
-        Identifier currentUserId = getCurrentUser().getId();
-        MessagePersistor persistor = getInstance(MessagePersistor.class);
-        List<Message> allMessages = new ArrayList<>();
-        allMessages.addAll(persistor.fetchIndividualMessages(currentUserId));
-        UserGroupService groupService = getInstance(UserGroupService.class);
-        List<Group> groups = groupService.getGroups();
-        for (Group group : groups) {
-            allMessages.addAll(persistor.fetchMessagesInGroup(group.getId()));
-        }
-        return allMessages;
-    }
-
     public void registerMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
         SignalSpace signalSpace = getSignalSpace(currentUserId);

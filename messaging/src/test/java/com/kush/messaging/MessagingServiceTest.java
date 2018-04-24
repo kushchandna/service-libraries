@@ -1,6 +1,8 @@
 package com.kush.messaging;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static com.kush.messaging.destination.Destination.DestinationType.GROUP;
+import static com.kush.messaging.destination.Destination.DestinationType.USER;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
@@ -9,7 +11,9 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,6 +43,7 @@ import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.messaging.push.SignalSpaceProvider;
 import com.kush.messaging.services.MessagingService;
+import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.DefaultSignalEmitterFactory;
 import com.kush.utils.signaling.SignalEmitterFactory;
@@ -84,15 +89,22 @@ public class MessagingServiceTest extends BaseServiceTest {
         String testMessage = "Test Message";
 
         runAuthenticatedOperation(user1, () -> {
-            sendTextMessageToUser(testMessage, user1);
+            sendTextMessageToUser(testMessage, user2);
         });
 
+
         runAuthenticatedOperation(user2, () -> {
-            validateMessagesReceived(user1, testMessage);
+            List<Message> allMessages = messagingService.getAllMessages();
+            assertThat(allMessages, hasSize(1));
+            Message message = allMessages.get(0);
+            validateMessageContentAndMetadata(message, user1, testMessage, user2);
         });
 
         runAuthenticatedOperation(user1, () -> {
-            validateMessagesSent(user1, testMessage);
+            List<Message> allMessages = messagingService.getAllMessages();
+            assertThat(allMessages, hasSize(1));
+            Message message = allMessages.get(0);
+            validateMessageContentAndMetadata(message, user1, testMessage, user2);
         });
     }
 
@@ -121,57 +133,112 @@ public class MessagingServiceTest extends BaseServiceTest {
             messageHandlerUser2.setRegistered(true);
         });
 
-        CountDownLatch latchUser1 = messageHandlerUser1.resetLatch();
-        CountDownLatch latchUser2 = messageHandlerUser2.resetLatch();
+        messageHandlerUser1.reset();
+        messageHandlerUser2.reset();
         runAuthenticatedOperation(user3, () -> {
             sendTextMessageToUser(testMessage1, user1);
-            messageHandlerUser1.setExpectedMessage(testMessage1, user3);
+            messageHandlerUser1.setExpectedMessage(testMessage1, user3, user1);
             sendTextMessageToUser(testMessage2, user2);
-            messageHandlerUser2.setExpectedMessage(testMessage2, user3);
+            messageHandlerUser2.setExpectedMessage(testMessage2, user3, user2);
+
+            List<Message> allMessages = messagingService.getAllMessages();
+            assertThat(allMessages, hasSize(2));
+            validateMessageContentAndMetadata(allMessages.get(0), user3, testMessage2, user2);
+            validateMessageContentAndMetadata(allMessages.get(1), user3, testMessage1, user1);
         });
 
         runAuthenticatedOperation(user1, () -> {
-            validateMessagesReceived(user3, testMessage1);
+            List<Message> allMessages = messagingService.getAllMessages();
+            assertThat(allMessages, hasSize(1));
+            validateMessageContentAndMetadata(allMessages.get(0), user3, testMessage1, user1);
         });
 
         runAuthenticatedOperation(user2, () -> {
-            validateMessagesReceived(user3, testMessage2);
+            List<Message> allMessages = messagingService.getAllMessages();
+            assertThat(allMessages, hasSize(1));
+            validateMessageContentAndMetadata(allMessages.get(0), user3, testMessage2, user2);
         });
 
-        boolean messageHandledUser1 = latchUser1.await(100, TimeUnit.MILLISECONDS);
-        if (!messageHandledUser1) {
-            fail("Message handler for user 1 didn't get any call");
-        }
-
-        boolean messageHandledUser2 = latchUser1.await(100, TimeUnit.MILLISECONDS);
-        if (!messageHandledUser2) {
-            fail("Message handler for user 2 didn't get any call");
-        }
+        messageHandlerUser1.waitUntilInvoked("Message handler for user 1 didn't got first call");
+        messageHandlerUser2.waitUntilInvoked("Message handler for user 2 didn't got first call");
 
         runAuthenticatedOperation(user1, () -> {
             messagingService.unregisterMessageHandler(messageHandlerUser1);
             messageHandlerUser1.setRegistered(false);
         });
 
-        latchUser2 = messageHandlerUser2.resetLatch();
+        messageHandlerUser2.reset();
         runAuthenticatedOperation(user3, () -> {
             sendTextMessageToUser(testMessage3, user1);
             sendTextMessageToUser(testMessage4, user2);
-            messageHandlerUser2.setExpectedMessage(testMessage4, user3);
+            messageHandlerUser2.setExpectedMessage(testMessage4, user3, user2);
+
+            List<Message> allMessages = messagingService.getAllMessages();
+            assertThat(allMessages, hasSize(4));
+            validateMessageContentAndMetadata(allMessages.get(0), user3, testMessage4, user2);
+            validateMessageContentAndMetadata(allMessages.get(1), user3, testMessage3, user1);
+            validateMessageContentAndMetadata(allMessages.get(2), user3, testMessage2, user2);
+            validateMessageContentAndMetadata(allMessages.get(3), user3, testMessage1, user1);
         });
 
         runAuthenticatedOperation(user1, () -> {
-            validateMessagesReceived(user3, testMessage1, testMessage3);
+            List<Message> allMessages = messagingService.getAllMessages();
+            assertThat(allMessages, hasSize(2));
+            validateMessageContentAndMetadata(allMessages.get(0), user3, testMessage3, user1);
+            validateMessageContentAndMetadata(allMessages.get(1), user3, testMessage1, user1);
         });
 
         runAuthenticatedOperation(user2, () -> {
-            validateMessagesReceived(user3, testMessage2, testMessage4);
+            List<Message> allMessages = messagingService.getAllMessages();
+            assertThat(allMessages, hasSize(2));
+            validateMessageContentAndMetadata(allMessages.get(0), user3, testMessage4, user2);
+            validateMessageContentAndMetadata(allMessages.get(1), user3, testMessage2, user2);
         });
 
-        messageHandledUser2 = latchUser2.await(100, TimeUnit.MILLISECONDS);
-        if (!messageHandledUser2) {
-            fail("Message handler for user 2 didn't got second call");
+        messageHandlerUser2.waitUntilInvoked("Message handler for user 2 didn't got second call");
+    }
+
+    private void validateMessageContentAndMetadata(Message message, User sender, String expectedTextContent,
+            Identifiable... receivers) {
+        validateMessageContent(message, expectedTextContent);
+        validateSenderRelatedInfo(message, sender);
+        validateReceiversRelatedInfo(message, receivers);
+    }
+
+    private void validateReceiversRelatedInfo(Message message, Identifiable... receivers) {
+        Metadata metadata = message.getMetadata();
+        Set<Destination> destinations = metadata.getDestinations();
+        assertThat(destinations, hasSize(receivers.length));
+        Iterator<Destination> destinationIterator = destinations.iterator();
+        for (int i = 0; i < destinations.size(); i++) {
+            Identifiable receiver = receivers[i];
+            Destination destination = destinationIterator.next();
+            validateDestination(receiver, destination);
         }
+    }
+
+    private void validateMessageContent(Message message, String expectedTextContent) {
+        Content sentContent = message.getContent();
+        assertThat(sentContent, is(instanceOf(TextContent.class)));
+        TextContent sentTextContent = (TextContent) sentContent;
+        assertThat(sentTextContent.getText(), is(equalTo(expectedTextContent)));
+    }
+
+    private void validateSenderRelatedInfo(Message message, User sender) {
+        Metadata metadata2 = message.getMetadata();
+        Identifier msgSender = metadata2.getSender();
+        assertThat(msgSender, is(equalTo(sender.getId())));
+        LocalDateTime msgSentTime = metadata2.getSentTime();
+        assertThat(msgSentTime, is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
+    }
+
+    private void validateDestination(Identifiable receiver, Destination destination) {
+        if (receiver instanceof User) {
+            assertThat(destination.getType(), is(equalTo(USER)));
+        } else if (receiver instanceof Group) {
+            assertThat(destination.getType(), is(equalTo(GROUP)));
+        }
+        assertThat(destination.getId(), is(equalTo(receiver.getId())));
     }
 
     private void sendTextMessageToUser(String text, User user) {
@@ -180,68 +247,56 @@ public class MessagingServiceTest extends BaseServiceTest {
         messagingService.sendMessage(content, newHashSet(destination));
     }
 
-    private void validateMessagesReceived(User sender, String... expectedContentTexts) throws Exception {
-        List<Message> allReceivedMessages = messagingService.getAllMessages();
-        assertThat(allReceivedMessages, hasSize(expectedContentTexts.length));
-        for (int i = 0; i < expectedContentTexts.length; i++) {
-            Message message = allReceivedMessages.get(i);
-            validateMessageContentAndMetadata(message, sender, expectedContentTexts[i]);
-        }
-    }
-
-    private void validateMessagesSent(User sender, String... expectedContentTexts) throws Exception {
-        List<Message> allSentMessages = messagingService.getAllMessages();
-        assertThat(allSentMessages, hasSize(expectedContentTexts.length));
-        for (int i = 0; i < expectedContentTexts.length; i++) {
-            Message message = allSentMessages.get(i);
-            validateMessageContentAndMetadata(message, sender, expectedContentTexts[i]);
-        }
-    }
-
-    private void validateMessageContentAndMetadata(Message message, User sender, String expectedContentText) {
-        Content sentContent = message.getContent();
-        assertThat(sentContent, is(instanceOf(TextContent.class)));
-        TextContent sentTextContent = (TextContent) sentContent;
-        assertThat(sentTextContent.getText(), is(equalTo(expectedContentText)));
-
-        Metadata sentMetadata = message.getMetadata();
-        Identifier sentMsgSender = sentMetadata.getSender();
-        assertThat(sentMsgSender, is(equalTo(sender.getId())));
-        LocalDateTime sentMsgSentTime = sentMetadata.getSentTime();
-        assertThat(sentMsgSentTime, is(equalTo(LocalDateTime.ofInstant(CURRENT_TIME, CURRENT_ZONE))));
-    }
-
     private final class TestMessageHandler implements MessageHandler {
 
         private CountDownLatch latch;
         private boolean registered = false;
         private String expectedMessage;
         private User expectedMessageSender;
+        private Identifiable[] expectedMessageReceivers;
+
+        private Throwable testFailure;
 
         @Override
         public void handleMessage(Message message) {
             System.out.println("Message received with content - " + message.getContent());
-            if (!registered) {
-                fail("Should not have received message after unregistration");
+            try {
+                if (!registered) {
+                    fail("Should not have received message after unregistration");
+                }
+                validateMessageContentAndMetadata(message, expectedMessageSender, expectedMessage, expectedMessageReceivers);
+            } catch (Throwable e) {
+                testFailure = e;
             }
-            validateMessageContentAndMetadata(message, expectedMessageSender, expectedMessage);
             if (latch.getCount() > 0) {
                 latch.countDown();
             }
         }
 
-        public CountDownLatch resetLatch() {
+        public void waitUntilInvoked(String errorIfNotInvoked) throws Exception {
+            boolean invoked = latch.await(1000, TimeUnit.MILLISECONDS);
+            if (!invoked) {
+                fail(errorIfNotInvoked);
+            }
+            if (testFailure != null) {
+                throw new AssertionError(testFailure);
+            }
+        }
+
+        public void reset() {
             latch = new CountDownLatch(1);
-            return latch;
+            testFailure = null;
         }
 
         public void setRegistered(boolean registered) {
             this.registered = registered;
         }
 
-        public void setExpectedMessage(String expectedMessage, User expectedMessageSender) {
+        public void setExpectedMessage(String expectedMessage, User expectedMessageSender,
+                Identifiable... expectedMessageReceivers) {
             this.expectedMessage = expectedMessage;
             this.expectedMessageSender = expectedMessageSender;
+            this.expectedMessageReceivers = expectedMessageReceivers;
         }
     }
 }

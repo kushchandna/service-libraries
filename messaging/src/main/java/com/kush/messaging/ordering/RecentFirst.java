@@ -16,6 +16,6 @@ public class RecentFirst implements Comparator<Message> {
     public int compare(Message o1, Message o2) {
         LocalDateTime sentTime1 = o1.getMetadata().getSentTime();
         LocalDateTime sentTime2 = o2.getMetadata().getSentTime();
-        return sentTime1.isBefore(sentTime2) ? -1 : 1;
+        return sentTime1.isAfter(sentTime2) ? 1 : -1;
     }
 }
