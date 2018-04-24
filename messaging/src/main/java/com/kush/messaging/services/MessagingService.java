@@ -25,16 +25,16 @@ import com.kush.utils.signaling.SignalSpace;
 
 public class MessagingService extends BaseService {
 
-    public void sendMessage(Content content, Set<Destination> destinations) {
+    public void sendMessage(Content content, Set<Destination> destinations) throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         Metadata metadata = prepareMetadata(currentUserId, destinations);
         MessagePersistor persistor = getInstance(MessagePersistor.class);
+        Message sentMessage = persistor.addMessage(content, metadata);
         for (Destination destination : destinations) {
             try {
-                Message sentMessage = persistor.addMessage(content, metadata);
                 sendMessageSignal(destination, sentMessage);
-            } catch (PersistorOperationFailedException | ServiceRequestFailedException e) {
-                // TODO notify sender
+            } catch (ServiceRequestFailedException e) {
+                // notify
             }
         }
     }
