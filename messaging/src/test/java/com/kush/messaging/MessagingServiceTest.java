@@ -4,7 +4,7 @@ import static com.google.common.collect.Sets.newHashSet;
 import static com.kush.messaging.destination.Destination.DestinationType.GROUP;
 import static com.kush.messaging.destination.Destination.DestinationType.USER;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
@@ -25,6 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Sets;
 import com.kush.lib.group.entities.DefaultGroupPersistor;
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
@@ -219,33 +220,33 @@ public class MessagingServiceTest extends BaseServiceTest {
 
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(2));
-            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage2, user4, user3);
-            validateMessageContentAndMetadata(allMessages.get(1), sender, testMessage1, user3, user2, user1);
+            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage2, user3, user4);
+            validateMessageContentAndMetadata(allMessages.get(1), sender, testMessage1, user1, user2, user3);
         });
 
         runAuthenticatedOperation(user1, () -> {
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(1));
-            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage1, user3, user2, user1);
+            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage1, user1, user2, user3);
         });
 
         runAuthenticatedOperation(user2, () -> {
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(1));
-            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage1, user3, user2, user1);
+            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage1, user1, user2, user3);
         });
 
         runAuthenticatedOperation(user3, () -> {
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(2));
-            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage2, user4, user3);
-            validateMessageContentAndMetadata(allMessages.get(1), sender, testMessage1, user3, user2, user1);
+            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage2, user3, user4);
+            validateMessageContentAndMetadata(allMessages.get(1), sender, testMessage1, user1, user2, user3);
         });
 
         runAuthenticatedOperation(user4, () -> {
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(1));
-            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage2, user4, user3);
+            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage2, user3, user4);
         });
     }
 
@@ -271,8 +272,53 @@ public class MessagingServiceTest extends BaseServiceTest {
 
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(1));
-            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage1, user4, group);
+            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage1, group, user4);
         });
+    }
+
+    @Test
+    public void pushNotificationToGroupMembers() throws Exception {
+        User sender = getUser(0);
+        User user1 = getUser(1);
+        User user2 = getUser(2);
+
+        String testMessage1 = "Test Message 1";
+
+        TestMessageHandler messageHandlerUser1 = new TestMessageHandler();
+        TestMessageHandler messageHandlerUser2 = new TestMessageHandler();
+
+        runAuthenticatedOperation(user1, () -> {
+            Group group = groupService.createGroup("Test Group");
+            groupService.addMembers(group.getId(), newHashSet(sender.getId(), user2.getId()));
+        });
+
+        runAuthenticatedOperation(user1, () -> {
+            messageHandlerUser1.setRegistered(true);
+            messagingService.registerMessageHandler(messageHandlerUser1);
+        });
+
+        runAuthenticatedOperation(user2, () -> {
+            messageHandlerUser2.setRegistered(true);
+            messagingService.registerMessageHandler(messageHandlerUser2);
+        });
+
+        messageHandlerUser1.reset();
+        messageHandlerUser2.reset();
+        runAuthenticatedOperation(sender, () -> {
+            List<Group> groups = groupService.getGroups();
+            Group group = groups.get(0);
+
+            messageHandlerUser1.setExpectedMessage(testMessage1, sender, group);
+            messageHandlerUser2.setExpectedMessage(testMessage1, sender, group);
+            sendTextMessageToUsers(testMessage1, group);
+
+            List<Message> allMessages = messagingService.getAllMessages();
+            assertThat(allMessages, hasSize(1));
+            validateMessageContentAndMetadata(allMessages.get(0), sender, testMessage1, group);
+        });
+
+        messageHandlerUser1.waitUntilInvoked("Message handler for user 1 didn't got call");
+        messageHandlerUser2.waitUntilInvoked("Message handler for user 2 didn't got call");
     }
 
     private void validateMessageContentAndMetadata(Message message, User sender, String expectedTextContent,
@@ -320,7 +366,7 @@ public class MessagingServiceTest extends BaseServiceTest {
 
     private void sendTextMessageToUsers(String text, Identifiable... receivers) throws Exception {
         Content content = new TextContent(text);
-        Set<Destination> destinations = stream(receivers).map(r -> asDestination(r)).collect(toSet());
+        Set<Destination> destinations = Sets.newLinkedHashSet(stream(receivers).map(r -> asDestination(r)).collect(toList()));
         messagingService.sendMessage(content, destinations);
     }
 

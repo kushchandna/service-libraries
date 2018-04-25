@@ -3,7 +3,7 @@ package com.kush.messaging.metadata;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.kush.messaging.destination.Destination;
@@ -20,7 +20,7 @@ public class Metadata implements Serializable {
     public Metadata(Identifier sender, LocalDateTime sentTime, Set<Destination> destinations) {
         this.sender = sender;
         this.sentTime = sentTime;
-        this.destinations = new HashSet<>(destinations);
+        this.destinations = new LinkedHashSet<>(destinations);
     }
 
     public Identifier getSender() {
