@@ -1,4 +1,4 @@
-package com.kush.messaging;
+package com.kush.messaging.services;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static com.kush.messaging.destination.Destination.DestinationType.GROUP;
