@@ -1,4 +1,4 @@
-package com.kush.lib.profile;
+package com.kush.lib.profile.services;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
