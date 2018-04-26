@@ -21,7 +21,6 @@ import com.kush.lib.profile.fields.ValueValidator;
 import com.kush.lib.profile.fields.validators.ValidationFailedException;
 import com.kush.lib.profile.fields.validators.standard.EmailValidator;
 import com.kush.lib.profile.persistors.ProfilePersistor;
-import com.kush.lib.profile.services.UserProfileService;
 import com.kush.lib.profile.template.ProfileTemplate;
 import com.kush.lib.profile.template.ProfileTemplateBuilder;
 import com.kush.lib.service.remoting.auth.User;
@@ -57,6 +56,15 @@ public class ProfileServiceTest extends BaseServiceTest {
         runAuthenticatedOperation(user2, () -> {
             Iterator<Identifier> users = profileService.findMatchingUsers(FIELD_EMAIL, "testuser@domain.com");
             assertThat(users.next(), is(equalTo(user1.getId())));
+        });
+    }
+
+    @Test
+    public void invalidEmailId() throws Exception {
+        runAuthenticatedOperation(() -> {
+            expected.expect(ValidationFailedException.class);
+            expected.expectMessage("'invalid_email_id' is not a valid Email Id");
+            profileService.updateProfileField(FIELD_EMAIL, "invalid_email_id");
         });
     }
 
