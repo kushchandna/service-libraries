@@ -25,7 +25,6 @@ public class UserProfileService extends BaseService {
 
         Field field = template.getField(fieldName);
         valueValidator.validate(field, value);
-        Profile profile = getOrCreateProfile(profilePersistor, currentUserId);
 
         if (field.isNoRepeatitionAllowed()) {
             Iterator<Identifier> matchingUsers = findMatchingUsers(fieldName, value);
@@ -33,6 +32,8 @@ public class UserProfileService extends BaseService {
                 throw new ValidationFailedException("User with %s '%s' already exists.", field.getDisplayName(), value);
             }
         }
+
+        Profile profile = getOrCreateProfile(profilePersistor, currentUserId);
         profilePersistor.updateProfileField(profile.getId(), fieldName, value);
     }
 
