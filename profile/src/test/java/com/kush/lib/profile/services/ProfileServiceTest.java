@@ -63,7 +63,9 @@ public class ProfileServiceTest extends BaseServiceTest {
     public void invalidEmailId() throws Exception {
         runAuthenticatedOperation(() -> {
             expected.expect(ValidationFailedException.class);
-            expected.expectMessage("'invalid_email_id' is not a valid Email Id");
+            expected.expectMessage(""
+                    + "Invalid value specified for field Email Id. "
+                    + "Reason: 'invalid_email_id' is not a valid email id");
             profileService.updateProfileField(FIELD_EMAIL, "invalid_email_id");
         });
     }

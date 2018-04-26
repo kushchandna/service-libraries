@@ -8,7 +8,12 @@ public class ValueValidator {
     public void validate(Field field, Object value) throws ValidationFailedException {
         Validator validator = field.getValidator();
         if (validator != null) {
-            validator.validate(value);
+            try {
+                validator.validate(value);
+            } catch (ValidationFailedException e) {
+                throw new ValidationFailedException("Invalid value specified for field %s. Reason: %s", field.getDisplayName(),
+                        e.getMessage());
+            }
         }
     }
 }
