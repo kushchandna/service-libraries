@@ -7,7 +7,7 @@ public abstract class BaseValidator<T> implements Validator {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void validate(Object value) throws ValidationFailedException {
+    public final void validate(Object value) throws ValidationFailedException {
         validateAdapted((T) value);
     }
 
