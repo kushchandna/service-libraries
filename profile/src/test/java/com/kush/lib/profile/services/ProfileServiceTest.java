@@ -106,10 +106,6 @@ public class ProfileServiceTest extends BaseServiceTest {
         });
     }
 
-    @Test
-    public void testName() throws Exception {
-    }
-
     private void setupProfilePersistor() {
         Persistor<Profile> delegate = InMemoryPersistor.forType(Profile.class);
         addToContext(ProfilePersistor.class, new DefaultProfilePersistor(delegate));
