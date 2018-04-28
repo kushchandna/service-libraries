@@ -1,6 +1,6 @@
 package com.kush.lib.profile.fields.validators.standard;
 
-import com.kush.lib.profile.fields.validators.ValidationFailedException;
+import com.kush.utils.exceptions.ValidationFailedException;
 
 public class MinimumValueValidator<T extends Comparable<T>> extends BaseValidator<T> {
 

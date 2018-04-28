@@ -18,7 +18,6 @@ import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.fields.Field;
 import com.kush.lib.profile.fields.Fields;
 import com.kush.lib.profile.fields.ValueValidator;
-import com.kush.lib.profile.fields.validators.ValidationFailedException;
 import com.kush.lib.profile.fields.validators.standard.EmailValidator;
 import com.kush.lib.profile.fields.validators.standard.PhoneNumberValidator;
 import com.kush.lib.profile.persistors.ProfilePersistor;
@@ -26,6 +25,7 @@ import com.kush.lib.profile.template.ProfileTemplate;
 import com.kush.lib.profile.template.ProfileTemplateBuilder;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.server.BaseServiceTest;
+import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 
 public class ProfileServiceTest extends BaseServiceTest {

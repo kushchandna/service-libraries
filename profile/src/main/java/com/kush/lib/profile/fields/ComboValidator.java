@@ -3,8 +3,8 @@ package com.kush.lib.profile.fields;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kush.lib.profile.fields.validators.ValidationFailedException;
 import com.kush.lib.profile.fields.validators.Validator;
+import com.kush.utils.exceptions.ValidationFailedException;
 
 public class ComboValidator implements Validator {
 

@@ -9,8 +9,8 @@ import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
 import com.kush.lib.group.persistors.GroupPersistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
-import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.lib.service.server.BaseService;
+import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 
 public class UserGroupService extends BaseService {
@@ -38,13 +38,13 @@ public class UserGroupService extends BaseService {
     }
 
     public List<GroupMembership> getGroupMembers(Identifier groupId)
-            throws ServiceRequestFailedException, PersistorOperationFailedException {
+            throws PersistorOperationFailedException, ValidationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         GroupPersistor groupPersistor = getGroupPersistor();
         List<GroupMembership> groupMembers = groupPersistor.getGroupMembers(groupId);
         boolean isMember = groupMembers.stream().anyMatch(m -> m.getMember().equals(currentUserId));
         if (!isMember) {
-            throw new ServiceRequestFailedException("Only members can get group members.");
+            throw new ValidationFailedException("Only members can get group members.");
         }
         return groupMembers;
     }

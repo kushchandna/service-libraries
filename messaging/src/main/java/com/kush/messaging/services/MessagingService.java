@@ -11,7 +11,6 @@ import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
 import com.kush.lib.group.service.UserGroupService;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
-import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.lib.service.server.BaseService;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.destination.Destination;
@@ -21,6 +20,7 @@ import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.messaging.push.MessageSignal;
 import com.kush.messaging.push.SignalSpaceProvider;
+import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.SignalSpace;
 
@@ -34,7 +34,7 @@ public class MessagingService extends BaseService {
         for (Destination destination : destinations) {
             try {
                 sendMessageSignal(destination, sentMessage);
-            } catch (ServiceRequestFailedException e) {
+            } catch (ValidationFailedException e) {
                 // notify
             }
         }
@@ -76,7 +76,7 @@ public class MessagingService extends BaseService {
     }
 
     private void sendMessageSignal(Destination destination, Message message)
-            throws ServiceRequestFailedException, PersistorOperationFailedException {
+            throws PersistorOperationFailedException, ValidationFailedException {
         switch (destination.getType()) {
         case GROUP:
             UserGroupService groupService = getInstance(UserGroupService.class);

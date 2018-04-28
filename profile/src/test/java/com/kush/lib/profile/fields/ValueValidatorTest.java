@@ -8,12 +8,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.kush.lib.profile.fields.validators.ValidationFailedException;
 import com.kush.lib.profile.fields.validators.standard.EmailValidator;
 import com.kush.lib.profile.fields.validators.standard.MaximumLengthValidator;
 import com.kush.lib.profile.fields.validators.standard.MaximumValueValidator;
 import com.kush.lib.profile.fields.validators.standard.MinimumLengthValidator;
 import com.kush.lib.profile.fields.validators.standard.RangeValidator;
+import com.kush.utils.exceptions.ValidationFailedException;
 
 public class ValueValidatorTest {
 
