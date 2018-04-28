@@ -20,6 +20,7 @@ import com.kush.lib.profile.fields.Fields;
 import com.kush.lib.profile.fields.ValueValidator;
 import com.kush.lib.profile.fields.validators.ValidationFailedException;
 import com.kush.lib.profile.fields.validators.standard.EmailValidator;
+import com.kush.lib.profile.fields.validators.standard.PhoneNumberValidator;
 import com.kush.lib.profile.persistors.ProfilePersistor;
 import com.kush.lib.profile.template.ProfileTemplate;
 import com.kush.lib.profile.template.ProfileTemplateBuilder;
@@ -31,6 +32,7 @@ public class ProfileServiceTest extends BaseServiceTest {
 
     private static final String FIELD_EMAIL = "emailId";
     private static final String FIELD_NAME = "fullName";
+    private static final String FIELD_PHONE = "phone";
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -107,7 +109,14 @@ public class ProfileServiceTest extends BaseServiceTest {
     }
 
     @Test
-    public void testName() throws Exception {
+    public void saveNonRepeatablePhoneNumber() throws Exception {
+        User user1 = getUser(0);
+        runAuthenticatedOperation(user1, () -> {
+        });
+
+        User user2 = getUser(1);
+        runAuthenticatedOperation(user2, () -> {
+        });
     }
 
     private void setupProfilePersistor() {
@@ -129,9 +138,14 @@ public class ProfileServiceTest extends BaseServiceTest {
         Field nameField = Fields.createTextFieldBuilder(FIELD_NAME)
             .withDisplayName("Name")
             .build();
+        Field phoneField = Fields.createTextFieldBuilder(FIELD_PHONE)
+            .addValidator(new PhoneNumberValidator())
+            .withNoRepeatitionAllowed()
+            .build();
         return ProfileTemplateBuilder.create()
             .withField(nameField)
             .withField(emailField)
+            .withField(phoneField)
             .build();
     }
 }
