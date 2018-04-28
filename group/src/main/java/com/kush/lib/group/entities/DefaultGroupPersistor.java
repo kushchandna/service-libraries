@@ -34,6 +34,11 @@ public class DefaultGroupPersistor extends DelegatingPersistor<Group> implements
     @Override
     public GroupMembership addGroupMember(Identifier groupId, Identifier member, LocalDateTime addedAt)
             throws PersistorOperationFailedException {
+        List<GroupMembership> matchingMemberships =
+                groupMembershipPersistor.fetch(mem -> mem.getGroupId().equals(groupId) && mem.getMember().equals(member));
+        if (!matchingMemberships.isEmpty()) {
+            throw new PersistorOperationFailedException("User is already a member");
+        }
         GroupMembership membership = new GroupMembership(groupId, member, addedAt);
         return groupMembershipPersistor.save(membership);
     }

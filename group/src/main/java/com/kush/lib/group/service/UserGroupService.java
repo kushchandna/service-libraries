@@ -15,12 +15,18 @@ import com.kush.utils.id.Identifier;
 
 public class UserGroupService extends BaseService {
 
+    private static final com.kush.logger.Logger LOGGER =
+            com.kush.logger.LoggerFactory.INSTANCE.getLogger(UserGroupService.class);
+
     public Group createGroup(String groupName) throws PersistorOperationFailedException {
+        LOGGER.info("Creating group with name %s", groupName);
         Identifier currentUserId = getCurrentUser().getId();
         LocalDateTime currentDateTime = getCurrentDateTime();
         GroupPersistor groupPersistor = getGroupPersistor();
         Group group = groupPersistor.createGroup(groupName, currentUserId, currentDateTime);
+        LOGGER.info("Created group [%s]. Now adding self as member.", group.getId(), group.getGroupName());
         groupPersistor.addGroupMember(group.getId(), currentUserId, currentDateTime);
+        LOGGER.info("Added self as group member");
         return group;
     }
 
@@ -31,8 +37,11 @@ public class UserGroupService extends BaseService {
         for (Identifier userId : userIds) {
             try {
                 groupPersistor.addGroupMember(groupId, userId, currentDateTime);
+                LOGGER.info("Added user %s to group %s", userId, groupId);
             } catch (PersistorOperationFailedException e) {
                 // notify partial failure
+                LOGGER.error("Could not add user %s to group %s. Reason: %s", userId, groupId, e.getMessage());
+                LOGGER.error(e);
             }
         }
     }
