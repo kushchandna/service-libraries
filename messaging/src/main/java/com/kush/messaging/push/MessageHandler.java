@@ -1,9 +1,8 @@
 package com.kush.messaging.push;
 
 import com.kush.messaging.message.Message;
-import com.kush.utils.signaling.SignalReceiver;
 
-public interface MessageHandler extends SignalReceiver {
+public interface MessageHandler {
 
     void handleMessage(Message message);
 }

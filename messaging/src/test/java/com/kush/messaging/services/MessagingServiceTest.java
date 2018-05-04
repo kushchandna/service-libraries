@@ -45,7 +45,7 @@ import com.kush.messaging.metadata.Metadata;
 import com.kush.messaging.persistors.DefaultMessagePersistor;
 import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
-import com.kush.messaging.push.SignalSpaceProvider;
+import com.kush.messaging.push.signal.SignalSpaceProvider;
 import com.kush.messaging.services.MessagingService;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;

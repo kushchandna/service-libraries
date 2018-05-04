@@ -1,4 +1,4 @@
-package com.kush.messaging.push;
+package com.kush.messaging.push.signal;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -18,8 +18,9 @@ import com.kush.messaging.message.Message;
 import com.kush.messaging.metadata.Metadata;
 import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
-import com.kush.messaging.push.MessageSignal;
-import com.kush.messaging.push.SignalSpaceProvider;
+import com.kush.messaging.push.signal.MessageSignal;
+import com.kush.messaging.push.signal.MessageSignalReceiver;
+import com.kush.messaging.push.signal.SignalSpaceProvider;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.SignalSpace;
@@ -56,14 +57,14 @@ public class MessagingService extends BaseService {
     public void registerMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
         SignalSpace signalSpace = getSignalSpace(currentUserId);
-        signalSpace.register(MessageSignal.class, messageHandler);
+        signalSpace.register(MessageSignal.class, new MessageSignalReceiver(messageHandler));
     }
 
     public void unregisterMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
         SignalSpaceProvider signalSpaceProvider = getInstance(SignalSpaceProvider.class);
         SignalSpace signalSpace = signalSpaceProvider.getSignalSpace(currentUserId);
-        signalSpace.unregister(MessageSignal.class, messageHandler);
+        signalSpace.unregister(MessageSignal.class, new MessageSignalReceiver(messageHandler));
         if (!signalSpace.hasReceiverForSignal(MessageSignal.class)) {
             signalSpaceProvider.removeSignalSpace(currentUserId);
         }
