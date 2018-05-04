@@ -10,14 +10,20 @@ import com.kush.lib.group.entities.GroupMembership;
 import com.kush.lib.group.persistors.GroupPersistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.service.server.BaseService;
+import com.kush.lib.service.server.annotations.Service;
+import com.kush.lib.service.server.annotations.ServiceMethod;
+import com.kush.lib.service.server.authentication.AuthenticationRequired;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 
+@Service(name = "User Group")
 public class UserGroupService extends BaseService {
 
     private static final com.kush.logger.Logger LOGGER =
             com.kush.logger.LoggerFactory.INSTANCE.getLogger(UserGroupService.class);
 
+    @AuthenticationRequired
+    @ServiceMethod(name = "Create Group")
     public Group createGroup(String groupName) throws PersistorOperationFailedException {
         LOGGER.info("Creating group with name %s", groupName);
         Identifier currentUserId = getCurrentUser().getId();
@@ -30,6 +36,8 @@ public class UserGroupService extends BaseService {
         return group;
     }
 
+    @AuthenticationRequired
+    @ServiceMethod(name = "Add Members")
     public void addMembers(Identifier groupId, Set<Identifier> userIds) {
         checkSessionActive();
         LocalDateTime currentDateTime = getCurrentDateTime();
@@ -46,6 +54,8 @@ public class UserGroupService extends BaseService {
         }
     }
 
+    @AuthenticationRequired
+    @ServiceMethod(name = "Get Group Members")
     public List<GroupMembership> getGroupMembers(Identifier groupId)
             throws PersistorOperationFailedException, ValidationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
@@ -58,6 +68,8 @@ public class UserGroupService extends BaseService {
         return groupMembers;
     }
 
+    @AuthenticationRequired
+    @ServiceMethod(name = "Get Groups")
     public List<Group> getGroups() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         GroupPersistor groupPersistor = getGroupPersistor();
