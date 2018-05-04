@@ -12,6 +12,9 @@ import com.kush.lib.group.entities.GroupMembership;
 import com.kush.lib.group.service.UserGroupService;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.service.server.BaseService;
+import com.kush.lib.service.server.annotations.Service;
+import com.kush.lib.service.server.annotations.ServiceMethod;
+import com.kush.lib.service.server.authentication.AuthenticationRequired;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.destination.Destination;
 import com.kush.messaging.message.Message;
@@ -25,8 +28,11 @@ import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.SignalSpace;
 
+@Service(name = "Messaging")
 public class MessagingService extends BaseService {
 
+    @AuthenticationRequired
+    @ServiceMethod(name = "Send Message")
     public void sendMessage(Content content, Set<Destination> destinations) throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         Metadata metadata = prepareMetadata(currentUserId, destinations);
@@ -41,6 +47,8 @@ public class MessagingService extends BaseService {
         }
     }
 
+    @AuthenticationRequired
+    @ServiceMethod(name = "Get All Messages")
     public List<Message> getAllMessages() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         MessagePersistor persistor = getInstance(MessagePersistor.class);
@@ -54,12 +62,16 @@ public class MessagingService extends BaseService {
         return new ArrayList<>(allMessages);
     }
 
+    @AuthenticationRequired
+    @ServiceMethod(name = "Register Message Handler")
     public void registerMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
         SignalSpace signalSpace = getSignalSpace(currentUserId);
         signalSpace.register(MessageSignal.class, new MessageSignalReceiver(messageHandler));
     }
 
+    @AuthenticationRequired
+    @ServiceMethod(name = "Unregister Message Handler")
     public void unregisterMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
         SignalSpaceProvider signalSpaceProvider = getInstance(SignalSpaceProvider.class);
