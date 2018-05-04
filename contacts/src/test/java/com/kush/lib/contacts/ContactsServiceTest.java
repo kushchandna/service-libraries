@@ -1,0 +1,54 @@
+package com.kush.lib.contacts;
+
+import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.kush.lib.contacts.entities.Contact;
+import com.kush.lib.contacts.persistors.ContactsPersistor;
+import com.kush.lib.contacts.persistors.DefaultContactsPersistor;
+import com.kush.lib.contacts.services.ContactsService;
+import com.kush.lib.persistence.api.Persistor;
+import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.service.remoting.auth.User;
+import com.kush.lib.service.server.BaseServiceTest;
+import com.kush.utils.id.Identifier;
+
+public class ContactsServiceTest extends BaseServiceTest {
+
+    private ContactsService contactsService;
+
+    @Before
+    public void beforeEachTest() throws Exception {
+        contactsService = new ContactsService();
+        registerService(contactsService);
+
+        Persistor<Contact> contactsPersistor = InMemoryPersistor.forType(Contact.class);
+        addToContext(ContactsPersistor.class, new DefaultContactsPersistor(contactsPersistor));
+    }
+
+    @Test
+    public void contact() throws Exception {
+        User user1 = getUser(0);
+        User user2 = getUser(1);
+        User user3 = getUser(2);
+
+        runAuthenticatedOperation(user1, () -> {
+            contactsService.addToContacts(user2.getId());
+            contactsService.addToContacts(user3.getId());
+
+            List<Contact> contacts = contactsService.getContacts();
+
+            List<Identifier> owners = contacts.stream().map(c -> c.getOwnerUserId()).collect(toList());
+            assertThat(owners, contains(user1.getId(), user1.getId()));
+
+            List<Identifier> contactUserIds = contacts.stream().map(c -> c.getContactUserId()).collect(toList());
+            assertThat(contactUserIds, contains(user2.getId(), user3.getId()));
+        });
+    }
+}
