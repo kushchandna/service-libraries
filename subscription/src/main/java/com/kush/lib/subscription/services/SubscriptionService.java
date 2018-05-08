@@ -14,11 +14,11 @@ import com.kush.lib.subscription.persistors.SubscriptionPersistor;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 
-@Service(name = "Subscription")
+@Service
 public class SubscriptionService extends BaseService {
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Subscribe")
+    @ServiceMethod
     public Subscription subscribe(Identifier userId) throws ValidationFailedException, PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         if (currentUserId.equals(userId)) {
@@ -31,7 +31,7 @@ public class SubscriptionService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Get Subscribed")
+    @ServiceMethod
     public List<Subscription> getSubscribed() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         SubscriptionPersistor persistor = getInstance(SubscriptionPersistor.class);
@@ -39,7 +39,7 @@ public class SubscriptionService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Get Subscribers")
+    @ServiceMethod
     public List<Subscription> getSubscribers() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         SubscriptionPersistor persistor = getInstance(SubscriptionPersistor.class);

@@ -14,11 +14,11 @@ import com.kush.lib.service.server.authentication.AuthenticationRequired;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 
-@Service(name = "Contacts")
+@Service
 public class ContactsService extends BaseService {
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Add To Contact")
+    @ServiceMethod
     public Contact addToContacts(Identifier userId) throws ValidationFailedException, PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         if (currentUserId.equals(userId)) {
@@ -31,7 +31,7 @@ public class ContactsService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Get Contacts")
+    @ServiceMethod
     public List<Contact> getContacts() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         ContactsPersistor persistor = getInstance(ContactsPersistor.class);
