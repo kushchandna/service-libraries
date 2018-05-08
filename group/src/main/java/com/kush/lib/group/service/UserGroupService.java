@@ -16,7 +16,7 @@ import com.kush.lib.service.server.authentication.AuthenticationRequired;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 
-@Service(name = "User Group")
+@Service
 public class UserGroupService extends BaseService {
 
     private static final com.kush.logger.Logger LOGGER =

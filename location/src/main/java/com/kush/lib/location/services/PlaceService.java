@@ -7,7 +7,7 @@ import com.kush.lib.service.server.BaseService;
 import com.kush.lib.service.server.annotations.Service;
 import com.kush.lib.service.server.annotations.ServiceMethod;
 
-@Service(name = "Place")
+@Service
 public class PlaceService extends BaseService {
 
     @ServiceMethod(name = "Find")

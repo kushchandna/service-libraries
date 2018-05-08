@@ -28,7 +28,7 @@ import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.SignalSpace;
 
-@Service(name = "Messaging")
+@Service
 public class MessagingService extends BaseService {
 
     @AuthenticationRequired
