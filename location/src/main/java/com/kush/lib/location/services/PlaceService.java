@@ -10,7 +10,7 @@ import com.kush.lib.service.server.annotations.ServiceMethod;
 @Service
 public class PlaceService extends BaseService {
 
-    @ServiceMethod(name = "Find")
+    @ServiceMethod
     public Place findPlace(String text) throws PlaceSearchFailedException {
         PlaceFinder placeFinder = getInstance(PlaceFinder.class);
         return placeFinder.find(text);

@@ -23,7 +23,7 @@ public class UserGroupService extends BaseService {
             com.kush.logger.LoggerFactory.INSTANCE.getLogger(UserGroupService.class);
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Create Group")
+    @ServiceMethod
     public Group createGroup(String groupName) throws PersistorOperationFailedException {
         LOGGER.info("Creating group with name %s", groupName);
         Identifier currentUserId = getCurrentUser().getId();
@@ -37,7 +37,7 @@ public class UserGroupService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Add Members")
+    @ServiceMethod
     public void addMembers(Identifier groupId, Set<Identifier> userIds) {
         checkSessionActive();
         LocalDateTime currentDateTime = getCurrentDateTime();
@@ -55,7 +55,7 @@ public class UserGroupService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Get Group Members")
+    @ServiceMethod
     public List<GroupMembership> getGroupMembers(Identifier groupId)
             throws PersistorOperationFailedException, ValidationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
@@ -69,7 +69,7 @@ public class UserGroupService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Get Groups")
+    @ServiceMethod
     public List<Group> getGroups() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         GroupPersistor groupPersistor = getGroupPersistor();

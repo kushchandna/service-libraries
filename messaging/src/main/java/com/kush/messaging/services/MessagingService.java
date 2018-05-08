@@ -32,7 +32,7 @@ import com.kush.utils.signaling.SignalSpace;
 public class MessagingService extends BaseService {
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Send Message")
+    @ServiceMethod
     public void sendMessage(Content content, Set<Destination> destinations) throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         Metadata metadata = prepareMetadata(currentUserId, destinations);
@@ -48,7 +48,7 @@ public class MessagingService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Get All Messages")
+    @ServiceMethod
     public List<Message> getAllMessages() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         MessagePersistor persistor = getInstance(MessagePersistor.class);
@@ -63,7 +63,7 @@ public class MessagingService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Register Message Handler")
+    @ServiceMethod
     public void registerMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
         SignalSpace signalSpace = getSignalSpace(currentUserId);
@@ -71,7 +71,7 @@ public class MessagingService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Unregister Message Handler")
+    @ServiceMethod
     public void unregisterMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
         SignalSpaceProvider signalSpaceProvider = getInstance(SignalSpaceProvider.class);
