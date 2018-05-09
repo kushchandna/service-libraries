@@ -104,6 +104,14 @@ public class MessagingService extends BaseService {
         return messagingContacts;
     }
 
+    @AuthenticationRequired
+    @ServiceMethod
+    public List<Message> getMessagesWithUser(Identifier userId) throws PersistorOperationFailedException {
+        Identifier currentUserId = getCurrentUser().getId();
+        MessagePersistor persistor = getInstance(MessagePersistor.class);
+        return persistor.fetchRecentMessagesBetweenUsers(currentUserId, userId, -1);
+    }
+
     private MessagingContact toMessagingContact(Identifier currentUserId, Contact contact, MessagePersistor messagePersistor) {
         Identifiable contactObject = contact.getContactObject();
         try {
