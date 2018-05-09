@@ -2,8 +2,12 @@ package com.kush.lib.contacts;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.Before;
@@ -51,5 +55,27 @@ public class ContactsServiceTest extends BaseServiceTest {
             List<Identifiable> contactObjects = contacts.stream().map(c -> c.getContactObject()).collect(toList());
             assertThat(contactObjects, contains(user2, user3));
         });
+    }
+
+    @Test
+    public void getContact() throws Exception {
+        User self = getUser(0);
+        User other = getUser(1);
+
+        runAuthenticatedOperation(self, () -> {
+            Contact addedContact = contactsService.addToContacts(other);
+            verifyContact(addedContact, self, other);
+            List<Contact> contacts = contactsService.getContacts();
+            verifyContact(contacts.get(0), self, other);
+            Contact savedContact = contactsService.getContact(other);
+            verifyContact(savedContact, self, other);
+        });
+    }
+
+    private void verifyContact(Contact actualContact, User ownerUser, User contactObject) {
+        assertThat(actualContact.getId(), is(notNullValue()));
+        assertThat(actualContact.getOwnerUserId(), is(equalTo(ownerUser.getId())));
+        assertThat(actualContact.getContactObject(), is(equalTo(contactObject)));
+        assertThat(actualContact.getContactAddTime(), is(equalTo(LocalDateTime.now(CLOCK))));
     }
 }

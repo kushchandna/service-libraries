@@ -35,6 +35,26 @@ public class DefaultContactsPersistor extends DelegatingPersistor<Contact> imple
         }, -1);
     }
 
+    @Override
+    public Contact getContact(Identifier ownerUserId, Identifiable contactObject) throws PersistorOperationFailedException {
+        List<Contact> matchingContacts =
+                fetch(c -> c.getOwnerUserId().equals(ownerUserId) && c.getContactObject().equals(contactObject),
+                        new Comparator<Contact>() {
+
+                            @Override
+                            public int compare(Contact o1, Contact o2) {
+                                return o1.getContactAddTime().compareTo(o2.getContactAddTime());
+                            }
+                        }, -1);
+        if (matchingContacts.isEmpty()) {
+            throw new PersistorOperationFailedException("No such contact found");
+        }
+        if (matchingContacts.size() > 1) {
+            throw new PersistorOperationFailedException("More than one matching contacts found");
+        }
+        return matchingContacts.get(0);
+    }
+
     private void checkContactDoesNotExist(Identifier ownerUserId, Identifiable contactObject)
             throws PersistorOperationFailedException {
         List<Contact> existing = fetch(c -> c.getOwnerUserId().equals(ownerUserId) && c.getContactObject().equals(contactObject));

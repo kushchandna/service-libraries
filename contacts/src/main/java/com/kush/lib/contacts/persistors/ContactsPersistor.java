@@ -15,4 +15,6 @@ public interface ContactsPersistor extends Persistor<Contact> {
             throws PersistorOperationFailedException;
 
     List<Contact> getContacts(Identifier ownerUserId) throws PersistorOperationFailedException;
+
+    Contact getContact(Identifier ownerUserId, Identifiable contactObject) throws PersistorOperationFailedException;
 }

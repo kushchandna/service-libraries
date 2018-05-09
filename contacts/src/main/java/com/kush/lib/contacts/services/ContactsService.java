@@ -39,4 +39,12 @@ public class ContactsService extends BaseService {
         ContactsPersistor persistor = getInstance(ContactsPersistor.class);
         return persistor.getContacts(currentUserId);
     }
+
+    @AuthenticationRequired
+    @ServiceMethod
+    public Contact getContact(Identifiable contactObject) throws PersistorOperationFailedException {
+        Identifier currentUserId = getCurrentUser().getId();
+        ContactsPersistor persistor = getInstance(ContactsPersistor.class);
+        return persistor.getContact(currentUserId, contactObject);
+    }
 }
