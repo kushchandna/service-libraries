@@ -430,6 +430,7 @@ public class MessagingServiceTest extends BaseServiceTest {
         Content content = new TextContent(text);
         Set<Destination> destinations = Sets.newLinkedHashSet(stream(receivers).map(r -> asDestination(r)).collect(toList()));
         messagingService.sendMessage(content, destinations);
+        TimeUnit.MILLISECONDS.sleep(1);
     }
 
     private Destination asDestination(Identifiable receiver) {

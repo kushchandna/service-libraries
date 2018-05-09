@@ -33,7 +33,7 @@ public class MessagingContact implements Serializable, Comparable<MessagingConta
         if (other == null) {
             return -1;
         }
-        Message thisLastMessage = this.getLastMessage();
+        Message thisLastMessage = getLastMessage();
         Message otherLastMessage = other.getLastMessage();
         if (otherLastMessage == null) {
             if (thisLastMessage == null) {
