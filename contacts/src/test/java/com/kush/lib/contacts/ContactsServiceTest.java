@@ -30,11 +30,11 @@ public class ContactsServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        contactsService = new ContactsService();
-        registerService(contactsService);
-
         Persistor<Contact> contactsPersistor = InMemoryPersistor.forType(Contact.class);
         addToContext(ContactsPersistor.class, new DefaultContactsPersistor(contactsPersistor));
+
+        contactsService = new ContactsService();
+        registerService(contactsService);
     }
 
     @Test
