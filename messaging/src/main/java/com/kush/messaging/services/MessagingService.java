@@ -1,5 +1,8 @@
 package com.kush.messaging.services;
 
+import static java.util.Collections.sort;
+import static java.util.stream.Collectors.toList;
+
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,10 +10,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.kush.lib.contacts.entities.Contact;
+import com.kush.lib.contacts.services.ContactsService;
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
 import com.kush.lib.group.service.UserGroupService;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.server.BaseService;
 import com.kush.lib.service.server.annotations.Service;
 import com.kush.lib.service.server.annotations.ServiceMethod;
@@ -26,6 +32,7 @@ import com.kush.messaging.push.signal.MessageSignal;
 import com.kush.messaging.push.signal.MessageSignalReceiver;
 import com.kush.messaging.push.signal.SignalSpaceProvider;
 import com.kush.utils.exceptions.ValidationFailedException;
+import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.SignalSpace;
 
@@ -58,7 +65,7 @@ public class MessagingService extends BaseService {
         UserGroupService groupService = getInstance(UserGroupService.class);
         List<Group> groups = groupService.getGroups();
         for (Group group : groups) {
-            allMessages.addAll(persistor.fetchMessagesInGroup(group.getId()));
+            allMessages.addAll(persistor.fetchRecentMessagesInGroup(group.getId(), -1));
         }
         return new ArrayList<>(allMessages);
     }
@@ -86,7 +93,43 @@ public class MessagingService extends BaseService {
     @AuthenticationRequired
     @ServiceMethod
     public List<MessagingContact> getMessagingContacts() throws PersistorOperationFailedException {
-        return null;
+        Identifier currentUserId = getCurrentUser().getId();
+        ContactsService contactsService = getInstance(ContactsService.class);
+        List<Contact> contacts = contactsService.getContacts();
+        MessagePersistor persistor = getInstance(MessagePersistor.class);
+        List<MessagingContact> messagingContacts = new ArrayList<>(contacts.stream()
+            .map(c -> toMessagingContact(currentUserId, c, persistor))
+            .collect(toList()));
+        sort(messagingContacts);
+        return messagingContacts;
+    }
+
+    private MessagingContact toMessagingContact(Identifier currentUserId, Contact contact, MessagePersistor messagePersistor) {
+        Identifiable contactObject = contact.getContactObject();
+        try {
+            Message latestMessage = getLatestMessage(currentUserId, contactObject, messagePersistor);
+            return new MessagingContact(contact, latestMessage);
+        } catch (PersistorOperationFailedException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    private Message getLatestMessage(Identifier currentUserId, Identifiable contactObject, MessagePersistor messagePersistor)
+            throws PersistorOperationFailedException {
+        List<Message> recentMessages;
+        Identifier id = contactObject.getId();
+        if (contactObject instanceof User) {
+            recentMessages = messagePersistor.fetchRecentMessagesBetweenUsers(currentUserId, id, 1);
+        } else if (contactObject instanceof Group) {
+            recentMessages = messagePersistor.fetchRecentMessagesInGroup(id, 1);
+        } else {
+            throw new IllegalStateException("Unsupported contact object found");
+        }
+        if (recentMessages.isEmpty()) {
+            return null;
+        } else {
+            return recentMessages.get(0);
+        }
     }
 
     private Metadata prepareMetadata(Identifier currentUserId, Set<Destination> destinations) {

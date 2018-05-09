@@ -15,5 +15,8 @@ public interface MessagePersistor extends Persistor<Message> {
 
     List<Message> fetchIndividualMessages(Identifier userId) throws PersistorOperationFailedException;
 
-    List<Message> fetchMessagesInGroup(Identifier groupId) throws PersistorOperationFailedException;
+    List<Message> fetchRecentMessagesInGroup(Identifier groupId, int maximumMessages) throws PersistorOperationFailedException;
+
+    List<Message> fetchRecentMessagesBetweenUsers(Identifier selfUserId, Identifier otherUserId, int maximumMessages)
+            throws PersistorOperationFailedException;
 }

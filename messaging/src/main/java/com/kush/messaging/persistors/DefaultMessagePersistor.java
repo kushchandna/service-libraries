@@ -32,16 +32,34 @@ public class DefaultMessagePersistor extends DelegatingPersistor<Message> implem
     public List<Message> fetchIndividualMessages(Identifier userId) throws PersistorOperationFailedException {
         Predicate<Destination> receivedMsgs = d -> USER.equals(d.getType()) && d.getId().equals(userId);
         return filter(m -> m.getMetadata().getDestinations().stream().anyMatch(receivedMsgs)
-                || m.getMetadata().getSender().equals(userId));
+                || m.getMetadata().getSender().equals(userId), -1);
     }
 
     @Override
-    public List<Message> fetchMessagesInGroup(Identifier groupId) throws PersistorOperationFailedException {
+    public List<Message> fetchRecentMessagesInGroup(Identifier groupId, int maximumMessages)
+            throws PersistorOperationFailedException {
         Predicate<Destination> groupMsgs = d -> DestinationType.GROUP.equals(d.getType()) && d.getId().equals(groupId);
-        return filter(m -> m.getMetadata().getDestinations().stream().anyMatch(groupMsgs));
+        return filter(m -> m.getMetadata().getDestinations().stream().anyMatch(groupMsgs), maximumMessages);
     }
 
-    private List<Message> filter(Predicate<Message> filter) throws PersistorOperationFailedException {
-        return fetch(filter, RecentFirst.INSTANCE, -1);
+    @Override
+    public List<Message> fetchRecentMessagesBetweenUsers(Identifier selfUserId, Identifier otherUserId, int maximumMessages)
+            throws PersistorOperationFailedException {
+        Predicate<Message> filterSentMsgs = filterUserIdSender(selfUserId).and(filterUserIsAmongDestinations(otherUserId));
+        Predicate<Message> filterReceivedMsgs = filterUserIdSender(otherUserId).and(filterUserIsAmongDestinations(selfUserId));
+        return filter(filterSentMsgs.and(filterReceivedMsgs), maximumMessages);
+    }
+
+    private Predicate<Message> filterUserIdSender(Identifier userId) {
+        return msg -> msg.getMetadata().getSender().equals(userId);
+    }
+
+    private Predicate<Message> filterUserIsAmongDestinations(Identifier selfUserId) {
+        return msg -> msg.getMetadata().getDestinations().stream()
+            .anyMatch(d -> USER.equals(d.getType()) && d.getId().equals(selfUserId));
+    }
+
+    private List<Message> filter(Predicate<Message> filter, int maximumMessages) throws PersistorOperationFailedException {
+        return fetch(filter, RecentFirst.INSTANCE, maximumMessages);
     }
 }

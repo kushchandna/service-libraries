@@ -28,6 +28,8 @@ import org.junit.Test;
 
 import com.google.common.collect.Sets;
 import com.kush.lib.contacts.entities.Contact;
+import com.kush.lib.contacts.persistors.ContactsPersistor;
+import com.kush.lib.contacts.persistors.DefaultContactsPersistor;
 import com.kush.lib.contacts.services.ContactsService;
 import com.kush.lib.group.entities.DefaultGroupPersistor;
 import com.kush.lib.group.entities.Group;
@@ -72,10 +74,6 @@ public class MessagingServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        registerService(messagingService);
-        registerService(groupService);
-        registerService(contactsService);
-
         Persistor<Group> groupPersistor = InMemoryPersistor.forType(Group.class);
         Persistor<GroupMembership> groupMembershipPersistor = InMemoryPersistor.forType(GroupMembership.class);
         addToContext(GroupPersistor.class, new DefaultGroupPersistor(groupPersistor, groupMembershipPersistor));
@@ -83,9 +81,16 @@ public class MessagingServiceTest extends BaseServiceTest {
         Persistor<Message> messagePersistor = InMemoryPersistor.forType(Message.class);
         addToContext(MessagePersistor.class, new DefaultMessagePersistor(messagePersistor));
 
+        Persistor<Contact> contactsPersistor = InMemoryPersistor.forType(Contact.class);
+        addToContext(ContactsPersistor.class, new DefaultContactsPersistor(contactsPersistor));
+
         SignalEmitterFactory emitterFactory = new DefaultSignalEmitterFactory();
         SignalSpaceProvider signalSpaceProvider = new SignalSpaceProvider(emitterExecutor, emitterFactory);
         addToContext(SignalSpaceProvider.class, signalSpaceProvider);
+
+        registerService(messagingService);
+        registerService(groupService);
+        registerService(contactsService);
     }
 
     @After
