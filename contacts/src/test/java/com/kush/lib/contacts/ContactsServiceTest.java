@@ -49,7 +49,7 @@ public class ContactsServiceTest extends BaseServiceTest {
             assertThat(owners, contains(user1.getId(), user1.getId()));
 
             List<Identifiable> contactObjects = contacts.stream().map(c -> c.getContactObject()).collect(toList());
-            assertThat(contactObjects, contains(user2.getId(), user3.getId()));
+            assertThat(contactObjects, contains(user2, user3));
         });
     }
 }
