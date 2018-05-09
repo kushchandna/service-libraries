@@ -5,6 +5,7 @@ import static com.kush.messaging.destination.Destination.DestinationType.GROUP;
 import static com.kush.messaging.destination.Destination.DestinationType.USER;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
@@ -26,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Sets;
+import com.kush.lib.contacts.entities.Contact;
+import com.kush.lib.contacts.services.ContactsService;
 import com.kush.lib.group.entities.DefaultGroupPersistor;
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
@@ -35,6 +38,7 @@ import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.server.BaseServiceTest;
+import com.kush.messaging.contacts.MessagingContact;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.content.TextContent;
 import com.kush.messaging.destination.Destination;
@@ -46,7 +50,6 @@ import com.kush.messaging.persistors.DefaultMessagePersistor;
 import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.messaging.push.signal.SignalSpaceProvider;
-import com.kush.messaging.services.MessagingService;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.DefaultSignalEmitterFactory;
@@ -54,18 +57,24 @@ import com.kush.utils.signaling.SignalEmitterFactory;
 
 public class MessagingServiceTest extends BaseServiceTest {
 
-    private MessagingService messagingService;
-    private UserGroupService groupService;
+    private final MessagingService messagingService;
+    private final UserGroupService groupService;
+    private final ContactsService contactsService;
 
-    private ExecutorService emitterExecutor;
+    private final ExecutorService emitterExecutor;
+
+    public MessagingServiceTest() {
+        messagingService = new MessagingService();
+        groupService = new UserGroupService();
+        contactsService = new ContactsService();
+        emitterExecutor = Executors.newSingleThreadExecutor();
+    }
 
     @Before
     public void beforeEachTest() throws Exception {
-        messagingService = new MessagingService();
         registerService(messagingService);
-
-        groupService = new UserGroupService();
         registerService(groupService);
+        registerService(contactsService);
 
         Persistor<Group> groupPersistor = InMemoryPersistor.forType(Group.class);
         Persistor<GroupMembership> groupMembershipPersistor = InMemoryPersistor.forType(GroupMembership.class);
@@ -74,7 +83,6 @@ public class MessagingServiceTest extends BaseServiceTest {
         Persistor<Message> messagePersistor = InMemoryPersistor.forType(Message.class);
         addToContext(MessagePersistor.class, new DefaultMessagePersistor(messagePersistor));
 
-        emitterExecutor = Executors.newSingleThreadExecutor();
         SignalEmitterFactory emitterFactory = new DefaultSignalEmitterFactory();
         SignalSpaceProvider signalSpaceProvider = new SignalSpaceProvider(emitterExecutor, emitterFactory);
         addToContext(SignalSpaceProvider.class, signalSpaceProvider);
@@ -319,6 +327,31 @@ public class MessagingServiceTest extends BaseServiceTest {
 
         messageHandlerUser1.waitUntilInvoked("Message handler for user 1 didn't got call");
         messageHandlerUser2.waitUntilInvoked("Message handler for user 2 didn't got call");
+    }
+
+    @Test
+    public void getMessagingContacts() throws Exception {
+        User user1 = getUser(0);
+        User user2 = getUser(1);
+        User user3 = getUser(2);
+        User user4 = getUser(3);
+
+        runAuthenticatedOperation(user1, () -> {
+            Contact contactUser1 = contactsService.addToContacts(user2);
+            Contact contactUser2 = contactsService.addToContacts(user3);
+
+            Group group1 = groupService.createGroup("First Group");
+            groupService.addMembers(group1.getId(), newHashSet(user4.getId()));
+            Contact contactGroup1 = contactsService.addToContacts(group1);
+
+            List<MessagingContact> messagingContacts = messagingService.getMessagingContacts();
+            assertContacts(messagingContacts, contactUser1, contactUser2, contactGroup1);
+        });
+    }
+
+    private void assertContacts(List<MessagingContact> messagingContacts, Contact... expectedContacts) {
+        List<Contact> actualContacts = messagingContacts.stream().map(c -> c.getContact()).collect(toList());
+        assertThat(actualContacts, contains(expectedContacts));
     }
 
     private void validateMessageContentAndMetadata(Message message, User sender, String expectedTextContent,

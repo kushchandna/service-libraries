@@ -15,6 +15,7 @@ import com.kush.lib.service.server.BaseService;
 import com.kush.lib.service.server.annotations.Service;
 import com.kush.lib.service.server.annotations.ServiceMethod;
 import com.kush.lib.service.server.authentication.AuthenticationRequired;
+import com.kush.messaging.contacts.MessagingContact;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.destination.Destination;
 import com.kush.messaging.message.Message;
@@ -80,6 +81,12 @@ public class MessagingService extends BaseService {
         if (!signalSpace.hasReceiverForSignal(MessageSignal.class)) {
             signalSpaceProvider.removeSignalSpace(currentUserId);
         }
+    }
+
+    @AuthenticationRequired
+    @ServiceMethod
+    public List<MessagingContact> getMessagingContacts() throws PersistorOperationFailedException {
+        return null;
     }
 
     private Metadata prepareMetadata(Identifier currentUserId, Set<Destination> destinations) {
