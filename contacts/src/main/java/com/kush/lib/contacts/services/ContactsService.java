@@ -47,4 +47,9 @@ public class ContactsService extends BaseService {
         ContactsPersistor persistor = getInstance(ContactsPersistor.class);
         return persistor.getContact(currentUserId, contactObject);
     }
+
+    @Override
+    protected void processContext() {
+        checkContextHasValueFor(ContactsPersistor.class);
+    }
 }
