@@ -112,6 +112,14 @@ public class MessagingService extends BaseService {
         return persistor.fetchRecentMessagesBetweenUsers(currentUserId, userId, -1);
     }
 
+    @AuthenticationRequired
+    @ServiceMethod
+    public List<Message> getMessagesInGroup(Identifier groupId) throws PersistorOperationFailedException {
+        checkSessionActive();
+        MessagePersistor persistor = getInstance(MessagePersistor.class);
+        return persistor.fetchRecentMessagesInGroup(groupId, -1);
+    }
+
     private MessagingContact toMessagingContact(Identifier currentUserId, Contact contact, MessagePersistor messagePersistor) {
         Identifiable contactObject = contact.getContactObject();
         try {
