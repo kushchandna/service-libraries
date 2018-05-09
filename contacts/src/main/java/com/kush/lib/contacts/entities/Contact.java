@@ -9,21 +9,21 @@ public class Contact implements Identifiable {
 
     private final Identifier contactId;
     private final Identifier ownerUserId;
-    private final Identifier contactUserId;
+    private final Identifiable contactObject;
     private final LocalDateTime contactAddTime;
 
-    public Contact(Identifier ownerUserId, Identifier contactUserId, LocalDateTime contactAddTime) {
-        this(Identifier.NULL, ownerUserId, contactUserId, contactAddTime);
+    public Contact(Identifier ownerUserId, Identifiable contactObject, LocalDateTime contactAddTime) {
+        this(Identifier.NULL, ownerUserId, contactObject, contactAddTime);
     }
 
-    public Contact(Identifier contactId, Contact subscription) {
-        this(contactId, subscription.getOwnerUserId(), subscription.getContactUserId(), subscription.getContactAddTime());
+    public Contact(Identifier contactId, Contact contact) {
+        this(contactId, contact.getOwnerUserId(), contact.getContactObject(), contact.getContactAddTime());
     }
 
-    public Contact(Identifier contactId, Identifier ownerUserId, Identifier contactUserId, LocalDateTime contactAddTime) {
+    public Contact(Identifier contactId, Identifier ownerUserId, Identifiable contactObject, LocalDateTime contactAddTime) {
         this.contactId = contactId;
         this.ownerUserId = ownerUserId;
-        this.contactUserId = contactUserId;
+        this.contactObject = contactObject;
         this.contactAddTime = contactAddTime;
     }
 
@@ -36,8 +36,8 @@ public class Contact implements Identifiable {
         return ownerUserId;
     }
 
-    public Identifier getContactUserId() {
-        return contactUserId;
+    public Identifiable getContactObject() {
+        return contactObject;
     }
 
     public LocalDateTime getContactAddTime() {

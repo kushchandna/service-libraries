@@ -8,6 +8,7 @@ import com.kush.lib.contacts.entities.Contact;
 import com.kush.lib.persistence.api.DelegatingPersistor;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 
 public class DefaultContactsPersistor extends DelegatingPersistor<Contact> implements ContactsPersistor {
@@ -17,10 +18,10 @@ public class DefaultContactsPersistor extends DelegatingPersistor<Contact> imple
     }
 
     @Override
-    public Contact addContact(Identifier ownerUserId, Identifier contactUserId, LocalDateTime contactAddTime)
+    public Contact addContact(Identifier ownerUserId, Identifiable contactObject, LocalDateTime contactAddTime)
             throws PersistorOperationFailedException {
-        checkContactDoesNotExist(ownerUserId, contactUserId);
-        return save(new Contact(ownerUserId, contactUserId, contactAddTime));
+        checkContactDoesNotExist(ownerUserId, contactObject);
+        return save(new Contact(ownerUserId, contactObject, contactAddTime));
     }
 
     @Override
@@ -34,9 +35,9 @@ public class DefaultContactsPersistor extends DelegatingPersistor<Contact> imple
         }, -1);
     }
 
-    private void checkContactDoesNotExist(Identifier ownerUserId, Identifier contactUserId)
+    private void checkContactDoesNotExist(Identifier ownerUserId, Identifiable contactObject)
             throws PersistorOperationFailedException {
-        List<Contact> existing = fetch(c -> c.getOwnerUserId().equals(ownerUserId) && c.getContactUserId().equals(contactUserId));
+        List<Contact> existing = fetch(c -> c.getOwnerUserId().equals(ownerUserId) && c.getContactObject().equals(contactObject));
         if (!existing.isEmpty()) {
             throw new PersistorOperationFailedException("Already exists");
         }

@@ -17,6 +17,7 @@ import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.server.BaseServiceTest;
+import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 
 public class ContactsServiceTest extends BaseServiceTest {
@@ -39,16 +40,16 @@ public class ContactsServiceTest extends BaseServiceTest {
         User user3 = getUser(2);
 
         runAuthenticatedOperation(user1, () -> {
-            contactsService.addToContacts(user2.getId());
-            contactsService.addToContacts(user3.getId());
+            contactsService.addToContacts(user2);
+            contactsService.addToContacts(user3);
 
             List<Contact> contacts = contactsService.getContacts();
 
             List<Identifier> owners = contacts.stream().map(c -> c.getOwnerUserId()).collect(toList());
             assertThat(owners, contains(user1.getId(), user1.getId()));
 
-            List<Identifier> contactUserIds = contacts.stream().map(c -> c.getContactUserId()).collect(toList());
-            assertThat(contactUserIds, contains(user2.getId(), user3.getId()));
+            List<Identifiable> contactObjects = contacts.stream().map(c -> c.getContactObject()).collect(toList());
+            assertThat(contactObjects, contains(user2.getId(), user3.getId()));
         });
     }
 }
