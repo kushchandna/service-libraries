@@ -45,12 +45,12 @@ public class DefaultMessagePersistor extends DelegatingPersistor<Message> implem
     @Override
     public List<Message> fetchRecentMessagesBetweenUsers(Identifier selfUserId, Identifier otherUserId, int maximumMessages)
             throws PersistorOperationFailedException {
-        Predicate<Message> filterSentMsgs = filterUserIdSender(selfUserId).and(filterUserIsAmongDestinations(otherUserId));
-        Predicate<Message> filterReceivedMsgs = filterUserIdSender(otherUserId).and(filterUserIsAmongDestinations(selfUserId));
-        return filter(filterSentMsgs.and(filterReceivedMsgs), maximumMessages);
+        Predicate<Message> filterSentMsgs = filterUserIsSender(selfUserId).and(filterUserIsAmongDestinations(otherUserId));
+        Predicate<Message> filterReceivedMsgs = filterUserIsSender(otherUserId).and(filterUserIsAmongDestinations(selfUserId));
+        return filter(filterSentMsgs.or(filterReceivedMsgs), maximumMessages);
     }
 
-    private Predicate<Message> filterUserIdSender(Identifier userId) {
+    private Predicate<Message> filterUserIsSender(Identifier userId) {
         return msg -> msg.getMetadata().getSender().equals(userId);
     }
 

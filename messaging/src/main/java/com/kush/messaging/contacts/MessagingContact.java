@@ -47,6 +47,6 @@ public class MessagingContact implements Serializable, Comparable<MessagingConta
         }
         LocalDateTime thisLastMessageSentTime = thisLastMessage.getMetadata().getSentTime();
         LocalDateTime otherLastMessageSentTime = otherLastMessage.getMetadata().getSentTime();
-        return thisLastMessageSentTime.compareTo(otherLastMessageSentTime);
+        return otherLastMessageSentTime.compareTo(thisLastMessageSentTime);
     }
 }

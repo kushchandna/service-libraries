@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
@@ -107,7 +108,7 @@ public class MessagingServiceTest extends BaseServiceTest {
         String testMessage = "Test Message";
 
         runAuthenticatedOperation(user1, () -> {
-            sendTextMessageToUsers(testMessage, user2);
+            sendTextMessage(testMessage, user2);
         });
 
 
@@ -155,9 +156,9 @@ public class MessagingServiceTest extends BaseServiceTest {
         messageHandlerUser2.reset();
         runAuthenticatedOperation(user3, () -> {
             messageHandlerUser1.setExpectedMessage(testMessage1, user3, user1);
-            sendTextMessageToUsers(testMessage1, user1);
+            sendTextMessage(testMessage1, user1);
             messageHandlerUser2.setExpectedMessage(testMessage2, user3, user2);
-            sendTextMessageToUsers(testMessage2, user2);
+            sendTextMessage(testMessage2, user2);
 
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(2));
@@ -187,9 +188,9 @@ public class MessagingServiceTest extends BaseServiceTest {
 
         messageHandlerUser2.reset();
         runAuthenticatedOperation(user3, () -> {
-            sendTextMessageToUsers(testMessage3, user1);
+            sendTextMessage(testMessage3, user1);
             messageHandlerUser2.setExpectedMessage(testMessage4, user3, user2);
-            sendTextMessageToUsers(testMessage4, user2);
+            sendTextMessage(testMessage4, user2);
 
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(4));
@@ -228,8 +229,8 @@ public class MessagingServiceTest extends BaseServiceTest {
         String testMessage2 = "Test Message 2";
 
         runAuthenticatedOperation(sender, () -> {
-            sendTextMessageToUsers(testMessage1, user1, user2, user3);
-            sendTextMessageToUsers(testMessage2, user3, user4);
+            sendTextMessage(testMessage1, user1, user2, user3);
+            sendTextMessage(testMessage2, user3, user4);
 
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(2));
@@ -281,7 +282,7 @@ public class MessagingServiceTest extends BaseServiceTest {
         runAuthenticatedOperation(sender, () -> {
             List<Group> groups = groupService.getGroups();
             Group group = groups.get(0);
-            sendTextMessageToUsers(testMessage1, group, user4);
+            sendTextMessage(testMessage1, group, user4);
 
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(1));
@@ -323,7 +324,7 @@ public class MessagingServiceTest extends BaseServiceTest {
 
             messageHandlerUser1.setExpectedMessage(testMessage1, sender, group);
             messageHandlerUser2.setExpectedMessage(testMessage1, sender, group);
-            sendTextMessageToUsers(testMessage1, group);
+            sendTextMessage(testMessage1, group);
 
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(1));
@@ -341,16 +342,39 @@ public class MessagingServiceTest extends BaseServiceTest {
         User user3 = getUser(2);
         User user4 = getUser(3);
 
+        addToContext(Clock.class, Clock.systemDefaultZone());
+
         runAuthenticatedOperation(user1, () -> {
-            Contact contactUser1 = contactsService.addToContacts(user2);
-            Contact contactUser2 = contactsService.addToContacts(user3);
+            Contact contactUser2 = contactsService.addToContacts(user2);
+            Contact contactUser3 = contactsService.addToContacts(user3);
 
             Group group1 = groupService.createGroup("First Group");
             groupService.addMembers(group1.getId(), newHashSet(user4.getId()));
             Contact contactGroup1 = contactsService.addToContacts(group1);
 
             List<MessagingContact> messagingContacts = messagingService.getMessagingContacts();
-            assertContacts(messagingContacts, contactUser1, contactUser2, contactGroup1);
+            assertContacts(messagingContacts, contactUser2, contactUser3, contactGroup1);
+        });
+
+        runAuthenticatedOperation(user2, () -> {
+            sendTextMessage("Test Message 1", user1);
+        });
+
+        runAuthenticatedOperation(user4, () -> {
+            List<Group> groups = groupService.getGroups();
+            sendTextMessage("Test Message 2", groups.get(0));
+        });
+
+        runAuthenticatedOperation(user1, () -> {
+            sendTextMessage("Test Message 3", user3);
+
+            List<Group> groups = groupService.getGroups();
+            Contact contactGroup1 = contactsService.getContact(groups.get(0));
+            Contact contactUser2 = contactsService.getContact(user2);
+            Contact contactUser3 = contactsService.getContact(user3);
+
+            List<MessagingContact> messagingContacts = messagingService.getMessagingContacts();
+            assertContacts(messagingContacts, contactUser3, contactGroup1, contactUser2);
         });
     }
 
@@ -402,7 +426,7 @@ public class MessagingServiceTest extends BaseServiceTest {
         assertThat(destination.getId(), is(equalTo(receiver.getId())));
     }
 
-    private void sendTextMessageToUsers(String text, Identifiable... receivers) throws Exception {
+    private void sendTextMessage(String text, Identifiable... receivers) throws Exception {
         Content content = new TextContent(text);
         Set<Destination> destinations = Sets.newLinkedHashSet(stream(receivers).map(r -> asDestination(r)).collect(toList()));
         messagingService.sendMessage(content, destinations);

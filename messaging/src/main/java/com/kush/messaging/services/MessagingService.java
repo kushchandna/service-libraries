@@ -98,7 +98,7 @@ public class MessagingService extends BaseService {
         List<Contact> contacts = contactsService.getContacts();
         MessagePersistor persistor = getInstance(MessagePersistor.class);
         List<MessagingContact> messagingContacts = new ArrayList<>(contacts.stream()
-            .map(c -> toMessagingContact(currentUserId, c, persistor))
+            .map(contact -> toMessagingContact(currentUserId, contact, persistor))
             .collect(toList()));
         sort(messagingContacts);
         return messagingContacts;
