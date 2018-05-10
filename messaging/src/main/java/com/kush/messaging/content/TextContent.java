@@ -1,5 +1,8 @@
 package com.kush.messaging.content;
 
+import com.kush.lib.service.server.annotations.Exportable;
+
+@Exportable
 public class TextContent implements Content {
 
     private static final long serialVersionUID = 1L;
