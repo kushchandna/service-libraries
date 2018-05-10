@@ -45,4 +45,10 @@ public class SubscriptionService extends BaseService {
         SubscriptionPersistor persistor = getInstance(SubscriptionPersistor.class);
         return persistor.getSubscribers(currentUserId);
     }
+
+    @Override
+    protected void processContext() {
+        checkContextHasValueFor(SubscriptionPersistor.class);
+        addIfDoesNotExist(Clock.class, Clock.systemUTC());
+    }
 }

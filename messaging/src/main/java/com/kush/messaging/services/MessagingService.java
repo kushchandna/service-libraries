@@ -121,6 +121,13 @@ public class MessagingService extends BaseService {
         return persistor.fetchRecentMessagesInGroup(groupId, -1);
     }
 
+    @Override
+    protected void processContext() {
+        checkContextHasValueFor(MessagePersistor.class);
+        checkContextHasValueFor(SignalSpaceProvider.class);
+        addIfDoesNotExist(Clock.class, Clock.systemUTC());
+    }
+
     private MessagingContact toMessagingContact(Identifier currentUserId, Contact contact, MessagePersistor messagePersistor) {
         Identifiable contactObject = contact.getContactObject();
         try {

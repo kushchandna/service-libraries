@@ -51,5 +51,6 @@ public class ContactsService extends BaseService {
     @Override
     protected void processContext() {
         checkContextHasValueFor(ContactsPersistor.class);
+        addIfDoesNotExist(Clock.class, Clock.systemUTC());
     }
 }

@@ -76,6 +76,12 @@ public class UserGroupService extends BaseService {
         return groupPersistor.getGroups(currentUserId);
     }
 
+    @Override
+    protected void processContext() {
+        checkContextHasValueFor(GroupPersistor.class);
+        addIfDoesNotExist(Clock.class, Clock.systemUTC());
+    }
+
     private GroupPersistor getGroupPersistor() {
         return getInstance(GroupPersistor.class);
     }

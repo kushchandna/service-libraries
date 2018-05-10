@@ -15,4 +15,9 @@ public class PlaceService extends BaseService {
         PlaceFinder placeFinder = getInstance(PlaceFinder.class);
         return placeFinder.find(text);
     }
+
+    @Override
+    protected void processContext() {
+        checkContextHasValueFor(PlaceFinder.class);
+    }
 }
