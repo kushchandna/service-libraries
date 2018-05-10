@@ -41,7 +41,7 @@ public class MessagingService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public void sendMessage(Content content, Set<Destination> destinations) throws PersistorOperationFailedException {
+    public Message sendMessage(Content content, Set<Destination> destinations) throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         Metadata metadata = prepareMetadata(currentUserId, destinations);
         MessagePersistor persistor = getInstance(MessagePersistor.class);
@@ -53,6 +53,7 @@ public class MessagingService extends BaseService {
                 // notify
             }
         }
+        return sentMessage;
     }
 
     @AuthenticationRequired

@@ -10,6 +10,7 @@ public interface Destination {
 
     Identifier getId();
 
+    @Exportable
     public static enum DestinationType {
         USER,
         GROUP

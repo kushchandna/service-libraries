@@ -6,9 +6,11 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.kush.lib.service.server.annotations.Exportable;
 import com.kush.messaging.destination.Destination;
 import com.kush.utils.id.Identifier;
 
+@Exportable
 public class Metadata implements Serializable {
 
     private static final long serialVersionUID = 1L;
