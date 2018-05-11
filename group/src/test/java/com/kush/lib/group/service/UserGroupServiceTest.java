@@ -26,12 +26,12 @@ public class UserGroupServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        userGroupService = new UserGroupService();
-        registerService(userGroupService);
-
         Persistor<Group> delegateGroupPersistor = InMemoryPersistor.forType(Group.class);
         Persistor<GroupMembership> delegateGroupMembershipPersistor = InMemoryPersistor.forType(GroupMembership.class);
         addToContext(GroupPersistor.class, new DefaultGroupPersistor(delegateGroupPersistor, delegateGroupMembershipPersistor));
+
+        userGroupService = new UserGroupService();
+        registerService(userGroupService);
     }
 
     @Test
