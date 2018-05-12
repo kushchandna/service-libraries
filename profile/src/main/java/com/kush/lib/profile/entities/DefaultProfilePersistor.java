@@ -2,9 +2,9 @@ package com.kush.lib.profile.entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.kush.lib.persistence.api.DelegatingPersistor;
 import com.kush.lib.persistence.api.Persistor;
@@ -38,16 +38,21 @@ public class DefaultProfilePersistor extends DelegatingPersistor<Profile> implem
     }
 
     @Override
-    public Iterator<Profile> getMatchingProfiles(String fieldName, Object value) throws PersistorOperationFailedException {
+    public List<Profile> getMatchingProfiles(Map<String, Set<Object>> fieldVsValues)
+            throws PersistorOperationFailedException {
         List<Profile> allProfiles = fetchAll();
         List<Profile> matchingProfiles = new ArrayList<>();
         for (Profile profile : allProfiles) {
             Map<String, Object> fields = profile.getFields();
-            Object savedValue = fields.get(fieldName);
-            if (value.equals(savedValue)) {
-                matchingProfiles.add(profile);
+            for (String key : fieldVsValues.keySet()) {
+                Object savedValue = fields.get(key);
+                Set<Object> valuesToMatch = fieldVsValues.get(key);
+                if (valuesToMatch.contains(savedValue)) {
+                    matchingProfiles.add(profile);
+                    break;
+                }
             }
         }
-        return matchingProfiles.iterator();
+        return matchingProfiles;
     }
 }

@@ -1,6 +1,8 @@
 package com.kush.lib.profile.persistors;
 
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
@@ -15,5 +17,5 @@ public interface ProfilePersistor extends Persistor<Profile> {
 
     void updateProfileField(Identifier profileId, String fieldName, Object value) throws PersistorOperationFailedException;
 
-    Iterator<Profile> getMatchingProfiles(String fieldName, Object value) throws PersistorOperationFailedException;
+    List<Profile> getMatchingProfiles(Map<String, Set<Object>> fieldVsValues) throws PersistorOperationFailedException;
 }

@@ -1,10 +1,11 @@
 package com.kush.lib.profile.services;
 
-import static com.google.common.collect.Streams.stream;
+import static com.kush.utils.commons.CollectionUtils.singletonMultiValueMap;
 import static java.util.stream.Collectors.toList;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.profile.entities.Profile;
@@ -35,7 +36,7 @@ public class UserProfileService extends BaseService {
         valueValidator.validate(field, value);
 
         if (field.isNoRepeatitionAllowed()) {
-            List<Identifier> matchingUsers = findMatchingUsers(fieldName, value);
+            List<Identifier> matchingUsers = findMatchingUsers(singletonMultiValueMap(fieldName, value));
             if (!matchingUsers.isEmpty()) {
                 throw new ValidationFailedException("User with %s '%s' already exists.", field.getDisplayName(), value);
             }
@@ -55,11 +56,11 @@ public class UserProfileService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public List<Identifier> findMatchingUsers(String fieldName, Object value) throws PersistorOperationFailedException {
+    public List<Identifier> findMatchingUsers(Map<String, Set<Object>> fieldVsValues) throws PersistorOperationFailedException {
         checkSessionActive();
         ProfilePersistor profilePersistor = getProfilePersistor();
-        Iterator<Profile> profiles = profilePersistor.getMatchingProfiles(fieldName, value);
-        return stream(profiles).map(p -> p.getOwner()).collect(toList());
+        List<Profile> profiles = profilePersistor.getMatchingProfiles(fieldVsValues);
+        return profiles.stream().map(p -> p.getOwner()).collect(toList());
     }
 
     private Profile getOrCreateProfile(ProfilePersistor profilePersistor, Identifier currentUserId)

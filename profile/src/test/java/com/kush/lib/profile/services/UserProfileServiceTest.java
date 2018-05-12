@@ -1,11 +1,17 @@
 package com.kush.lib.profile.services;
 
+import static com.google.common.collect.Sets.newHashSet;
+import static com.kush.utils.commons.CollectionUtils.singletonMultiValueMap;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -57,7 +63,7 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
         User user2 = getUser(1);
         runAuthenticatedOperation(user2, () -> {
-            List<Identifier> users = profileService.findMatchingUsers(FIELD_EMAIL, "testuser@domain.com");
+            List<Identifier> users = profileService.findMatchingUsers(singletonMultiValueMap(FIELD_EMAIL, "testuser@domain.com"));
             assertThat(users.get(0), is(equalTo(user1.getId())));
         });
     }
@@ -87,7 +93,7 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
         User user3 = getUser(2);
         runAuthenticatedOperation(user3, () -> {
-            List<Identifier> matchingUsers = profileService.findMatchingUsers(FIELD_NAME, "Test User");
+            List<Identifier> matchingUsers = profileService.findMatchingUsers(singletonMultiValueMap(FIELD_NAME, "Test User"));
             assertThat(matchingUsers, hasSize(2));
             assertThat(matchingUsers.get(0), is(equalTo(user1.getId())));
             assertThat(matchingUsers.get(1), is(equalTo(user2.getId())));
@@ -117,6 +123,36 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
         User user2 = getUser(1);
         runAuthenticatedOperation(user2, () -> {
+        });
+    }
+
+    @Test
+    public void getMatchingUsersFromContacts() throws Exception {
+        User self = getUser(0);
+        User user1 = getUser(1);
+        User user2 = getUser(2);
+        User user3 = getUser(3);
+        User user4 = getUser(4);
+
+        runAuthenticatedOperation(user1, () -> {
+            profileService.updateProfileField(FIELD_EMAIL, "user1@domain.com");
+        });
+        runAuthenticatedOperation(user2, () -> {
+            profileService.updateProfileField(FIELD_PHONE, "111111111");
+            profileService.updateProfileField(FIELD_EMAIL, "user2@domain.com");
+        });
+        runAuthenticatedOperation(user3, () -> {
+            profileService.updateProfileField(FIELD_PHONE, "222222222");
+        });
+        runAuthenticatedOperation(user4, () -> {
+            profileService.updateProfileField(FIELD_PHONE, "333333333");
+        });
+        runAuthenticatedOperation(self, () -> {
+            Map<String, Set<Object>> fieldVsValues = new HashMap<>();
+            fieldVsValues.put(FIELD_EMAIL, newHashSet("user1@domain.com", "user2@domain.com"));
+            fieldVsValues.put(FIELD_PHONE, newHashSet("111111111", "222222222"));
+            List<Identifier> matchingUsers = profileService.findMatchingUsers(fieldVsValues);
+            assertThat(matchingUsers, containsInAnyOrder(user1.getId(), user2.getId(), user3.getId()));
         });
     }
 
