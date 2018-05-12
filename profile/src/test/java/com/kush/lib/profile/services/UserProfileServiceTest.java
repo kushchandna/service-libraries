@@ -1,10 +1,11 @@
 package com.kush.lib.profile.services;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,7 +29,7 @@ import com.kush.lib.service.server.BaseServiceTest;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 
-public class ProfileServiceTest extends BaseServiceTest {
+public class UserProfileServiceTest extends BaseServiceTest {
 
     private static final String FIELD_EMAIL = "emailId";
     private static final String FIELD_NAME = "fullName";
@@ -56,8 +57,8 @@ public class ProfileServiceTest extends BaseServiceTest {
 
         User user2 = getUser(1);
         runAuthenticatedOperation(user2, () -> {
-            Iterator<Identifier> users = profileService.findMatchingUsers(FIELD_EMAIL, "testuser@domain.com");
-            assertThat(users.next(), is(equalTo(user1.getId())));
+            List<Identifier> users = profileService.findMatchingUsers(FIELD_EMAIL, "testuser@domain.com");
+            assertThat(users.get(0), is(equalTo(user1.getId())));
         });
     }
 
@@ -86,10 +87,10 @@ public class ProfileServiceTest extends BaseServiceTest {
 
         User user3 = getUser(2);
         runAuthenticatedOperation(user3, () -> {
-            Iterator<Identifier> matchingUsers = profileService.findMatchingUsers(FIELD_NAME, "Test User");
-            assertThat(matchingUsers.next(), is(equalTo(user1.getId())));
-            assertThat(matchingUsers.next(), is(equalTo(user2.getId())));
-            assertThat(matchingUsers.hasNext(), is(equalTo(false)));
+            List<Identifier> matchingUsers = profileService.findMatchingUsers(FIELD_NAME, "Test User");
+            assertThat(matchingUsers, hasSize(2));
+            assertThat(matchingUsers.get(0), is(equalTo(user1.getId())));
+            assertThat(matchingUsers.get(1), is(equalTo(user2.getId())));
         });
     }
 
