@@ -111,7 +111,6 @@ public class MessagingServiceTest extends BaseServiceTest {
             sendTextMessage(testMessage, user2);
         });
 
-
         runAuthenticatedOperation(user2, () -> {
             List<Message> allMessages = messagingService.getAllMessages();
             assertThat(allMessages, hasSize(1));
@@ -375,6 +374,9 @@ public class MessagingServiceTest extends BaseServiceTest {
 
             List<MessagingContact> messagingContacts = messagingService.getMessagingContacts();
             assertContacts(messagingContacts, contactUser3, contactGroup1, contactUser2);
+            validateMessageContent(messagingContacts.get(0).getLastMessage(), "Test Message 3");
+            validateMessageContent(messagingContacts.get(1).getLastMessage(), "Test Message 2");
+            validateMessageContent(messagingContacts.get(2).getLastMessage(), "Test Message 1");
         });
     }
 
