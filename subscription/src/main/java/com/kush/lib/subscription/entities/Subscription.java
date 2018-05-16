@@ -2,9 +2,11 @@ package com.kush.lib.subscription.entities;
 
 import java.time.LocalDateTime;
 
+import com.kush.lib.service.server.annotations.Exportable;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 
+@Exportable
 public class Subscription implements Identifiable {
 
     private final Identifier subscriptionId;
