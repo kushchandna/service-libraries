@@ -3,9 +3,9 @@ package com.kush.lib.location.services;
 import com.kush.lib.location.api.Place;
 import com.kush.lib.location.api.PlaceFinder;
 import com.kush.lib.location.google.PlaceSearchFailedException;
-import com.kush.lib.service.server.BaseService;
-import com.kush.lib.service.server.annotations.Service;
-import com.kush.lib.service.server.annotations.ServiceMethod;
+import com.kush.service.BaseService;
+import com.kush.service.annotations.Service;
+import com.kush.service.annotations.ServiceMethod;
 
 @Service
 public class PlaceService extends BaseService {

@@ -18,7 +18,7 @@ import com.kush.lib.group.persistors.GroupPersistor;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.remoting.auth.User;
-import com.kush.lib.service.server.BaseServiceTest;
+import com.kush.service.BaseServiceTest;
 
 public class UserGroupServiceTest extends BaseServiceTest {
 

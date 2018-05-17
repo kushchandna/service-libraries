@@ -1,7 +1,7 @@
 package com.kush.messaging.push;
 
-import com.kush.lib.service.server.annotations.Exportable;
 import com.kush.messaging.message.Message;
+import com.kush.service.annotations.Exportable;
 
 @Exportable
 public interface MessageHandler {

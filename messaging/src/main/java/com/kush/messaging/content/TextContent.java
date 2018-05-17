@@ -1,6 +1,6 @@
 package com.kush.messaging.content;
 
-import com.kush.lib.service.server.annotations.Exportable;
+import com.kush.service.annotations.Exportable;
 
 @Exportable
 public class TextContent implements Content {

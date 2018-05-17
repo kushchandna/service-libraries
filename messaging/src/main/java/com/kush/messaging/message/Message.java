@@ -2,9 +2,9 @@ package com.kush.messaging.message;
 
 import java.io.Serializable;
 
-import com.kush.lib.service.server.annotations.Exportable;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.metadata.Metadata;
+import com.kush.service.annotations.Exportable;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 

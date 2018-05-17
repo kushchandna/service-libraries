@@ -13,10 +13,10 @@ import com.kush.lib.profile.fields.Field;
 import com.kush.lib.profile.fields.ValueValidator;
 import com.kush.lib.profile.persistors.ProfilePersistor;
 import com.kush.lib.profile.template.ProfileTemplate;
-import com.kush.lib.service.server.BaseService;
-import com.kush.lib.service.server.annotations.Service;
-import com.kush.lib.service.server.annotations.ServiceMethod;
-import com.kush.lib.service.server.authentication.AuthenticationRequired;
+import com.kush.service.BaseService;
+import com.kush.service.annotations.Service;
+import com.kush.service.annotations.ServiceMethod;
+import com.kush.service.auth.AuthenticationRequired;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 

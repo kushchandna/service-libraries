@@ -16,11 +16,11 @@ import org.junit.Test;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.remoting.auth.User;
-import com.kush.lib.service.server.BaseServiceTest;
 import com.kush.lib.subscription.entities.Subscription;
 import com.kush.lib.subscription.persistors.DefaultSubscriptionPersistor;
 import com.kush.lib.subscription.persistors.SubscriptionPersistor;
 import com.kush.lib.subscription.services.SubscriptionService;
+import com.kush.service.BaseServiceTest;
 import com.kush.utils.id.Identifier;
 
 public class SubscriptionServiceTest extends BaseServiceTest {

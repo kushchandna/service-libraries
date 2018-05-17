@@ -2,7 +2,7 @@ package com.kush.lib.location.api;
 
 import java.io.Serializable;
 
-import com.kush.lib.service.server.annotations.Exportable;
+import com.kush.service.annotations.Exportable;
 
 @Exportable
 public class Place implements Serializable {

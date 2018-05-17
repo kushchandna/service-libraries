@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.kush.lib.contacts.entities.Contact;
-import com.kush.lib.service.server.annotations.Exportable;
 import com.kush.messaging.message.Message;
+import com.kush.service.annotations.Exportable;
 
 @Exportable
 public class MessagingContact implements Serializable, Comparable<MessagingContact> {

@@ -5,12 +5,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
-import com.kush.lib.service.server.BaseService;
-import com.kush.lib.service.server.annotations.Service;
-import com.kush.lib.service.server.annotations.ServiceMethod;
-import com.kush.lib.service.server.authentication.AuthenticationRequired;
 import com.kush.lib.subscription.entities.Subscription;
 import com.kush.lib.subscription.persistors.SubscriptionPersistor;
+import com.kush.service.BaseService;
+import com.kush.service.annotations.Service;
+import com.kush.service.annotations.ServiceMethod;
+import com.kush.service.auth.AuthenticationRequired;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 

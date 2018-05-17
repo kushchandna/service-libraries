@@ -31,7 +31,7 @@ import com.kush.lib.profile.persistors.ProfilePersistor;
 import com.kush.lib.profile.template.ProfileTemplate;
 import com.kush.lib.profile.template.ProfileTemplateBuilder;
 import com.kush.lib.service.remoting.auth.User;
-import com.kush.lib.service.server.BaseServiceTest;
+import com.kush.service.BaseServiceTest;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 
