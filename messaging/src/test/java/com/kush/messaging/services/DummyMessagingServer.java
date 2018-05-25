@@ -14,9 +14,7 @@ import com.kush.lib.group.persistors.GroupPersistor;
 import com.kush.lib.group.service.UserGroupService;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
-import com.kush.lib.service.remoting.StartupFailedException;
-import com.kush.lib.service.remoting.receiver.ServiceRequestReceiver;
-import com.kush.lib.service.remoting.receiver.socket.ServerSocketServiceRequestReceiver;
+import com.kush.lib.service.remoting.ServiceRequest;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.persistors.DefaultMessagePersistor;
 import com.kush.messaging.persistors.MessagePersistor;
@@ -27,6 +25,9 @@ import com.kush.service.ContextBuilder;
 import com.kush.service.auth.credentials.DefaultUserCredentialPersistor;
 import com.kush.service.auth.credentials.UserCredential;
 import com.kush.service.auth.credentials.UserCredentialPersistor;
+import com.kush.utils.remoting.server.ResolvableProcessor;
+import com.kush.utils.remoting.server.StartupFailedException;
+import com.kush.utils.remoting.server.socket.SocketBasedResolvableProcessor;
 import com.kush.utils.signaling.DefaultSignalEmitterFactory;
 import com.kush.utils.signaling.SignalEmitterFactory;
 
@@ -43,7 +44,7 @@ public class DummyMessagingServer {
         server.registerService(UserGroupService.class);
 
         Executor executor = Executors.newFixedThreadPool(5);
-        ServiceRequestReceiver requestReceiver = new ServerSocketServiceRequestReceiver(executor, PORT);
+        ResolvableProcessor<ServiceRequest> requestReceiver = new SocketBasedResolvableProcessor<>(executor, PORT);
         server.registerServiceRequestReceiver(requestReceiver);
 
         Persistor<Contact> delegateContactsPersistor = InMemoryPersistor.forType(Contact.class);
