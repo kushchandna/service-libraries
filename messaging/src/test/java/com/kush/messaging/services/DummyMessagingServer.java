@@ -18,7 +18,6 @@ import com.kush.lib.service.remoting.ServiceRequest;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.persistors.DefaultMessagePersistor;
 import com.kush.messaging.persistors.MessagePersistor;
-import com.kush.messaging.push.signal.SignalSpaceProvider;
 import com.kush.service.ApplicationServer;
 import com.kush.service.Context;
 import com.kush.service.ContextBuilder;
@@ -28,8 +27,6 @@ import com.kush.service.auth.credentials.UserCredentialPersistor;
 import com.kush.utils.remoting.server.ResolutionRequestsReceiver;
 import com.kush.utils.remoting.server.StartupFailedException;
 import com.kush.utils.remoting.server.socket.SocketBasedResolutionRequestsProcessor;
-import com.kush.utils.signaling.DefaultSignalEmitterFactory;
-import com.kush.utils.signaling.SignalEmitterFactory;
 
 public class DummyMessagingServer {
 
@@ -52,13 +49,11 @@ public class DummyMessagingServer {
         Persistor<Group> delegateGroupPersistor = InMemoryPersistor.forType(Group.class);
         Persistor<GroupMembership> groupMembershipPersistor = InMemoryPersistor.forType(GroupMembership.class);
         Persistor<Message> delegateMessagingPersistor = InMemoryPersistor.forType(Message.class);
-        SignalEmitterFactory emitterFactory = new DefaultSignalEmitterFactory(executor);
         Context context = ContextBuilder.create()
             .withInstance(UserCredentialPersistor.class, new DefaultUserCredentialPersistor(delegateCredentialPersistor))
             .withInstance(GroupPersistor.class, new DefaultGroupPersistor(delegateGroupPersistor, groupMembershipPersistor))
             .withInstance(ContactsPersistor.class, new DefaultContactsPersistor(delegateContactsPersistor))
             .withInstance(MessagePersistor.class, new DefaultMessagePersistor(delegateMessagingPersistor))
-            .withInstance(SignalSpaceProvider.class, new SignalSpaceProvider(executor, emitterFactory))
             .build();
         server.start(context);
 

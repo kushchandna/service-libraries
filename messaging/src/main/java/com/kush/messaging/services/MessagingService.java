@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 import com.kush.lib.contacts.entities.Contact;
 import com.kush.lib.contacts.services.ContactsService;
@@ -26,14 +27,16 @@ import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.messaging.push.signal.MessageSignal;
 import com.kush.messaging.push.signal.MessageSignalReceiver;
-import com.kush.messaging.push.signal.SignalSpaceProvider;
 import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
 import com.kush.service.auth.AuthenticationRequired;
+import com.kush.utils.commons.NewThreadExecutor;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
+import com.kush.utils.signaling.DefaultSignalEmitterFactory;
+import com.kush.utils.signaling.SignalEmitterFactory;
 import com.kush.utils.signaling.SignalSpace;
 
 @Service
@@ -75,20 +78,16 @@ public class MessagingService extends BaseService {
     @ServiceMethod
     public void registerMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
-        SignalSpace signalSpace = getSignalSpace(currentUserId);
-        signalSpace.register(MessageSignal.class, new MessageSignalReceiver(messageHandler));
+        SignalSpace signalSpace = getSignalSpace();
+        signalSpace.register(MessageSignal.class, new MessageSignalReceiver(messageHandler), currentUserId);
     }
 
     @AuthenticationRequired
     @ServiceMethod
     public void unregisterMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
-        SignalSpaceProvider signalSpaceProvider = getInstance(SignalSpaceProvider.class);
-        SignalSpace signalSpace = signalSpaceProvider.getSignalSpace(currentUserId);
-        signalSpace.unregister(MessageSignal.class, new MessageSignalReceiver(messageHandler));
-        if (!signalSpace.hasReceiverForSignal(MessageSignal.class)) {
-            signalSpaceProvider.removeSignalSpace(currentUserId);
-        }
+        SignalSpace signalSpace = getSignalSpace();
+        signalSpace.unregister(MessageSignal.class, new MessageSignalReceiver(messageHandler), currentUserId);
     }
 
     @AuthenticationRequired
@@ -124,8 +123,13 @@ public class MessagingService extends BaseService {
     @Override
     protected void processContext() {
         checkContextHasValueFor(MessagePersistor.class);
-        checkContextHasValueFor(SignalSpaceProvider.class);
         addIfDoesNotExist(Clock.class, Clock.systemUTC());
+        if (!contextContains(SignalSpace.class)) {
+            Executor executor = new NewThreadExecutor();
+            SignalEmitterFactory signalEmitterFactory = new DefaultSignalEmitterFactory();
+            SignalSpace signalSpace = new SignalSpace(executor, signalEmitterFactory);
+            enrichContext(SignalSpace.class, signalSpace);
+        }
     }
 
     private MessagingContact toMessagingContact(Identifier currentUserId, Contact contact, MessagePersistor messagePersistor) {
@@ -179,12 +183,11 @@ public class MessagingService extends BaseService {
     }
 
     private void sendSignal(Message message, Identifier userId) {
-        SignalSpace signalSpace = getSignalSpace(userId);
-        signalSpace.emit(new MessageSignal(message));
+        SignalSpace signalSpace = getSignalSpace();
+        signalSpace.emit(new MessageSignal(userId, message));
     }
 
-    private SignalSpace getSignalSpace(Identifier userId) {
-        SignalSpaceProvider signalSpaceProvider = getInstance(SignalSpaceProvider.class);
-        return signalSpaceProvider.getSignalSpace(userId);
+    private SignalSpace getSignalSpace() {
+        return getInstance(SignalSpace.class);
     }
 }

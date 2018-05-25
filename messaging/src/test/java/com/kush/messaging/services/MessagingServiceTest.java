@@ -51,12 +51,9 @@ import com.kush.messaging.metadata.Metadata;
 import com.kush.messaging.persistors.DefaultMessagePersistor;
 import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
-import com.kush.messaging.push.signal.SignalSpaceProvider;
 import com.kush.service.BaseServiceTest;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
-import com.kush.utils.signaling.DefaultSignalEmitterFactory;
-import com.kush.utils.signaling.SignalEmitterFactory;
 
 public class MessagingServiceTest extends BaseServiceTest {
 
@@ -84,10 +81,6 @@ public class MessagingServiceTest extends BaseServiceTest {
 
         Persistor<Contact> contactsPersistor = InMemoryPersistor.forType(Contact.class);
         addToContext(ContactsPersistor.class, new DefaultContactsPersistor(contactsPersistor));
-
-        SignalEmitterFactory emitterFactory = new DefaultSignalEmitterFactory();
-        SignalSpaceProvider signalSpaceProvider = new SignalSpaceProvider(emitterExecutor, emitterFactory);
-        addToContext(SignalSpaceProvider.class, signalSpaceProvider);
 
         registerService(messagingService);
         registerService(groupService);
