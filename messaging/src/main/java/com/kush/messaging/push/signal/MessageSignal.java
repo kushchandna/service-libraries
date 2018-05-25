@@ -6,15 +6,21 @@ import com.kush.utils.signaling.Signal;
 
 public class MessageSignal extends Signal<MessageSignalReceiver> {
 
+    private final Identifier receiverId;
     private final Message message;
 
     public MessageSignal(Identifier receiverId, Message message) {
-        super(receiverId);
+        this.receiverId = receiverId;
         this.message = message;
     }
 
     @Override
     protected void handleSignal(MessageSignalReceiver messageHandler) {
         messageHandler.handleMessage(message);
+    }
+
+    @Override
+    protected Object getFilter() {
+        return receiverId;
     }
 }
