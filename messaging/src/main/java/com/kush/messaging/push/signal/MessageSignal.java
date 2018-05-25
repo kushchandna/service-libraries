@@ -6,21 +6,17 @@ import com.kush.utils.signaling.Signal;
 
 public class MessageSignal extends Signal<MessageSignalReceiver> {
 
-    private final Identifier receiverId;
+    private static final long serialVersionUID = 1L;
+
     private final Message message;
 
     public MessageSignal(Identifier receiverId, Message message) {
-        this.receiverId = receiverId;
+        super(receiverId);
         this.message = message;
     }
 
     @Override
     protected void handleSignal(MessageSignalReceiver messageHandler) {
         messageHandler.handleMessage(message);
-    }
-
-    @Override
-    protected Object getFilter() {
-        return receiverId;
     }
 }
