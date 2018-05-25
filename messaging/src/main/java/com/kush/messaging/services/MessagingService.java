@@ -31,12 +31,12 @@ import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
 import com.kush.service.auth.AuthenticationRequired;
-import com.kush.utils.commons.NewThreadExecutor;
+import com.kush.utils.commons.CommonExecutors;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
-import com.kush.utils.signaling.DefaultSignalEmitterFactory;
-import com.kush.utils.signaling.SignalEmitterFactory;
+import com.kush.utils.signaling.SignalEmitter;
+import com.kush.utils.signaling.SignalEmitters;
 import com.kush.utils.signaling.SignalSpace;
 
 @Service
@@ -125,9 +125,9 @@ public class MessagingService extends BaseService {
         checkContextHasValueFor(MessagePersistor.class);
         addIfDoesNotExist(Clock.class, Clock.systemUTC());
         if (!contextContains(SignalSpace.class)) {
-            Executor executor = new NewThreadExecutor();
-            SignalEmitterFactory signalEmitterFactory = new DefaultSignalEmitterFactory();
-            SignalSpace signalSpace = new SignalSpace(executor, signalEmitterFactory);
+            Executor executor = CommonExecutors.newThreadExecutor();
+            SignalEmitter signalEmitter = SignalEmitters.newAsyncEmitter();
+            SignalSpace signalSpace = new SignalSpace(executor, signalEmitter);
             enrichContext(SignalSpace.class, signalSpace);
         }
     }
