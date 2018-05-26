@@ -2,13 +2,13 @@ package com.kush.messaging.push.signal;
 
 import com.kush.messaging.message.Message;
 import com.kush.messaging.push.MessageHandler;
-import com.kush.utils.signaling.SignalReceiver;
+import com.kush.utils.signaling.SignalHandler;
 
-public class MessageSignalReceiver implements SignalReceiver, MessageHandler {
+public class MessageSignalHandler implements SignalHandler, MessageHandler {
 
     private final MessageHandler delegate;
 
-    public MessageSignalReceiver(MessageHandler delegate) {
+    public MessageSignalHandler(MessageHandler delegate) {
         this.delegate = delegate;
     }
 
@@ -36,7 +36,7 @@ public class MessageSignalReceiver implements SignalReceiver, MessageHandler {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        MessageSignalReceiver other = (MessageSignalReceiver) obj;
+        MessageSignalHandler other = (MessageSignalHandler) obj;
         if (delegate == null) {
             if (other.delegate != null) {
                 return false;

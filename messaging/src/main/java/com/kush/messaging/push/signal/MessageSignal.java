@@ -4,7 +4,7 @@ import com.kush.messaging.message.Message;
 import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.Signal;
 
-public class MessageSignal extends Signal<MessageSignalReceiver> {
+public class MessageSignal extends Signal<MessageSignalHandler> {
 
     private static final long serialVersionUID = 1L;
 
@@ -16,7 +16,7 @@ public class MessageSignal extends Signal<MessageSignalReceiver> {
     }
 
     @Override
-    protected void handleSignal(MessageSignalReceiver messageHandler) {
+    protected void handleSignal(MessageSignalHandler messageHandler) {
         messageHandler.handleMessage(message);
     }
 }

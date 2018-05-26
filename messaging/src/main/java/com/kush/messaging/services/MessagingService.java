@@ -26,7 +26,7 @@ import com.kush.messaging.metadata.Metadata;
 import com.kush.messaging.persistors.MessagePersistor;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.messaging.push.signal.MessageSignal;
-import com.kush.messaging.push.signal.MessageSignalReceiver;
+import com.kush.messaging.push.signal.MessageSignalHandler;
 import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
@@ -79,7 +79,7 @@ public class MessagingService extends BaseService {
     public void registerMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
         SignalSpace signalSpace = getSignalSpace();
-        signalSpace.register(MessageSignal.class, new MessageSignalReceiver(messageHandler), currentUserId);
+        signalSpace.register(MessageSignal.class, new MessageSignalHandler(messageHandler), currentUserId);
     }
 
     @AuthenticationRequired
@@ -87,7 +87,7 @@ public class MessagingService extends BaseService {
     public void unregisterMessageHandler(MessageHandler messageHandler) {
         Identifier currentUserId = getCurrentUser().getId();
         SignalSpace signalSpace = getSignalSpace();
-        signalSpace.unregister(MessageSignal.class, new MessageSignalReceiver(messageHandler), currentUserId);
+        signalSpace.unregister(MessageSignal.class, new MessageSignalHandler(messageHandler), currentUserId);
     }
 
     @AuthenticationRequired
