@@ -26,6 +26,11 @@ import com.kush.service.auth.credentials.UserCredentialPersistor;
 import com.kush.utils.remoting.server.ResolutionRequestsReceiver;
 import com.kush.utils.remoting.server.StartupFailedException;
 import com.kush.utils.remoting.server.socket.SocketBasedResolutionRequestsProcessor;
+import com.kush.utils.signaling.RemoteSignalSpace;
+import com.kush.utils.signaling.SignalEmitter;
+import com.kush.utils.signaling.SignalEmitters;
+import com.kush.utils.signaling.SignalSpace;
+import com.kush.utils.signaling.client.SignalHandlerRegistrationRequest;
 
 public class DummyMessagingServer {
 
@@ -35,6 +40,9 @@ public class DummyMessagingServer {
 
         Executor executor = Executors.newFixedThreadPool(5);
         ResolutionRequestsReceiver requestReceiver = new SocketBasedResolutionRequestsProcessor(executor, PORT);
+        SignalEmitter signalEmitter = SignalEmitters.newAsyncEmitter(executor, executor);
+        RemoteSignalSpace signalSpace = new RemoteSignalSpace(executor, signalEmitter);
+        requestReceiver.addResolver(SignalHandlerRegistrationRequest.class, signalSpace);
 
         ApplicationServer server = new ApplicationServer(requestReceiver);
 
@@ -52,6 +60,7 @@ public class DummyMessagingServer {
             .withInstance(GroupPersistor.class, new DefaultGroupPersistor(delegateGroupPersistor, groupMembershipPersistor))
             .withInstance(ContactsPersistor.class, new DefaultContactsPersistor(delegateContactsPersistor))
             .withInstance(MessagePersistor.class, new DefaultMessagePersistor(delegateMessagingPersistor))
+            .withInstance(SignalSpace.class, signalSpace)
             .build();
         server.start(context);
 
