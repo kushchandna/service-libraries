@@ -14,7 +14,6 @@ import com.kush.lib.group.persistors.GroupPersistor;
 import com.kush.lib.group.service.UserGroupService;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
-import com.kush.lib.service.remoting.ServiceRequest;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.persistors.DefaultMessagePersistor;
 import com.kush.messaging.persistors.MessagePersistor;
@@ -41,7 +40,7 @@ public class DummyMessagingServer {
         server.registerService(UserGroupService.class);
 
         Executor executor = Executors.newFixedThreadPool(5);
-        ResolutionRequestsReceiver<ServiceRequest> requestReceiver = new SocketBasedResolutionRequestsProcessor<>(executor, PORT);
+        ResolutionRequestsReceiver requestReceiver = new SocketBasedResolutionRequestsProcessor(executor, PORT);
         server.registerServiceRequestReceiver(requestReceiver);
 
         Persistor<Contact> delegateContactsPersistor = InMemoryPersistor.forType(Contact.class);
