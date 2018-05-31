@@ -33,15 +33,14 @@ public class DummyMessagingServer {
 
     public static void main(String[] args) throws StartupFailedException {
 
-        ApplicationServer server = new ApplicationServer();
+        Executor executor = Executors.newFixedThreadPool(5);
+        ResolutionRequestsReceiver requestReceiver = new SocketBasedResolutionRequestsProcessor(executor, PORT);
+
+        ApplicationServer server = new ApplicationServer(requestReceiver);
 
         server.registerService(MessagingService.class);
         server.registerService(ContactsService.class);
         server.registerService(UserGroupService.class);
-
-        Executor executor = Executors.newFixedThreadPool(5);
-        ResolutionRequestsReceiver requestReceiver = new SocketBasedResolutionRequestsProcessor(executor, PORT);
-        server.registerServiceRequestReceiver(requestReceiver);
 
         Persistor<Contact> delegateContactsPersistor = InMemoryPersistor.forType(Contact.class);
         Persistor<UserCredential> delegateCredentialPersistor = InMemoryPersistor.forType(UserCredential.class);
