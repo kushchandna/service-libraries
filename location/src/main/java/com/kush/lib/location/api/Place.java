@@ -30,4 +30,9 @@ public class Place implements Serializable {
     public String getAddress() {
         return address;
     }
+
+    @Override
+    public String toString() {
+        return "Place [name=" + name + ", location=" + location + ", address=" + address + "]";
+    }
 }

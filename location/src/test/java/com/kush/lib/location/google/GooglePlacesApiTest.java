@@ -1,11 +1,14 @@
 package com.kush.lib.location.google;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
+import com.kush.lib.location.api.Place;
+import com.kush.utils.http.HttpClient;
+import com.kush.utils.http.HttpResponseReader;
+import com.kush.utils.http.HttpResponseStringReader;
 
 public class GooglePlacesApiTest {
 
@@ -14,7 +17,7 @@ public class GooglePlacesApiTest {
 
     private static String apiKey;
 
-    private GoogleApiConnection connection;
+    private HttpClient<Place> client;
 
     @BeforeClass
     public static void beforeAllTests() throws Exception {
@@ -23,21 +26,27 @@ public class GooglePlacesApiTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        connection = new GoogleApiConnection(apiKey);
-    }
-
-    @After
-    public void afterEachTest() throws Exception {
-        connection.close();
+        String apiUrl = prepareNearbySearchUrl();
+        HttpResponseReader<Place> responseReader = createHttpResponsePlaceReader();
+        client = new HttpClient<>(apiUrl, responseReader);
     }
 
     @Test
     public void nearbySearch() throws Exception {
-        String nearbySearchContext = "/place/nearbysearch";
-        String apiUrl = BASE_URL + nearbySearchContext + "/" + OUTPUT_JSON;
-        String result = connection.getResult(apiUrl, ImmutableMap.of(
+        Place place = client.getObject(ImmutableMap.of(
                 "location", "28.635318,77.367220",
-                "radius", 500));
-        System.out.println(result);
+                "radius", 500,
+                "key", apiKey));
+        System.out.println(place);
+    }
+
+    private String prepareNearbySearchUrl() {
+        String nearbySearchContext = "/place/nearbysearch";
+        return BASE_URL + nearbySearchContext + "/" + OUTPUT_JSON;
+    }
+
+    private HttpResponseReader<Place> createHttpResponsePlaceReader() {
+        HttpResponseStringReader stringReader = new HttpResponseStringReader();
+        return new HttpResponseGooglePlaceReader(stringReader);
     }
 }

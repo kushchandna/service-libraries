@@ -5,8 +5,8 @@ import java.io.IOException;
 import com.google.common.collect.ImmutableMap;
 import com.kush.lib.location.api.Place;
 import com.kush.lib.location.api.PlaceFinder;
-import com.kush.utils.convertor.StringConvertor;
 import com.kush.utils.http.HttpClient;
+import com.kush.utils.http.HttpResponseStringReader;
 
 public class GooglePoweredPlaceFinder implements PlaceFinder {
 
@@ -18,14 +18,12 @@ public class GooglePoweredPlaceFinder implements PlaceFinder {
         try {
             String key = GoogleApiKeyLoader.loadKey();
             String placesApiUrl = GoogleApi.getPlacesApiUrl();
-
-            StringConvertor convertor = null;
-            HttpClient httpClient = new HttpClient(placesApiUrl, convertor);
-            Object result = httpClient.getObject(ImmutableMap.of(
+            HttpResponseStringReader stringReader = new HttpResponseStringReader();
+            HttpResponseGooglePlaceReader placeReader = new HttpResponseGooglePlaceReader(stringReader);
+            HttpClient<Place> httpClient = new HttpClient<>(placesApiUrl, placeReader);
+            return httpClient.getObject(ImmutableMap.of(
                     "query", text,
-                    "key", key), Object.class);
-            result.toString();
-            return null;
+                    "key", key));
         } catch (IOException e) {
             throw new PlaceSearchFailedException(e.getMessage(), e);
         }
