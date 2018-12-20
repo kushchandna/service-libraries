@@ -21,9 +21,9 @@ public class GooglePoweredPlaceFinder implements PlaceFinder {
 
             StringConvertor convertor = null;
             HttpClient httpClient = new HttpClient(placesApiUrl, convertor);
-            Object result = httpClient.getObject(Object.class, ImmutableMap.of(
+            Object result = httpClient.getObject(ImmutableMap.of(
                     "query", text,
-                    "key", key));
+                    "key", key), Object.class);
             result.toString();
             return null;
         } catch (IOException e) {
