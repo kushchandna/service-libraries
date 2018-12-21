@@ -2,7 +2,7 @@ package com.kush.lib.location.services;
 
 import com.kush.lib.location.api.Place;
 import com.kush.lib.location.api.PlaceFinder;
-import com.kush.lib.location.google.PlaceSearchFailedException;
+import com.kush.lib.location.api.PlaceSearchFailedException;
 import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;

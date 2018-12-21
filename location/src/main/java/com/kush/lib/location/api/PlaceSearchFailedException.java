@@ -1,4 +1,4 @@
-package com.kush.lib.location.google;
+package com.kush.lib.location.api;
 
 public class PlaceSearchFailedException extends Exception {
 

@@ -1,6 +1,6 @@
 package com.kush.lib.location.google;
 
-public class GoogleApi {
+class GoogleApi {
 
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api";
 

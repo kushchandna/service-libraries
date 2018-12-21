@@ -13,7 +13,7 @@ import com.kush.lib.location.api.Place;
 import com.kush.utils.http.HttpResponseReader;
 import com.kush.utils.http.HttpResponseStringReader;
 
-public class HttpResponseGooglePlaceReader implements HttpResponseReader<Place> {
+class HttpResponseGooglePlaceReader implements HttpResponseReader<Place> {
 
     private final HttpResponseStringReader stringReader;
 

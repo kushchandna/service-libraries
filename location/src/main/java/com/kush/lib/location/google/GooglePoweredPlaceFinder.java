@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.google.common.collect.ImmutableMap;
 import com.kush.lib.location.api.Place;
 import com.kush.lib.location.api.PlaceFinder;
+import com.kush.lib.location.api.PlaceSearchFailedException;
 import com.kush.utils.http.HttpClient;
 import com.kush.utils.http.HttpResponseStringReader;
 
