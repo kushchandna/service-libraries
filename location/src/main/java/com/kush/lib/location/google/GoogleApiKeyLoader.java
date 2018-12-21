@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-class GoogleApiKeyLoader {
+public class GoogleApiKeyLoader {
 
     private static final String API_FILE_NAME = "google_places_api_key.dat";
     private static final Path API_FILE_PATH = Paths.get("src", "test", "resources", API_FILE_NAME);
