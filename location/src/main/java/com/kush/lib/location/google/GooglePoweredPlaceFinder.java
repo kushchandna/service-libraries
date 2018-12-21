@@ -10,22 +10,30 @@ import com.kush.utils.http.HttpResponseStringReader;
 
 public class GooglePoweredPlaceFinder implements PlaceFinder {
 
-    public GooglePoweredPlaceFinder() {
+    private final String apiKey;
+
+    private final HttpClient<Place> httpClient;
+
+    public GooglePoweredPlaceFinder(String apiKey) {
+        this.apiKey = apiKey;
+        httpClient = createTextSearchHttpClient();
     }
 
     @Override
     public Place find(String text) throws PlaceSearchFailedException {
         try {
-            String key = GoogleApiKeyLoader.loadKey();
-            String placesApiUrl = GoogleApi.getPlacesApiUrl();
-            HttpResponseStringReader stringReader = new HttpResponseStringReader();
-            HttpResponseGooglePlaceReader placeReader = new HttpResponseGooglePlaceReader(stringReader);
-            HttpClient<Place> httpClient = new HttpClient<>(placesApiUrl, placeReader);
             return httpClient.getObject(ImmutableMap.of(
                     "query", text,
-                    "key", key));
+                    "key", apiKey));
         } catch (IOException e) {
             throw new PlaceSearchFailedException(e.getMessage(), e);
         }
+    }
+
+    private HttpClient<Place> createTextSearchHttpClient() {
+        String textSearchApiUrl = GoogleApi.getTextSearchApiUrl();
+        HttpResponseStringReader stringReader = new HttpResponseStringReader();
+        HttpResponseGooglePlaceReader placeReader = new HttpResponseGooglePlaceReader(stringReader);
+        return new HttpClient<>(textSearchApiUrl, placeReader);
     }
 }
