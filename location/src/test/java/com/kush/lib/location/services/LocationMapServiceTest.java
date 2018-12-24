@@ -17,8 +17,7 @@ public class LocationMapServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        locationMapService = new LocationMapService();
-        registerService(locationMapService);
+        locationMapService = registerService(LocationMapService.class);
     }
 
     @Test

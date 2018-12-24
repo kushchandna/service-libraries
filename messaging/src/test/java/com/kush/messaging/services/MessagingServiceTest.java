@@ -57,16 +57,13 @@ import com.kush.utils.id.Identifier;
 
 public class MessagingServiceTest extends BaseServiceTest {
 
-    private final MessagingService messagingService;
-    private final UserGroupService groupService;
-    private final ContactsService contactsService;
+    private MessagingService messagingService;
+    private UserGroupService groupService;
+    private ContactsService contactsService;
 
     private final ExecutorService emitterExecutor;
 
     public MessagingServiceTest() {
-        messagingService = new MessagingService();
-        groupService = new UserGroupService();
-        contactsService = new ContactsService();
         emitterExecutor = Executors.newSingleThreadExecutor();
     }
 
@@ -82,9 +79,9 @@ public class MessagingServiceTest extends BaseServiceTest {
         Persistor<Contact> contactsPersistor = InMemoryPersistor.forType(Contact.class);
         addToContext(ContactsPersistor.class, new DefaultContactsPersistor(contactsPersistor));
 
-        registerService(messagingService);
-        registerService(groupService);
-        registerService(contactsService);
+        messagingService = registerService(MessagingService.class);
+        groupService = registerService(UserGroupService.class);
+        contactsService = registerService(ContactsService.class);
     }
 
     @After

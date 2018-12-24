@@ -32,9 +32,7 @@ public class ContactsServiceTest extends BaseServiceTest {
     public void beforeEachTest() throws Exception {
         Persistor<Contact> contactsPersistor = InMemoryPersistor.forType(Contact.class);
         addToContext(ContactsPersistor.class, new DefaultContactsPersistor(contactsPersistor));
-
-        contactsService = new ContactsService();
-        registerService(contactsService);
+        contactsService = registerService(ContactsService.class);
     }
 
     @Test

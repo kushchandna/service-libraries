@@ -31,9 +31,7 @@ public class SubscriptionServiceTest extends BaseServiceTest {
     public void beforeEachTest() throws Exception {
         Persistor<Subscription> subscriptionPersistor = InMemoryPersistor.forType(Subscription.class);
         addToContext(SubscriptionPersistor.class, new DefaultSubscriptionPersistor(subscriptionPersistor));
-
-        subscriptionService = new SubscriptionService();
-        registerService(subscriptionService);
+        subscriptionService = registerService(SubscriptionService.class);
     }
 
     @Test

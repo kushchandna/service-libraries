@@ -48,8 +48,7 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        profileService = new UserProfileService();
-        registerService(profileService);
+        profileService = registerService(UserProfileService.class);
         setupProfilePersistor();
         setupProfileService();
     }
