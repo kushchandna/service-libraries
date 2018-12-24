@@ -1,9 +1,10 @@
-package com.kush.lib.profile.fields;
+package com.kush.lib.profile.services;
 
+import com.kush.lib.profile.fields.Field;
 import com.kush.lib.profile.fields.validators.Validator;
 import com.kush.utils.exceptions.ValidationFailedException;
 
-public class ValueValidator {
+class ValueValidator {
 
     public void validate(Field field, Object value) throws ValidationFailedException {
         Validator validator = field.getValidator();

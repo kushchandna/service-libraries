@@ -10,7 +10,6 @@ import java.util.Set;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.fields.Field;
-import com.kush.lib.profile.fields.ValueValidator;
 import com.kush.lib.profile.persistors.ProfilePersistor;
 import com.kush.lib.profile.template.ProfileTemplate;
 import com.kush.service.BaseService;
@@ -23,13 +22,18 @@ import com.kush.utils.id.Identifier;
 @Service
 public class UserProfileService extends BaseService {
 
+    private final ValueValidator valueValidator;
+
+    public UserProfileService() {
+        valueValidator = new ValueValidator();
+    }
+
     @AuthenticationRequired
     @ServiceMethod
     public void updateProfileField(String fieldName, Object value)
             throws ValidationFailedException, PersistorOperationFailedException, NoSuchFieldException {
         Identifier currentUserId = getCurrentUser().getId();
         ProfileTemplate template = getInstance(ProfileTemplate.class);
-        ValueValidator valueValidator = getInstance(ValueValidator.class);
         ProfilePersistor profilePersistor = getProfilePersistor();
 
         Field field = template.getField(fieldName);
@@ -61,6 +65,12 @@ public class UserProfileService extends BaseService {
         ProfilePersistor profilePersistor = getProfilePersistor();
         List<Profile> profiles = profilePersistor.getMatchingProfiles(fieldVsValues);
         return profiles.stream().map(p -> p.getOwner()).collect(toList());
+    }
+
+    @Override
+    protected void processContext() {
+        checkContextHasValueFor(ProfilePersistor.class);
+        checkContextHasValueFor(ProfileTemplate.class);
     }
 
     private Profile getOrCreateProfile(ProfilePersistor profilePersistor, Identifier currentUserId)

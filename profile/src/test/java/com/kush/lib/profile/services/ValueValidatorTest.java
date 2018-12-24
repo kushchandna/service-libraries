@@ -1,4 +1,4 @@
-package com.kush.lib.profile.fields;
+package com.kush.lib.profile.services;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,11 +8,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.kush.lib.profile.fields.Field;
+import com.kush.lib.profile.fields.Fields;
 import com.kush.lib.profile.fields.validators.standard.EmailValidator;
 import com.kush.lib.profile.fields.validators.standard.MaximumLengthValidator;
 import com.kush.lib.profile.fields.validators.standard.MaximumValueValidator;
 import com.kush.lib.profile.fields.validators.standard.MinimumLengthValidator;
 import com.kush.lib.profile.fields.validators.standard.RangeValidator;
+import com.kush.lib.profile.services.ValueValidator;
 import com.kush.utils.exceptions.ValidationFailedException;
 
 public class ValueValidatorTest {

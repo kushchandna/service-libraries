@@ -24,7 +24,6 @@ import com.kush.lib.profile.entities.DefaultProfilePersistor;
 import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.fields.Field;
 import com.kush.lib.profile.fields.Fields;
-import com.kush.lib.profile.fields.ValueValidator;
 import com.kush.lib.profile.fields.validators.standard.EmailValidator;
 import com.kush.lib.profile.fields.validators.standard.PhoneNumberValidator;
 import com.kush.lib.profile.persistors.ProfilePersistor;
@@ -48,9 +47,9 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        profileService = registerService(UserProfileService.class);
         setupProfilePersistor();
         setupProfileService();
+        profileService = registerService(UserProfileService.class);
     }
 
     @Test
@@ -162,7 +161,6 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
     private void setupProfileService() {
         addToContext(ProfileTemplate.class, createProfileTemplate());
-        addToContext(ValueValidator.class, new ValueValidator());
     }
 
     private ProfileTemplate createProfileTemplate() {
