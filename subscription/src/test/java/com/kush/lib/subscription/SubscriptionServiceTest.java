@@ -38,9 +38,9 @@ public class SubscriptionServiceTest extends BaseServiceTest {
 
     @Test
     public void subscription() throws Exception {
-        User user1 = getUser(0);
-        User user2 = getUser(1);
-        User user3 = getUser(2);
+        User user1 = user(0);
+        User user2 = user(1);
+        User user3 = user(2);
 
         runAuthenticatedOperation(user1, () -> {
             subscriptionService.subscribe(user2.getId());

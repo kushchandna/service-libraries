@@ -56,12 +56,12 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
     @Test
     public void addBasicUserProfileFields() throws Exception {
-        User user1 = getUser(0);
+        User user1 = user(0);
         runAuthenticatedOperation(user1, () -> {
             profileService.updateProfileField(FIELD_EMAIL, "testuser@domain.com");
         });
 
-        User user2 = getUser(1);
+        User user2 = user(1);
         runAuthenticatedOperation(user2, () -> {
             List<Identifier> users = profileService.findMatchingUsers(singletonMultiValueMap(FIELD_EMAIL, "testuser@domain.com"));
             assertThat(users.get(0), is(equalTo(user1.getId())));
@@ -81,17 +81,17 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
     @Test
     public void addRepeatedValueWhenAllowed() throws Exception {
-        User user1 = getUser(0);
+        User user1 = user(0);
         runAuthenticatedOperation(user1, () -> {
             profileService.updateProfileField(FIELD_NAME, "Test User");
         });
 
-        User user2 = getUser(1);
+        User user2 = user(1);
         runAuthenticatedOperation(user2, () -> {
             profileService.updateProfileField(FIELD_NAME, "Test User");
         });
 
-        User user3 = getUser(2);
+        User user3 = user(2);
         runAuthenticatedOperation(user3, () -> {
             List<Identifier> matchingUsers = profileService.findMatchingUsers(singletonMultiValueMap(FIELD_NAME, "Test User"));
             assertThat(matchingUsers, hasSize(2));
@@ -102,12 +102,12 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
     @Test
     public void addRepeatedValueWhenNotAllowed() throws Exception {
-        User user1 = getUser(0);
+        User user1 = user(0);
         runAuthenticatedOperation(user1, () -> {
             profileService.updateProfileField(FIELD_EMAIL, "testuser@domain.com");
         });
 
-        User user2 = getUser(1);
+        User user2 = user(1);
         runAuthenticatedOperation(user2, () -> {
             expected.expect(ValidationFailedException.class);
             expected.expectMessage("User with Email Id 'testuser@domain.com' already exists.");
@@ -117,22 +117,22 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
     @Test
     public void saveNonRepeatablePhoneNumber() throws Exception {
-        User user1 = getUser(0);
+        User user1 = user(0);
         runAuthenticatedOperation(user1, () -> {
         });
 
-        User user2 = getUser(1);
+        User user2 = user(1);
         runAuthenticatedOperation(user2, () -> {
         });
     }
 
     @Test
     public void getMatchingUsersFromContacts() throws Exception {
-        User self = getUser(0);
-        User user1 = getUser(1);
-        User user2 = getUser(2);
-        User user3 = getUser(3);
-        User user4 = getUser(4);
+        User self = user(0);
+        User user1 = user(1);
+        User user2 = user(2);
+        User user3 = user(3);
+        User user4 = user(4);
 
         runAuthenticatedOperation(user1, () -> {
             profileService.updateProfileField(FIELD_EMAIL, "user1@domain.com");

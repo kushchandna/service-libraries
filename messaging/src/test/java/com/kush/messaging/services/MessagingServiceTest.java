@@ -211,11 +211,11 @@ public class MessagingServiceTest extends BaseServiceTest {
 
     @Test
     public void sendMessageToMultipleUsers() throws Exception {
-        User sender = getUser(0);
-        User user1 = getUser(1);
-        User user2 = getUser(2);
-        User user3 = getUser(3);
-        User user4 = getUser(4);
+        User sender = user(0);
+        User user1 = user(1);
+        User user2 = user(2);
+        User user3 = user(3);
+        User user4 = user(4);
 
         String testMessage1 = "Test Message 1";
         String testMessage2 = "Test Message 2";
@@ -258,11 +258,11 @@ public class MessagingServiceTest extends BaseServiceTest {
 
     @Test
     public void sendMessageToGroupAndUsersTogether() throws Exception {
-        User sender = getUser(0);
-        User user1 = getUser(1);
-        User user2 = getUser(2);
-        User user3 = getUser(3);
-        User user4 = getUser(4);
+        User sender = user(0);
+        User user1 = user(1);
+        User user2 = user(2);
+        User user3 = user(3);
+        User user4 = user(4);
 
         String testMessage1 = "Test Message 1";
 
@@ -284,9 +284,9 @@ public class MessagingServiceTest extends BaseServiceTest {
 
     @Test
     public void pushNotificationToGroupMembers() throws Exception {
-        User sender = getUser(0);
-        User user1 = getUser(1);
-        User user2 = getUser(2);
+        User sender = user(0);
+        User user1 = user(1);
+        User user2 = user(2);
 
         String testMessage1 = "Test Message 1";
 
@@ -329,10 +329,10 @@ public class MessagingServiceTest extends BaseServiceTest {
 
     @Test
     public void getMessagingContacts() throws Exception {
-        User user1 = getUser(0);
-        User user2 = getUser(1);
-        User user3 = getUser(2);
-        User user4 = getUser(3);
+        User user1 = user(0);
+        User user2 = user(1);
+        User user3 = user(2);
+        User user4 = user(3);
 
         addToContext(Clock.class, Clock.systemDefaultZone());
 

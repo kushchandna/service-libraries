@@ -39,9 +39,9 @@ public class ContactsServiceTest extends BaseServiceTest {
 
     @Test
     public void contact() throws Exception {
-        User user1 = getUser(0);
-        User user2 = getUser(1);
-        User user3 = getUser(2);
+        User user1 = user(0);
+        User user2 = user(1);
+        User user3 = user(2);
 
         runAuthenticatedOperation(user1, () -> {
             contactsService.addToContacts(user2);
@@ -59,8 +59,8 @@ public class ContactsServiceTest extends BaseServiceTest {
 
     @Test
     public void getContact() throws Exception {
-        User self = getUser(0);
-        User other = getUser(1);
+        User self = user(0);
+        User other = user(1);
 
         runAuthenticatedOperation(self, () -> {
             Contact addedContact = contactsService.addToContacts(other);

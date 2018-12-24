@@ -38,7 +38,7 @@ public class UserGroupServiceTest extends BaseServiceTest {
     public void createEmptyUserGroup() throws Exception {
         String testGroupName = "Test Group";
 
-        User user = getUser(0);
+        User user = user(0);
         runAuthenticatedOperation(() -> {
             Group group = userGroupService.createGroup(testGroupName);
             assertThat(group.getId(), is(notNullValue()));
