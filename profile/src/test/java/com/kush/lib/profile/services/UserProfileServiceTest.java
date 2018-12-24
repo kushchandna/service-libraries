@@ -25,7 +25,6 @@ import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.fields.Field;
 import com.kush.lib.profile.fields.Fields;
 import com.kush.lib.profile.fields.validators.standard.EmailValidator;
-import com.kush.lib.profile.fields.validators.standard.PhoneNumberValidator;
 import com.kush.lib.profile.persistors.ProfilePersistor;
 import com.kush.lib.profile.template.ProfileTemplate;
 import com.kush.lib.profile.template.ProfileTemplateBuilder;
@@ -115,12 +114,11 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
     @Test
     public void saveNonRepeatablePhoneNumber() throws Exception {
-        User user1 = user(0);
-        runAuthenticatedOperation(user1, () -> {
+        runAuthenticatedOperation(user(0), () -> {
+
         });
 
-        User user2 = user(1);
-        runAuthenticatedOperation(user2, () -> {
+        runAuthenticatedOperation(user(1), () -> {
         });
     }
 
@@ -173,7 +171,6 @@ public class UserProfileServiceTest extends BaseServiceTest {
             .withDisplayName("Name")
             .build();
         Field phoneField = Fields.createTextFieldBuilder(FIELD_PHONE)
-            .addValidator(new PhoneNumberValidator())
             .withNoRepeatitionAllowed()
             .build();
         return ProfileTemplateBuilder.create()
