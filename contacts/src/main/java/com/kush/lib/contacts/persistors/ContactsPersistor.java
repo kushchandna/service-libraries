@@ -14,6 +14,8 @@ public interface ContactsPersistor extends Persistor<Contact> {
     Contact addContact(Identifier ownerUserId, Identifiable contactObject, LocalDateTime contactAddTime)
             throws PersistorOperationFailedException;
 
+    void removeContact(Identifier currentUserId, Identifiable contactObject) throws PersistorOperationFailedException;
+
     List<Contact> getContacts(Identifier ownerUserId) throws PersistorOperationFailedException;
 
     Contact getContact(Identifier ownerUserId, Identifiable contactObject) throws PersistorOperationFailedException;

@@ -34,6 +34,14 @@ public class ContactsService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
+    public void removeFromContacts(Identifiable contactObject) throws PersistorOperationFailedException {
+        Identifier currentUserId = getCurrentUser().getId();
+        ContactsPersistor persistor = getInstance(ContactsPersistor.class);
+        persistor.removeContact(currentUserId, contactObject);
+    }
+
+    @AuthenticationRequired
+    @ServiceMethod
     public List<Contact> getContacts() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         ContactsPersistor persistor = getInstance(ContactsPersistor.class);
