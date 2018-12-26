@@ -364,9 +364,22 @@ public class MessagingServiceTest extends BaseServiceTest {
 
             List<MessagingContact> messagingContacts = messagingService.getMessagingContacts();
             assertContacts(messagingContacts, contactUser3, contactGroup1, contactUser2);
-            validateMessageContent(messagingContacts.get(0).getLastMessage(), "Test Message 3");
-            validateMessageContent(messagingContacts.get(1).getLastMessage(), "Test Message 2");
-            validateMessageContent(messagingContacts.get(2).getLastMessage(), "Test Message 1");
+            validateMessageContent(messagingContacts.get(0).getRecentMessages(), "Test Message 3");
+            validateMessageContent(messagingContacts.get(1).getRecentMessages(), "Test Message 2");
+            validateMessageContent(messagingContacts.get(2).getRecentMessages(), "Test Message 1");
+        });
+    }
+
+    @Test
+    public void sendMultipleMessagesToContact() throws Exception {
+        runAuthenticatedOperation(user(0), () -> {
+            sendTextMessage("First Message", user(1));
+            sendTextMessage("Second Message", user(1));
+
+            Contact contact = contactsService.addToContacts(user(1));
+            List<MessagingContact> messagingContacts = messagingService.getMessagingContacts();
+            assertContacts(messagingContacts, contact);
+            validateMessageContent(messagingContacts.get(0).getRecentMessages(), "Second Message", "First Message");
         });
     }
 
@@ -391,6 +404,15 @@ public class MessagingServiceTest extends BaseServiceTest {
             Identifiable receiver = receivers[i];
             Destination destination = destinationIterator.next();
             validateDestination(receiver, destination);
+        }
+    }
+
+    private void validateMessageContent(List<Message> messages, String... expectedTextContents) {
+        assertThat(messages, hasSize(expectedTextContents.length));
+        for (int i = 0; i < expectedTextContents.length; i++) {
+            String expectedTextContent = expectedTextContents[i];
+            Message message = messages.get(i);
+            validateMessageContent(message, expectedTextContent);
         }
     }
 

@@ -42,6 +42,8 @@ import com.kush.utils.signaling.SignalSpace;
 @Service
 public class MessagingService extends BaseService {
 
+    private static final int COUNT_LATEST_MESSAGES = 5;
+
     @AuthenticationRequired
     @ServiceMethod
     public Message sendMessage(Content content, Set<Destination> destinations) throws PersistorOperationFailedException {
@@ -135,28 +137,22 @@ public class MessagingService extends BaseService {
     private MessagingContact toMessagingContact(Identifier currentUserId, Contact contact, MessagePersistor messagePersistor) {
         Identifiable contactObject = contact.getContactObject();
         try {
-            Message latestMessage = getLatestMessage(currentUserId, contactObject, messagePersistor);
-            return new MessagingContact(contact, latestMessage);
+            List<Message> recentMessages = getRecentMessages(currentUserId, contactObject, messagePersistor);
+            return new MessagingContact(contact, recentMessages);
         } catch (PersistorOperationFailedException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
 
-    private Message getLatestMessage(Identifier currentUserId, Identifiable contactObject, MessagePersistor messagePersistor)
-            throws PersistorOperationFailedException {
-        List<Message> recentMessages;
+    private List<Message> getRecentMessages(Identifier currentUserId, Identifiable contactObject,
+            MessagePersistor messagePersistor) throws PersistorOperationFailedException {
         Identifier id = contactObject.getId();
         if (contactObject instanceof User) {
-            recentMessages = messagePersistor.fetchRecentMessagesBetweenUsers(currentUserId, id, 1);
+            return messagePersistor.fetchRecentMessagesBetweenUsers(currentUserId, id, COUNT_LATEST_MESSAGES);
         } else if (contactObject instanceof Group) {
-            recentMessages = messagePersistor.fetchRecentMessagesInGroup(id, 1);
+            return messagePersistor.fetchRecentMessagesInGroup(id, 1);
         } else {
             throw new IllegalStateException("Unsupported contact object found");
-        }
-        if (recentMessages.isEmpty()) {
-            return null;
-        } else {
-            return recentMessages.get(0);
         }
     }
 

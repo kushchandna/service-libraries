@@ -2,6 +2,8 @@ package com.kush.messaging.contacts;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 import com.kush.lib.contacts.entities.Contact;
 import com.kush.messaging.message.Message;
@@ -13,19 +15,24 @@ public class MessagingContact implements Serializable, Comparable<MessagingConta
     private static final long serialVersionUID = 1L;
 
     private final Contact contact;
-    private final Message lastMessage;
+    private final List<Message> recentMessages;
 
-    public MessagingContact(Contact contact, Message lastMessage) {
+    public MessagingContact(Contact contact, List<Message> recentMessages) {
+        Objects.requireNonNull(recentMessages, "recentMessages");
         this.contact = contact;
-        this.lastMessage = lastMessage;
+        this.recentMessages = recentMessages;
     }
 
     public Contact getContact() {
         return contact;
     }
 
-    public Message getLastMessage() {
-        return lastMessage;
+    public List<Message> getRecentMessages() {
+        return recentMessages;
+    }
+
+    private Message getLastMessage() {
+        return recentMessages.isEmpty() ? null : recentMessages.get(recentMessages.size() - 1);
     }
 
     @Override
