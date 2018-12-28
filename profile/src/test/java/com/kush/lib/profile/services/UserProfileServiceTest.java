@@ -31,7 +31,6 @@ import com.kush.lib.profile.template.ProfileTemplateBuilder;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.service.BaseServiceTest;
 import com.kush.utils.exceptions.ValidationFailedException;
-import com.kush.utils.id.Identifier;
 
 public class UserProfileServiceTest extends BaseServiceTest {
 
@@ -60,8 +59,8 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
         User user2 = user(1);
         runAuthenticatedOperation(user2, () -> {
-            List<Identifier> users = profileService.findMatchingUsers(singletonMultiValueMap(FIELD_EMAIL, "testuser@domain.com"));
-            assertThat(users.get(0), is(equalTo(user1.getId())));
+            List<User> users = profileService.findMatchingUsers(singletonMultiValueMap(FIELD_EMAIL, "testuser@domain.com"));
+            assertThat(users.get(0), is(equalTo(user1)));
         });
     }
 
@@ -90,10 +89,10 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
         User user3 = user(2);
         runAuthenticatedOperation(user3, () -> {
-            List<Identifier> matchingUsers = profileService.findMatchingUsers(singletonMultiValueMap(FIELD_NAME, "Test User"));
+            List<User> matchingUsers = profileService.findMatchingUsers(singletonMultiValueMap(FIELD_NAME, "Test User"));
             assertThat(matchingUsers, hasSize(2));
-            assertThat(matchingUsers.get(0), is(equalTo(user1.getId())));
-            assertThat(matchingUsers.get(1), is(equalTo(user2.getId())));
+            assertThat(matchingUsers.get(0), is(equalTo(user1)));
+            assertThat(matchingUsers.get(1), is(equalTo(user2)));
         });
     }
 
@@ -147,8 +146,8 @@ public class UserProfileServiceTest extends BaseServiceTest {
             Map<String, Set<Object>> fieldVsValues = new HashMap<>();
             fieldVsValues.put(FIELD_EMAIL, newHashSet("user1@domain.com", "user2@domain.com"));
             fieldVsValues.put(FIELD_PHONE, newHashSet("111111111", "222222222"));
-            List<Identifier> matchingUsers = profileService.findMatchingUsers(fieldVsValues);
-            assertThat(matchingUsers, containsInAnyOrder(user1.getId(), user2.getId(), user3.getId()));
+            List<User> matchingUsers = profileService.findMatchingUsers(fieldVsValues);
+            assertThat(matchingUsers, containsInAnyOrder(user1, user2, user3));
         });
     }
 

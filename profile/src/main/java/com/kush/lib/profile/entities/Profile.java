@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.kush.lib.service.remoting.auth.User;
 import com.kush.service.annotations.Exportable;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
@@ -12,10 +13,10 @@ import com.kush.utils.id.Identifier;
 public class Profile implements Identifiable {
 
     private final Identifier profileId;
-    private final Identifier owner;
+    private final User owner;
     private final Map<String, Object> fields = new HashMap<>();
 
-    public Profile(Identifier owner, Map<String, Object> fields) {
+    public Profile(User owner, Map<String, Object> fields) {
         this(Identifier.NULL, owner, fields);
     }
 
@@ -23,7 +24,7 @@ public class Profile implements Identifiable {
         this(profileId, profile.getOwner(), profile.getFields());
     }
 
-    public Profile(Identifier profileId, Identifier owner, Map<String, Object> fields) {
+    public Profile(Identifier profileId, User owner, Map<String, Object> fields) {
         this.profileId = profileId;
         this.owner = owner;
         this.fields.putAll(fields);
@@ -34,7 +35,7 @@ public class Profile implements Identifiable {
         return profileId;
     }
 
-    public Identifier getOwner() {
+    public User getOwner() {
         return owner;
     }
 

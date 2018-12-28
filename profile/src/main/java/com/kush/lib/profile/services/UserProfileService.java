@@ -12,12 +12,12 @@ import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.fields.Field;
 import com.kush.lib.profile.persistors.ProfilePersistor;
 import com.kush.lib.profile.template.ProfileTemplate;
+import com.kush.lib.service.remoting.auth.User;
 import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
 import com.kush.service.auth.AuthenticationRequired;
 import com.kush.utils.exceptions.ValidationFailedException;
-import com.kush.utils.id.Identifier;
 
 @Service
 public class UserProfileService extends BaseService {
@@ -32,7 +32,7 @@ public class UserProfileService extends BaseService {
     @ServiceMethod
     public void updateProfileField(String fieldName, Object value)
             throws ValidationFailedException, PersistorOperationFailedException, NoSuchFieldException {
-        Identifier currentUserId = getCurrentUser().getId();
+        User currentUser = getCurrentUser();
         ProfileTemplate template = getInstance(ProfileTemplate.class);
         ProfilePersistor profilePersistor = getProfilePersistor();
 
@@ -40,27 +40,27 @@ public class UserProfileService extends BaseService {
         valueValidator.validate(field, value);
 
         if (field.isNoRepeatitionAllowed()) {
-            List<Identifier> matchingUsers = findMatchingUsers(singletonMultiValueMap(fieldName, value));
+            List<User> matchingUsers = findMatchingUsers(singletonMultiValueMap(fieldName, value));
             if (!matchingUsers.isEmpty()) {
                 throw new ValidationFailedException("User with %s '%s' already exists.", field.getDisplayName(), value);
             }
         }
 
-        Profile profile = getOrCreateProfile(profilePersistor, currentUserId);
+        Profile profile = getOrCreateProfile(profilePersistor, currentUser);
         profilePersistor.updateProfileField(profile.getId(), fieldName, value);
     }
 
     @AuthenticationRequired
     @ServiceMethod
     public Profile getProfile() throws PersistorOperationFailedException {
-        Identifier currentUserId = getCurrentUser().getId();
+        User currentUser = getCurrentUser();
         ProfilePersistor profilePersistor = getProfilePersistor();
-        return profilePersistor.getProfile(currentUserId);
+        return profilePersistor.getProfile(currentUser);
     }
 
     @AuthenticationRequired
     @ServiceMethod
-    public List<Identifier> findMatchingUsers(Map<String, Set<Object>> fieldVsValues) throws PersistorOperationFailedException {
+    public List<User> findMatchingUsers(Map<String, Set<Object>> fieldVsValues) throws PersistorOperationFailedException {
         checkSessionActive();
         ProfilePersistor profilePersistor = getProfilePersistor();
         List<Profile> profiles = profilePersistor.getMatchingProfiles(fieldVsValues);
@@ -73,11 +73,11 @@ public class UserProfileService extends BaseService {
         checkContextHasValueFor(ProfileTemplate.class);
     }
 
-    private Profile getOrCreateProfile(ProfilePersistor profilePersistor, Identifier currentUserId)
+    private Profile getOrCreateProfile(ProfilePersistor profilePersistor, User user)
             throws PersistorOperationFailedException {
-        Profile profile = profilePersistor.getProfile(currentUserId);
+        Profile profile = profilePersistor.getProfile(user);
         if (profile == null) {
-            profile = profilePersistor.createProfile(currentUserId);
+            profile = profilePersistor.createProfile(user);
         }
         return profile;
     }

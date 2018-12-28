@@ -10,6 +10,7 @@ import com.kush.lib.persistence.api.DelegatingPersistor;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.profile.persistors.ProfilePersistor;
+import com.kush.lib.service.remoting.auth.User;
 import com.kush.utils.id.Identifier;
 
 public class DefaultProfilePersistor extends DelegatingPersistor<Profile> implements ProfilePersistor {
@@ -19,13 +20,13 @@ public class DefaultProfilePersistor extends DelegatingPersistor<Profile> implem
     }
 
     @Override
-    public Profile createProfile(Identifier owner) throws PersistorOperationFailedException {
+    public Profile createProfile(User owner) throws PersistorOperationFailedException {
         Profile profile = new Profile(owner, Collections.emptyMap());
         return save(profile);
     }
 
     @Override
-    public Profile getProfile(Identifier owner) throws PersistorOperationFailedException {
+    public Profile getProfile(User owner) throws PersistorOperationFailedException {
         List<Profile> filteredProfiles = fetch(p -> p.getOwner().equals(owner));
         return filteredProfiles.isEmpty() ? null : filteredProfiles.get(0);
     }
