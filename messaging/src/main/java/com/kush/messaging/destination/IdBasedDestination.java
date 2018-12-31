@@ -6,6 +6,8 @@ import com.kush.utils.id.Identifier;
 @Exportable
 public abstract class IdBasedDestination implements Destination {
 
+    private static final long serialVersionUID = 1L;
+
     private final Identifier id;
 
     public IdBasedDestination(Identifier id) {

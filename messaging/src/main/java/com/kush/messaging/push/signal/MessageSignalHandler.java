@@ -6,6 +6,8 @@ import com.kush.utils.signaling.SignalHandler;
 
 public class MessageSignalHandler implements SignalHandler, MessageHandler {
 
+    private static final long serialVersionUID = 1L;
+
     private final MessageHandler delegate;
 
     public MessageSignalHandler(MessageHandler delegate) {

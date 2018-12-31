@@ -1,5 +1,6 @@
 package com.kush.lib.profile.entities;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,9 @@ import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 
 @Exportable
-public class Profile implements Identifiable {
+public class Profile implements Identifiable, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Identifier profileId;
     private final User owner;

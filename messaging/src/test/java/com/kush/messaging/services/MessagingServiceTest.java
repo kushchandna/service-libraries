@@ -460,6 +460,8 @@ public class MessagingServiceTest extends BaseServiceTest {
 
     private final class TestMessageHandler implements MessageHandler {
 
+        private static final long serialVersionUID = 1L;
+
         private CountDownLatch latch;
         private boolean registered = false;
         private String expectedMessage;

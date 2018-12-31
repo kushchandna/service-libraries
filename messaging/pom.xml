@@ -120,5 +120,10 @@
 			<artifactId>contacts</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.kush.lib</groupId>
+			<artifactId>profile</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

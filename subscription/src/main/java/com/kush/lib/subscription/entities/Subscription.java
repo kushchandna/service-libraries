@@ -1,5 +1,6 @@
 package com.kush.lib.subscription.entities;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.kush.service.annotations.Exportable;
@@ -7,7 +8,9 @@ import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 
 @Exportable
-public class Subscription implements Identifiable {
+public class Subscription implements Identifiable, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Identifier subscriptionId;
     private final Identifier subscriber;

@@ -14,6 +14,15 @@ import com.kush.lib.group.persistors.GroupPersistor;
 import com.kush.lib.group.service.UserGroupService;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.profile.entities.DefaultProfilePersistor;
+import com.kush.lib.profile.entities.Profile;
+import com.kush.lib.profile.fields.Field;
+import com.kush.lib.profile.fields.FieldBuilder;
+import com.kush.lib.profile.fields.validators.standard.NonEmptyTextValidator;
+import com.kush.lib.profile.persistors.ProfilePersistor;
+import com.kush.lib.profile.services.UserProfileService;
+import com.kush.lib.profile.template.ProfileTemplate;
+import com.kush.lib.profile.template.ProfileTemplateBuilder;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.persistors.DefaultMessagePersistor;
 import com.kush.messaging.persistors.MessagePersistor;
@@ -49,7 +58,18 @@ public class DummyMessagingServer {
         server.registerService(MessagingService.class);
         server.registerService(ContactsService.class);
         server.registerService(UserGroupService.class);
+        server.registerService(UserProfileService.class);
 
+        Field userIdField = new FieldBuilder("userId")
+            .withDisplayName("User ID")
+            .withNoRepeatitionAllowed()
+            .addValidator(new NonEmptyTextValidator())
+            .build();
+        ProfileTemplate profileTemplate = new ProfileTemplateBuilder()
+            .withField(userIdField)
+            .build();
+
+        Persistor<Profile> delegateProfilePersistor = InMemoryPersistor.forType(Profile.class);
         Persistor<Contact> delegateContactsPersistor = InMemoryPersistor.forType(Contact.class);
         Persistor<UserCredential> delegateCredentialPersistor = InMemoryPersistor.forType(UserCredential.class);
         Persistor<Group> delegateGroupPersistor = InMemoryPersistor.forType(Group.class);
@@ -60,7 +80,9 @@ public class DummyMessagingServer {
             .withInstance(GroupPersistor.class, new DefaultGroupPersistor(delegateGroupPersistor, groupMembershipPersistor))
             .withInstance(ContactsPersistor.class, new DefaultContactsPersistor(delegateContactsPersistor))
             .withInstance(MessagePersistor.class, new DefaultMessagePersistor(delegateMessagingPersistor))
+            .withInstance(ProfilePersistor.class, new DefaultProfilePersistor(delegateProfilePersistor))
             .withInstance(SignalSpace.class, signalSpace)
+            .withInstance(ProfileTemplate.class, profileTemplate)
             .build();
         server.start(context);
 
