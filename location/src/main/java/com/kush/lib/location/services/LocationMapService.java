@@ -11,6 +11,6 @@ import com.kush.service.annotations.Service;
 public class LocationMapService extends BaseService {
 
     public Route getRoute(List<Location> asList) {
-        return null;
+        return new Route();
     }
 }
