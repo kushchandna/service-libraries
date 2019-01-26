@@ -1,0 +1,85 @@
+Q1. Have you watched this movie?
+Opt1. Yes
+Opt2. No
+
+Responses:
+User1 - Yes (Yes: 1, No: 0)
+User2 - Yes (Yes: 1, No: 0)
+User3 - No (Yes: 0, No: 1)
+=====================================================
+
+Q2. Which location do you prefer (choose one)?
+Opt1. Delhi
+Opt2. London
+Opt3. Paris
+
+Responses:
+User1 - Delhi (Delhi: 1, London: 0, Paris: 0)
+User2 - Paris (Delhi: 0, London: 0, Paris: 1)
+User3 - Paris (Delhi: 0, London: 0, Paris: 1)
+=====================================================
+
+Q3. Which location(s) do you prefer (choose any)?
+Opt1. Delhi
+Opt2. London
+Opt3. Paris
+
+Responses:
+User1 - Delhi, Paris (Delhi: 1, London: 0, Paris: 1)
+User2 - Paris (Delhi: 0, London: 0, Paris: 1)
+User3 - Paris, London (Delhi: 0, London: 1, Paris: 1)
+=====================================================
+
+Q4. Rank locations according to preferences (no two at same position).
+Opt1. Delhi
+Opt2. London
+Opt3. Paris
+
+Responses:
+User1 - Delhi, Paris, London (Delhi: 1, London: 3, Paris: 2)
+User2 - Paris, London, Delhi (Delhi: 3, London: 2, Paris: 1)
+User3 - Paris, London, Delhi (Delhi: 3, London: 2, Paris: 1)
+=====================================================
+
+Q5. Rank locations according to preferences (two can be at same position).
+Opt1. Delhi
+Opt2. London
+Opt3. Paris
+
+Responses:
+User1 - Delhi, Paris, London (Delhi: 1, London: 3, Paris: 2)
+User2 - Paris, London, Delhi (Delhi: 2, London: 2, Paris: 1)
+User3 - Paris, London, Delhi (Delhi: 3, London: 1, Paris: 1)
+=====================================================
+
+Q6. Percentage of chances.
+Opt1. Delhi
+Opt2. London
+Opt3. Paris
+
+Responses:
+User1 - Delhi 100, Paris 90, London 0
+User2 - Paris 100, London 20, Delhi 10
+User3 - Paris 90, London 90, Delhi 0
+=====================================================
+
+Q6. Rate options out of 10 (integer).
+Opt1. Delhi
+Opt2. London
+Opt3. Paris
+
+Responses:
+User1 - Delhi 10, Paris 9, London 0
+User2 - Paris 10, London 2, Delhi 1
+User3 - Paris 9, London 9, Delhi 0
+=====================================================
+
+Q7. Rate options out of 10 (float).
+Opt1. Delhi
+Opt2. London
+Opt3. Paris
+
+Responses:
+User1 - Delhi 10.0, Paris 9.9, London 0.5
+User2 - Paris 10.0, London 2.1, Delhi 1.0
+User3 - Paris 9.5, London 9.2, Delhi 0.0
