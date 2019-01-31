@@ -1,7 +1,6 @@
 package com.kush.messaging.services;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import static java.util.concurrent.Executors.newFixedThreadPool;
 
 import com.kush.lib.contacts.entities.Contact;
 import com.kush.lib.contacts.persistors.ContactsPersistor;
@@ -45,8 +44,8 @@ public class DummyMessagingServer {
 
     public static void main(String[] args) throws StartupFailedException {
 
-        Executor executor = Executors.newFixedThreadPool(5);
-        ResolutionRequestsReceiver requestReceiver = new SocketBasedResolutionRequestsProcessor(executor, PORT);
+        ResolutionRequestsReceiver requestReceiver = new SocketBasedResolutionRequestsProcessor(newFixedThreadPool(5), PORT);
+
         RemoteSignalSpace signalSpace = new RemoteSignalSpace();
         requestReceiver.addResolver(SignalHandlerRegistrationRequest.class, signalSpace);
 
@@ -70,13 +69,13 @@ public class DummyMessagingServer {
         Persistor<Contact> delegateContactsPersistor = InMemoryPersistor.forType(Contact.class);
         Persistor<UserCredential> delegateCredentialPersistor = InMemoryPersistor.forType(UserCredential.class);
         Persistor<Group> delegateGroupPersistor = InMemoryPersistor.forType(Group.class);
-        Persistor<GroupMembership> groupMembershipPersistor = InMemoryPersistor.forType(GroupMembership.class);
-        Persistor<Message> delegateMessagingPersistor = InMemoryPersistor.forType(Message.class);
+        Persistor<GroupMembership> delegateMembershipPersistor = InMemoryPersistor.forType(GroupMembership.class);
+        Persistor<Message> delegateMessagePersistor = InMemoryPersistor.forType(Message.class);
         Context context = ContextBuilder.create()
             .withInstance(UserCredentialPersistor.class, new DefaultUserCredentialPersistor(delegateCredentialPersistor))
-            .withInstance(GroupPersistor.class, new DefaultGroupPersistor(delegateGroupPersistor, groupMembershipPersistor))
+            .withInstance(GroupPersistor.class, new DefaultGroupPersistor(delegateGroupPersistor, delegateMembershipPersistor))
             .withInstance(ContactsPersistor.class, new DefaultContactsPersistor(delegateContactsPersistor))
-            .withInstance(MessagePersistor.class, new DefaultMessagePersistor(delegateMessagingPersistor))
+            .withInstance(MessagePersistor.class, new DefaultMessagePersistor(delegateMessagePersistor))
             .withInstance(ProfilePersistor.class, new DefaultProfilePersistor(delegateProfilePersistor))
             .withInstance(SignalSpace.class, signalSpace)
             .withInstance(ProfileTemplate.class, profileTemplate)
