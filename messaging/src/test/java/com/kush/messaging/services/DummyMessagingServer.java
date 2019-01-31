@@ -49,8 +49,8 @@ public class DummyMessagingServer {
 
         Executor executor = Executors.newFixedThreadPool(5);
         ResolutionRequestsReceiver requestReceiver = new SocketBasedResolutionRequestsProcessor(executor, PORT);
-        SignalEmitter signalEmitter = SignalEmitters.newAsyncEmitter(executor, executor);
-        RemoteSignalSpace signalSpace = new RemoteSignalSpace(executor, signalEmitter);
+        SignalEmitter signalEmitter = SignalEmitters.newAsyncEmitter();
+        RemoteSignalSpace signalSpace = new RemoteSignalSpace(signalEmitter);
         requestReceiver.addResolver(SignalHandlerRegistrationRequest.class, signalSpace);
 
         ApplicationServer server = new ApplicationServer(requestReceiver);

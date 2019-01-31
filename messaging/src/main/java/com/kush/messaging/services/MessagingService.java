@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executor;
 
 import com.kush.lib.contacts.entities.Contact;
 import com.kush.lib.contacts.services.ContactsService;
@@ -31,7 +30,6 @@ import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
 import com.kush.service.auth.AuthenticationRequired;
-import com.kush.utils.commons.CommonExecutors;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
@@ -127,9 +125,8 @@ public class MessagingService extends BaseService {
         checkContextHasValueFor(MessagePersistor.class);
         addIfDoesNotExist(Clock.class, Clock.systemUTC());
         if (!contextContains(SignalSpace.class)) {
-            Executor executor = CommonExecutors.newThreadExecutor();
             SignalEmitter signalEmitter = SignalEmitters.newAsyncEmitter();
-            SignalSpace signalSpace = new SignalSpace(executor, signalEmitter);
+            SignalSpace signalSpace = new SignalSpace(signalEmitter);
             enrichContext(SignalSpace.class, signalSpace);
         }
     }
