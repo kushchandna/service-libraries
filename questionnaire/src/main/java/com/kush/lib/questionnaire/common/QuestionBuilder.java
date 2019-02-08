@@ -1,4 +1,4 @@
-package questionnaire;
+package com.kush.lib.questionnaire.common;
 
 public class QuestionBuilder {
 
@@ -6,7 +6,7 @@ public class QuestionBuilder {
         return null;
     }
 
-    public QuestionBuilder withOption(int optionId, String optionContent) {
+    public QuestionBuilder withOption(String optionContent) {
         return null;
     }
 

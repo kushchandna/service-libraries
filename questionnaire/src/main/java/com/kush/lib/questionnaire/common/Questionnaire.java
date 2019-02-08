@@ -1,9 +1,9 @@
-package questionnaire;
+package com.kush.lib.questionnaire.common;
 
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 
-public class Survey implements Identifiable {
+public class Questionnaire implements Identifiable {
 
     @Override
     public Identifier getId() {
