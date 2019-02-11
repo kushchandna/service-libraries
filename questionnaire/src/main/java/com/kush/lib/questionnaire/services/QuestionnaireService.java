@@ -2,9 +2,6 @@ package com.kush.lib.questionnaire.services;
 
 import java.util.List;
 
-import com.kush.lib.questionnaire.common.Question;
-import com.kush.lib.questionnaire.common.Questionnaire;
-import com.kush.lib.questionnaire.common.QuestionnaireQuestion;
 import com.kush.service.BaseService;
 import com.kush.utils.id.Identifier;
 
@@ -14,11 +11,15 @@ public class QuestionnaireService extends BaseService {
         return null;
     }
 
-    public QuestionnaireQuestion addQuestion(Identifier questionnaireId, Question question) {
+    public Question addQuestion(Identifier questionnaireId, String content) {
         return null;
     }
 
-    public List<QuestionnaireQuestion> getQuestions() {
+    public Option addOption(Identifier questionId, String content) {
+        return null;
+    }
+
+    public List<Question> getQuestions() {
         return null;
     }
 }
