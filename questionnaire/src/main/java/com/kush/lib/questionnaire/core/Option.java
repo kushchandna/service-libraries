@@ -10,6 +10,14 @@ public class Option implements ObjectWithContent, Identifiable {
     private final String content;
     private final Identifier addedBy;
 
+    public Option(Identifier optionId, Option option) {
+        this(optionId, option.getQuestionId(), option.getContent(), option.getAddedBy());
+    }
+
+    public Option(Identifier questionId, String content, Identifier addedBy) {
+        this(Identifier.NULL, questionId, content, addedBy);
+    }
+
     public Option(Identifier optionId, Identifier questionId, String content, Identifier addedBy) {
         this.optionId = optionId;
         this.questionId = questionId;

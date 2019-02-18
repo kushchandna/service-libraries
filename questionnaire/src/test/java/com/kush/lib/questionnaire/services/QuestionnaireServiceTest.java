@@ -10,8 +10,14 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.kush.lib.persistence.api.Persistor;
+import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.questionnaire.core.Option;
 import com.kush.lib.questionnaire.core.Question;
+import com.kush.lib.questionnaire.persistance.DefaultOptionPersistor;
+import com.kush.lib.questionnaire.persistance.DefaultQuestionPersistor;
+import com.kush.lib.questionnaire.persistance.OptionPersistor;
+import com.kush.lib.questionnaire.persistance.QuestionPersistor;
 import com.kush.service.BaseServiceTest;
 
 public class QuestionnaireServiceTest extends BaseServiceTest {
@@ -20,6 +26,10 @@ public class QuestionnaireServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
+        Persistor<Question> delegateQuestPersistor = InMemoryPersistor.forType(Question.class);
+        addToContext(QuestionPersistor.class, new DefaultQuestionPersistor(delegateQuestPersistor));
+        Persistor<Option> delegateOptPersistor = InMemoryPersistor.forType(Option.class);
+        addToContext(OptionPersistor.class, new DefaultOptionPersistor(delegateOptPersistor));
         questionnaireService = registerService(QuestionnaireService.class);
     }
 

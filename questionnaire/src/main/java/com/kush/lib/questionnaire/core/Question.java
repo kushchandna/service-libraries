@@ -9,6 +9,14 @@ public class Question implements ObjectWithContent, Identifiable {
     private final String content;
     private final Identifier addedBy;
 
+    public Question(Identifier questionId, Question question) {
+        this(questionId, question.getContent(), question.getAddedBy());
+    }
+
+    public Question(String content, Identifier addedBy) {
+        this(Identifier.NULL, content, addedBy);
+    }
+
     public Question(Identifier questionId, String content, Identifier addedBy) {
         this.questionId = questionId;
         this.content = content;
