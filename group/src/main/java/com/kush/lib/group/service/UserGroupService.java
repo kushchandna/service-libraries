@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
 import com.kush.lib.group.persistors.GroupPersistor;
@@ -19,8 +22,7 @@ import com.kush.utils.id.Identifier;
 @Service
 public class UserGroupService extends BaseService {
 
-    private static final com.kush.logger.Logger LOGGER =
-            com.kush.logger.LoggerFactory.INSTANCE.getLogger(UserGroupService.class);
+    private static final Logger LOGGER = LogManager.getFormatterLogger(UserGroupService.class);
 
     @AuthenticationRequired
     @ServiceMethod
