@@ -10,6 +10,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.kush.lib.persistence.api.Persistor;
+import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.service.BaseServiceTest;
 
 public class PreferenceQuestionE2E extends BaseServiceTest {
@@ -18,6 +20,11 @@ public class PreferenceQuestionE2E extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
+        Persistor<PreferenceQuestion> delegatePrefQuestPersistor = InMemoryPersistor.forType(PreferenceQuestion.class);
+        Persistor<PreferenceOption> optionPersistor = InMemoryPersistor.forType(PreferenceOption.class);
+        Persistor<PreferenceAnswer> answerPersistor = InMemoryPersistor.forType(PreferenceAnswer.class);
+        addToContext(PreferenceQuestionPersistor.class,
+                new DefaultPreferenceQuestionPersistor(delegatePrefQuestPersistor, optionPersistor, answerPersistor));
         questionService = registerService(PreferenceQuestionService.class);
     }
 
@@ -25,23 +32,25 @@ public class PreferenceQuestionE2E extends BaseServiceTest {
     public void e2e() throws Exception {
         runAuthenticatedOperation(user(0), () -> {
             PreferenceQuestion question = questionService.createQuestion("Preferred places?");
-            PreferenceOption option = questionService.addOption("Delhi");
+            PreferenceOption option = questionService.addOption(question.getId(), "Delhi");
             questionService.addAnswer(question.getId(), option.getId(), Preference.PREFERRED);
         });
 
         runAuthenticatedOperation(user(1), () -> {
             PreferenceQuestion question = getQuestion();
-            PreferenceOption delhiOption = question.getPreferenceOptions().get(0);
+            List<PreferenceOption> options = questionService.getOptions(question.getId());
+            PreferenceOption delhiOption = options.get(0);
             questionService.addAnswer(question.getId(), delhiOption.getId(), Preference.PREFERRED);
 
-            PreferenceOption londonOption = questionService.addOption("London");
+            PreferenceOption londonOption = questionService.addOption(question.getId(), "London");
             questionService.addAnswer(question.getId(), londonOption.getId(), Preference.PREFERRED);
         });
 
         runAuthenticatedOperation(user(2), () -> {
             PreferenceQuestion question = getQuestion();
-            PreferenceOption delhiOption = question.getPreferenceOptions().get(0);
-            PreferenceOption londonOption = question.getPreferenceOptions().get(1);
+            List<PreferenceOption> options = questionService.getOptions(question.getId());
+            PreferenceOption delhiOption = options.get(0);
+            PreferenceOption londonOption = options.get(1);
             questionService.addAnswer(question.getId(), delhiOption.getId(), Preference.REJECTED);
             questionService.addAnswer(question.getId(), londonOption.getId(), Preference.PREFERRED);
         });
@@ -52,7 +61,7 @@ public class PreferenceQuestionE2E extends BaseServiceTest {
             PreferenceQuestion question = questionService.getQuestion(onlyQuestion.getId());
             assertThat(question.getContent(), is(equalTo("Preferred places?")));
             assertThat(question.getAddedBy(), is(equalTo(user(0).getId())));
-            List<PreferenceOption> options = question.getPreferenceOptions();
+            List<PreferenceOption> options = questionService.getOptions(question.getId());
             assertThat(options, hasSize(2));
             PreferenceOption delhiOption = options.get(0);
             assertThat(delhiOption.getContent(), is(equalTo("Delhi")));
@@ -96,7 +105,7 @@ public class PreferenceQuestionE2E extends BaseServiceTest {
         });
     }
 
-    private PreferenceQuestion getQuestion() {
+    private PreferenceQuestion getQuestion() throws Exception {
         List<PreferenceQuestion> questions = questionService.getAllQuestions();
         return questions.get(0);
     }

@@ -1,9 +1,5 @@
 package com.kush.lib.questionnaire;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 
@@ -12,13 +8,19 @@ public class PreferenceQuestion implements ContentContainer, Identifiable {
     private final Identifier questionId;
     private final String content;
     private final Identifier addedBy;
-    private final List<PreferenceOption> options;
 
-    public PreferenceQuestion(Identifier questionId, String content, Identifier addedBy, List<PreferenceOption> options) {
+    public PreferenceQuestion(String content, Identifier addedBy) {
+        this(Identifier.NULL, content, addedBy);
+    }
+
+    public PreferenceQuestion(Identifier questionId, PreferenceQuestion question) {
+        this(questionId, question.getContent(), question.getAddedBy());
+    }
+
+    public PreferenceQuestion(Identifier questionId, String content, Identifier addedBy) {
         this.questionId = questionId;
         this.content = content;
         this.addedBy = addedBy;
-        this.options = new ArrayList<>(options);
     }
 
     @Override
@@ -34,9 +36,5 @@ public class PreferenceQuestion implements ContentContainer, Identifiable {
     @Override
     public Identifier getAddedBy() {
         return addedBy;
-    }
-
-    public List<PreferenceOption> getPreferenceOptions() {
-        return Collections.unmodifiableList(options);
     }
 }

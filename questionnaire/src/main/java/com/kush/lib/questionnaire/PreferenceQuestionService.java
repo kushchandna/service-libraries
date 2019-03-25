@@ -2,32 +2,53 @@ package com.kush.lib.questionnaire;
 
 import java.util.List;
 
+import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.service.BaseService;
 import com.kush.utils.id.Identifier;
 
 public class PreferenceQuestionService extends BaseService {
 
-    public PreferenceQuestion createQuestion(String content) {
-        return null;
+    public PreferenceQuestion createQuestion(String content) throws PersistorOperationFailedException {
+        Identifier addedBy = getCurrentUser().getId();
+        PreferenceQuestionPersistor persistor = getInstance(PreferenceQuestionPersistor.class);
+        return persistor.createQuestion(content, addedBy);
     }
 
-    public PreferenceOption addOption(String content) {
-        return null;
+    public PreferenceOption addOption(Identifier questionId, String content) throws PersistorOperationFailedException {
+        Identifier addedBy = getCurrentUser().getId();
+        PreferenceQuestionPersistor persistor = getInstance(PreferenceQuestionPersistor.class);
+        return persistor.addOption(questionId, content, addedBy);
     }
 
-    public PreferenceAnswer addAnswer(Identifier questionId, Identifier optionId, Preference preference) {
-        return null;
+    public PreferenceAnswer addAnswer(Identifier questionId, Identifier optionId, Preference preference)
+            throws PersistorOperationFailedException {
+        Identifier addedBy = getCurrentUser().getId();
+        PreferenceQuestionPersistor persistor = getInstance(PreferenceQuestionPersistor.class);
+        return persistor.addAnswer(questionId, optionId, preference, addedBy);
     }
 
-    public List<PreferenceQuestion> getAllQuestions() {
-        return null;
+    public List<PreferenceQuestion> getAllQuestions() throws PersistorOperationFailedException {
+        PreferenceQuestionPersistor persistor = getInstance(PreferenceQuestionPersistor.class);
+        return persistor.fetchAll();
     }
 
-    public PreferenceQuestion getQuestion(Identifier questionId) {
-        return null;
+    public PreferenceQuestion getQuestion(Identifier questionId) throws PersistorOperationFailedException {
+        PreferenceQuestionPersistor persistor = getInstance(PreferenceQuestionPersistor.class);
+        return persistor.fetch(questionId);
     }
 
-    public List<PreferenceAnswer> getAnswers(Identifier questionId) {
-        return null;
+    public List<PreferenceOption> getOptions(Identifier questionId) throws PersistorOperationFailedException {
+        PreferenceQuestionPersistor persistor = getInstance(PreferenceQuestionPersistor.class);
+        return persistor.fetchOptions(questionId);
+    }
+
+    public List<PreferenceAnswer> getAnswers(Identifier questionId) throws PersistorOperationFailedException {
+        PreferenceQuestionPersistor persistor = getInstance(PreferenceQuestionPersistor.class);
+        return persistor.fetchAnswers(questionId);
+    }
+
+    @Override
+    protected void processContext() {
+        checkContextHasValueFor(PreferenceQuestionPersistor.class);
     }
 }

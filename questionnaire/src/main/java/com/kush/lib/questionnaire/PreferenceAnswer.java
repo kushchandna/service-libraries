@@ -6,20 +6,23 @@ import com.kush.utils.id.Identifier;
 public class PreferenceAnswer implements ContentContainer, Identifiable {
 
     private final Identifier answerId;
+    private final Identifier questionId;
     private final PreferenceOption option;
     private final Identifier addedBy;
     private final Preference preference;
 
-    public PreferenceAnswer(PreferenceOption option, Identifier addedBy, Preference preference) {
-        this(Identifier.NULL, option, addedBy, preference);
+    public PreferenceAnswer(Identifier questionId, PreferenceOption option, Identifier addedBy, Preference preference) {
+        this(Identifier.NULL, questionId, option, addedBy, preference);
     }
 
     public PreferenceAnswer(Identifier answerId, PreferenceAnswer answer) {
-        this(answerId, answer.getOption(), answer.getAddedBy(), answer.getPreference());
+        this(answerId, answer.getQuestionId(), answer.getOption(), answer.getAddedBy(), answer.getPreference());
     }
 
-    public PreferenceAnswer(Identifier answerId, PreferenceOption option, Identifier addedBy, Preference preference) {
+    public PreferenceAnswer(Identifier answerId, Identifier questionId, PreferenceOption option, Identifier addedBy,
+            Preference preference) {
         this.answerId = answerId;
+        this.questionId = questionId;
         this.option = option;
         this.addedBy = addedBy;
         this.preference = preference;
@@ -28,6 +31,10 @@ public class PreferenceAnswer implements ContentContainer, Identifiable {
     @Override
     public Identifier getId() {
         return answerId;
+    }
+
+    public Identifier getQuestionId() {
+        return questionId;
     }
 
     @Override
