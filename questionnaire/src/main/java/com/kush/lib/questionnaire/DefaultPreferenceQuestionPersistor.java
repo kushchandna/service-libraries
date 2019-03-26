@@ -1,6 +1,7 @@
 package com.kush.lib.questionnaire;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.kush.lib.persistence.api.DelegatingPersistor;
 import com.kush.lib.persistence.api.Persistor;
@@ -49,5 +50,19 @@ public class DefaultPreferenceQuestionPersistor extends DelegatingPersistor<Pref
     @Override
     public List<PreferenceAnswer> fetchAnswers(Identifier questionId) throws PersistorOperationFailedException {
         return answerPersistor.fetch(ans -> ans.getQuestionId().equals(questionId));
+    }
+
+    @Override
+    public Optional<PreferenceOption> getOption(Identifier questionId, String content) throws PersistorOperationFailedException {
+        List<PreferenceOption> matchingOptions = optionPersistor.fetch(opt -> optionMatch(questionId, content, opt));
+        if (matchingOptions.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(matchingOptions.get(0));
+        }
+    }
+
+    private boolean optionMatch(Identifier questionId, String content, PreferenceOption opt) {
+        return opt.getQuestionId().equals(questionId) && opt.getContent().equals(content);
     }
 }

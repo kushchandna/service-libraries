@@ -1,6 +1,7 @@
 package com.kush.lib.questionnaire;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
@@ -19,4 +20,6 @@ public interface PreferenceQuestionPersistor extends Persistor<PreferenceQuestio
     List<PreferenceAnswer> fetchAnswers(Identifier questionId) throws PersistorOperationFailedException;
 
     List<PreferenceOption> fetchOptions(Identifier questionId) throws PersistorOperationFailedException;
+
+    Optional<PreferenceOption> getOption(Identifier questionId, String content) throws PersistorOperationFailedException;
 }

@@ -54,4 +54,11 @@ public class PreferenceAnswer implements ContentContainer, Identifiable {
     public Preference getPreference() {
         return preference;
     }
+
+    @Override
+    public String toString() {
+        return "PreferenceAnswer [answerId=" + answerId + ", questionId=" + questionId + ", addedBy=" + addedBy + ", preference="
+                + preference + "]";
+    }
+
 }
