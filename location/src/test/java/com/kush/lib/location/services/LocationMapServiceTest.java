@@ -24,12 +24,10 @@ public class LocationMapServiceTest extends BaseServiceTest {
         Location banglaSahibLocation = new Location(28.628334, 77.209429);
         Place banglaSahibPlace = new Place("Bangla Sahib", banglaSahibLocation, null);
 
-        Route route = new Route.RouteBuilder()
-            .add(kagPlace)
-            .add(ionPlace)
-            .add(banglaSahibPlace)
-            .add(kagPlace)
-            .build();
+        Route route = Route.start(kagPlace)
+            .via(ionPlace)
+            .via(banglaSahibPlace)
+            .end(kagPlace);
         LOG.info("\n" + route);
     }
 }

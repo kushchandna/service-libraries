@@ -1,6 +1,6 @@
 package com.kush.lib.location.api;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +10,11 @@ public class Route {
     private final Place end;
     private Route remainingRoute;
 
-    public Route(Place start, Place end, Route remainingRoute) {
+    public static RouteBuilder start(Place source) {
+        return new RouteBuilder(source);
+    }
+
+    private Route(Place start, Place end, Route remainingRoute) {
         this.start = start;
         this.end = end;
         this.remainingRoute = remainingRoute;
@@ -49,22 +53,26 @@ public class Route {
 
     public static class RouteBuilder {
 
-        private final List<Place> places = new LinkedList<>();
+        private final List<Place> places = new ArrayList<>();
 
-        public RouteBuilder add(Place place) {
+        private RouteBuilder(Place source) {
+            places.add(source);
+        }
+
+        public RouteBuilder via(Place place) {
             places.add(place);
             return this;
         }
 
-        public Route build() {
+        public Route end(Place destination) {
+            places.add(destination);
             Place source = places.remove(0);
             Place current = source;
             Route lastRoute = null;
             Route finalRoute = null;
             for (Place place : places) {
-                Place destination = place;
-                Route route = new Route(current, destination, null);
-                current = destination;
+                Route route = new Route(current, place, null);
+                current = place;
                 if (finalRoute == null) {
                     finalRoute = route;
                 }
