@@ -1,5 +1,7 @@
 package com.kush.lib.group.entities;
 
+import static java.util.stream.Collectors.toList;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,5 +59,21 @@ public class DefaultGroupPersistor extends DelegatingPersistor<Group> implements
             groups.add(group);
         }
         return groups;
+    }
+
+    @Override
+    public boolean removeGroup(Identifier groupId) throws PersistorOperationFailedException {
+        removeAllGroupMembers(groupId);
+        return remove(groupId);
+    }
+
+    private void removeAllGroupMembers(Identifier groupId) throws PersistorOperationFailedException {
+        List<GroupMembership> groupMembers = getGroupMembers(groupId);
+        List<Identifier> membershipIds = groupMembers.stream().map(GroupMembership::getId).collect(toList());
+        for (Identifier memId : membershipIds) {
+            if (!groupMembershipPersistor.remove(memId)) {
+                throw new PersistorOperationFailedException("Unable to remove membership with id " + memId);
+            }
+        }
     }
 }

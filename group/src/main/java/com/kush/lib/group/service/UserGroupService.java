@@ -12,6 +12,7 @@ import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
 import com.kush.lib.group.persistors.GroupPersistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
@@ -36,6 +37,19 @@ public class UserGroupService extends BaseService {
         groupPersistor.addGroupMember(group.getId(), currentUserId, currentDateTime);
         LOGGER.info("Added self as group member");
         return group;
+    }
+
+    @AuthenticationRequired
+    @ServiceMethod
+    public void removeGroup(Identifier groupId) throws PersistorOperationFailedException, ServiceRequestFailedException {
+        Identifier currentUserId = getCurrentUser().getId();
+        GroupPersistor groupPersistor = getGroupPersistor();
+        Group group = groupPersistor.getGroup(groupId);
+        Identifier owner = group.getOwner();
+        if (!currentUserId.equals(owner)) {
+            throw new ServiceRequestFailedException("Only owner can remove a group");
+        }
+        groupPersistor.removeGroup(groupId);
     }
 
     @AuthenticationRequired
