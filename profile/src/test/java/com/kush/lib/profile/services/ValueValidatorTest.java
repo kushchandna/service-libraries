@@ -15,7 +15,6 @@ import com.kush.lib.profile.fields.validators.standard.MaximumLengthValidator;
 import com.kush.lib.profile.fields.validators.standard.MaximumValueValidator;
 import com.kush.lib.profile.fields.validators.standard.MinimumLengthValidator;
 import com.kush.lib.profile.fields.validators.standard.RangeValidator;
-import com.kush.lib.profile.services.ValueValidator;
 import com.kush.utils.exceptions.ValidationFailedException;
 
 public class ValueValidatorTest {
