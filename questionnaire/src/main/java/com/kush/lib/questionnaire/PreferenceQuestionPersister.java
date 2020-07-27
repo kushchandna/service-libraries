@@ -3,11 +3,11 @@ package com.kush.lib.questionnaire;
 import java.util.List;
 import java.util.Optional;
 
-import com.kush.lib.persistence.api.Persistor;
+import com.kush.lib.persistence.api.Persister;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.utils.id.Identifier;
 
-public interface PreferenceQuestionPersistor extends Persistor<PreferenceQuestion> {
+public interface PreferenceQuestionPersister extends Persister<PreferenceQuestion> {
 
     PreferenceQuestion createQuestion(String content, Identifier addedBy) throws PersistorOperationFailedException;
 

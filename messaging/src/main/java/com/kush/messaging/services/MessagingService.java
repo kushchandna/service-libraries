@@ -22,7 +22,7 @@ import com.kush.messaging.content.Content;
 import com.kush.messaging.destination.Destination;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.metadata.Metadata;
-import com.kush.messaging.persistors.MessagePersistor;
+import com.kush.messaging.persistors.MessagePersister;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.messaging.push.signal.MessageSignal;
 import com.kush.messaging.push.signal.MessageSignalHandler;
@@ -47,7 +47,7 @@ public class MessagingService extends BaseService {
     public Message sendMessage(Content content, Set<Destination> destinations) throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         Metadata metadata = prepareMetadata(currentUserId, destinations);
-        MessagePersistor persistor = getInstance(MessagePersistor.class);
+        MessagePersister persistor = getInstance(MessagePersister.class);
         Message sentMessage = persistor.addMessage(content, metadata);
         for (Destination destination : destinations) {
             try {
@@ -63,7 +63,7 @@ public class MessagingService extends BaseService {
     @ServiceMethod
     public List<Message> getAllMessages() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
-        MessagePersistor persistor = getInstance(MessagePersistor.class);
+        MessagePersister persistor = getInstance(MessagePersister.class);
         Set<Message> allMessages = new LinkedHashSet<>();
         allMessages.addAll(persistor.fetchIndividualMessages(currentUserId));
         UserGroupService groupService = getInstance(UserGroupService.class);
@@ -96,7 +96,7 @@ public class MessagingService extends BaseService {
         Identifier currentUserId = getCurrentUser().getId();
         ContactsService contactsService = getInstance(ContactsService.class);
         List<Contact> contacts = contactsService.getContacts();
-        MessagePersistor persistor = getInstance(MessagePersistor.class);
+        MessagePersister persistor = getInstance(MessagePersister.class);
         List<MessagingContact> messagingContacts = new ArrayList<>(contacts.stream()
             .map(contact -> toMessagingContact(currentUserId, contact, persistor))
             .collect(toList()));
@@ -108,7 +108,7 @@ public class MessagingService extends BaseService {
     @ServiceMethod
     public List<Message> getMessagesWithUser(Identifier userId) throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
-        MessagePersistor persistor = getInstance(MessagePersistor.class);
+        MessagePersister persistor = getInstance(MessagePersister.class);
         return persistor.fetchRecentMessagesBetweenUsers(currentUserId, userId, -1);
     }
 
@@ -116,13 +116,13 @@ public class MessagingService extends BaseService {
     @ServiceMethod
     public List<Message> getMessagesInGroup(Identifier groupId) throws PersistorOperationFailedException {
         checkSessionActive();
-        MessagePersistor persistor = getInstance(MessagePersistor.class);
+        MessagePersister persistor = getInstance(MessagePersister.class);
         return persistor.fetchRecentMessagesInGroup(groupId, -1);
     }
 
     @Override
     protected void processContext() {
-        checkContextHasValueFor(MessagePersistor.class);
+        checkContextHasValueFor(MessagePersister.class);
         addIfDoesNotExist(Clock.class, Clock.systemUTC());
         if (!contextContains(SignalSpace.class)) {
             SignalEmitter signalEmitter = SignalEmitters.newAsyncEmitter();
@@ -131,7 +131,7 @@ public class MessagingService extends BaseService {
         }
     }
 
-    private MessagingContact toMessagingContact(Identifier currentUserId, Contact contact, MessagePersistor messagePersistor) {
+    private MessagingContact toMessagingContact(Identifier currentUserId, Contact contact, MessagePersister messagePersistor) {
         Identifiable contactObject = contact.getContactObject();
         try {
             List<Message> recentMessages = getRecentMessages(currentUserId, contactObject, messagePersistor);
@@ -142,7 +142,7 @@ public class MessagingService extends BaseService {
     }
 
     private List<Message> getRecentMessages(Identifier currentUserId, Identifiable contactObject,
-            MessagePersistor messagePersistor) throws PersistorOperationFailedException {
+            MessagePersister messagePersistor) throws PersistorOperationFailedException {
         Identifier id = contactObject.getId();
         if (contactObject instanceof User) {
             return messagePersistor.fetchRecentMessagesBetweenUsers(currentUserId, id, COUNT_LATEST_MESSAGES);

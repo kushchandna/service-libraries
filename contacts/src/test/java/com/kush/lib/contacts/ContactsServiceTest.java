@@ -13,11 +13,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.kush.lib.contacts.entities.Contact;
-import com.kush.lib.contacts.persistors.ContactsPersistor;
+import com.kush.lib.contacts.persistors.ContactsPersister;
 import com.kush.lib.contacts.persistors.DefaultContactsPersistor;
 import com.kush.lib.contacts.services.ContactsService;
-import com.kush.lib.persistence.api.Persistor;
-import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.persistence.api.Persister;
+import com.kush.lib.persistence.helpers.InMemoryPersister;
 import com.kush.service.BaseServiceTest;
 import com.kush.utils.id.Identifiable;
 
@@ -27,8 +27,8 @@ public class ContactsServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        Persistor<Contact> contactsPersistor = InMemoryPersistor.forType(Contact.class);
-        addToContext(ContactsPersistor.class, new DefaultContactsPersistor(contactsPersistor));
+        Persister<Contact> contactsPersistor = InMemoryPersister.forType(Contact.class);
+        addToContext(ContactsPersister.class, new DefaultContactsPersistor(contactsPersistor));
         contactsService = registerService(ContactsService.class);
     }
 

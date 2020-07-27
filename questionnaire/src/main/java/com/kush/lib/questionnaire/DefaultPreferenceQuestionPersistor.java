@@ -3,19 +3,19 @@ package com.kush.lib.questionnaire;
 import java.util.List;
 import java.util.Optional;
 
-import com.kush.lib.persistence.api.DelegatingPersistor;
-import com.kush.lib.persistence.api.Persistor;
+import com.kush.lib.persistence.api.DelegatingPersister;
+import com.kush.lib.persistence.api.Persister;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.utils.id.Identifier;
 
-public class DefaultPreferenceQuestionPersistor extends DelegatingPersistor<PreferenceQuestion>
-        implements PreferenceQuestionPersistor {
+public class DefaultPreferenceQuestionPersistor extends DelegatingPersister<PreferenceQuestion>
+        implements PreferenceQuestionPersister {
 
-    private final Persistor<PreferenceOption> optionPersistor;
-    private final Persistor<PreferenceAnswer> answerPersistor;
+    private final Persister<PreferenceOption> optionPersistor;
+    private final Persister<PreferenceAnswer> answerPersistor;
 
-    public DefaultPreferenceQuestionPersistor(Persistor<PreferenceQuestion> delegate,
-            Persistor<PreferenceOption> optionPersistor, Persistor<PreferenceAnswer> answerPersistor) {
+    public DefaultPreferenceQuestionPersistor(Persister<PreferenceQuestion> delegate,
+            Persister<PreferenceOption> optionPersistor, Persister<PreferenceAnswer> answerPersistor) {
         super(delegate);
         this.optionPersistor = optionPersistor;
         this.answerPersistor = answerPersistor;

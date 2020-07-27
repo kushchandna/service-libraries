@@ -5,11 +5,11 @@ import java.util.List;
 
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
-import com.kush.lib.persistence.api.Persistor;
+import com.kush.lib.persistence.api.Persister;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.utils.id.Identifier;
 
-public interface GroupPersistor extends Persistor<Group> {
+public interface GroupPersister extends Persister<Group> {
 
     Group createGroup(String groupName, Identifier owner, LocalDateTime createdAt) throws PersistorOperationFailedException;
 

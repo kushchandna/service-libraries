@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
-import com.kush.lib.group.persistors.GroupPersistor;
+import com.kush.lib.group.persistors.GroupPersister;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.service.BaseService;
@@ -31,7 +31,7 @@ public class UserGroupService extends BaseService {
         LOGGER.info("Creating group with name %s", groupName);
         Identifier currentUserId = getCurrentUser().getId();
         LocalDateTime currentDateTime = getCurrentDateTime();
-        GroupPersistor groupPersistor = getGroupPersistor();
+        GroupPersister groupPersistor = getGroupPersistor();
         Group group = groupPersistor.createGroup(groupName, currentUserId, currentDateTime);
         LOGGER.info("Created group [%s]. Now adding self as member.", group.getId(), group.getGroupName());
         groupPersistor.addGroupMember(group.getId(), currentUserId, currentDateTime);
@@ -43,7 +43,7 @@ public class UserGroupService extends BaseService {
     @ServiceMethod
     public void removeGroup(Identifier groupId) throws PersistorOperationFailedException, ServiceRequestFailedException {
         Identifier currentUserId = getCurrentUser().getId();
-        GroupPersistor groupPersistor = getGroupPersistor();
+        GroupPersister groupPersistor = getGroupPersistor();
         Group group = groupPersistor.getGroup(groupId);
         Identifier owner = group.getOwner();
         if (!currentUserId.equals(owner)) {
@@ -57,7 +57,7 @@ public class UserGroupService extends BaseService {
     public void addMembers(Identifier groupId, Set<Identifier> userIds) {
         checkSessionActive();
         LocalDateTime currentDateTime = getCurrentDateTime();
-        GroupPersistor groupPersistor = getGroupPersistor();
+        GroupPersister groupPersistor = getGroupPersistor();
         for (Identifier userId : userIds) {
             try {
                 groupPersistor.addGroupMember(groupId, userId, currentDateTime);
@@ -75,7 +75,7 @@ public class UserGroupService extends BaseService {
     public List<GroupMembership> getGroupMembers(Identifier groupId)
             throws PersistorOperationFailedException, ValidationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
-        GroupPersistor groupPersistor = getGroupPersistor();
+        GroupPersister groupPersistor = getGroupPersistor();
         List<GroupMembership> groupMembers = groupPersistor.getGroupMembers(groupId);
         boolean isMember = groupMembers.stream().anyMatch(m -> m.getMember().equals(currentUserId));
         if (!isMember) {
@@ -88,18 +88,18 @@ public class UserGroupService extends BaseService {
     @ServiceMethod
     public List<Group> getGroups() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
-        GroupPersistor groupPersistor = getGroupPersistor();
+        GroupPersister groupPersistor = getGroupPersistor();
         return groupPersistor.getGroups(currentUserId);
     }
 
     @Override
     protected void processContext() {
-        checkContextHasValueFor(GroupPersistor.class);
+        checkContextHasValueFor(GroupPersister.class);
         addIfDoesNotExist(Clock.class, Clock.systemUTC());
     }
 
-    private GroupPersistor getGroupPersistor() {
-        return getInstance(GroupPersistor.class);
+    private GroupPersister getGroupPersistor() {
+        return getInstance(GroupPersister.class);
     }
 
     private LocalDateTime getCurrentDateTime() {

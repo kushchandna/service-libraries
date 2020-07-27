@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.subscription.entities.Subscription;
-import com.kush.lib.subscription.persistors.SubscriptionPersistor;
+import com.kush.lib.subscription.persistors.SubscriptionPersister;
 import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
@@ -24,7 +24,7 @@ public class SubscriptionService extends BaseService {
         if (currentUserId.equals(userId)) {
             throw new ValidationFailedException("Can not subscribe to self");
         }
-        SubscriptionPersistor persistor = getInstance(SubscriptionPersistor.class);
+        SubscriptionPersister persistor = getInstance(SubscriptionPersister.class);
         Clock clock = getInstance(Clock.class);
         LocalDateTime dateTime = LocalDateTime.now(clock);
         return persistor.addSubscription(currentUserId, userId, dateTime);
@@ -34,7 +34,7 @@ public class SubscriptionService extends BaseService {
     @ServiceMethod
     public List<Subscription> getSubscribed() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
-        SubscriptionPersistor persistor = getInstance(SubscriptionPersistor.class);
+        SubscriptionPersister persistor = getInstance(SubscriptionPersister.class);
         return persistor.getSubscribed(currentUserId);
     }
 
@@ -42,13 +42,13 @@ public class SubscriptionService extends BaseService {
     @ServiceMethod
     public List<Subscription> getSubscribers() throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
-        SubscriptionPersistor persistor = getInstance(SubscriptionPersistor.class);
+        SubscriptionPersister persistor = getInstance(SubscriptionPersister.class);
         return persistor.getSubscribers(currentUserId);
     }
 
     @Override
     protected void processContext() {
-        checkContextHasValueFor(SubscriptionPersistor.class);
+        checkContextHasValueFor(SubscriptionPersister.class);
         addIfDoesNotExist(Clock.class, Clock.systemUTC());
     }
 }

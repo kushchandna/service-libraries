@@ -14,9 +14,9 @@ import org.junit.Test;
 import com.kush.lib.group.entities.DefaultGroupPersistor;
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
-import com.kush.lib.group.persistors.GroupPersistor;
-import com.kush.lib.persistence.api.Persistor;
-import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.group.persistors.GroupPersister;
+import com.kush.lib.persistence.api.Persister;
+import com.kush.lib.persistence.helpers.InMemoryPersister;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.service.BaseServiceTest;
 
@@ -26,9 +26,9 @@ public class UserGroupServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        Persistor<Group> delegateGroupPersistor = InMemoryPersistor.forType(Group.class);
-        Persistor<GroupMembership> delegateGroupMembershipPersistor = InMemoryPersistor.forType(GroupMembership.class);
-        addToContext(GroupPersistor.class, new DefaultGroupPersistor(delegateGroupPersistor, delegateGroupMembershipPersistor));
+        Persister<Group> delegateGroupPersistor = InMemoryPersister.forType(Group.class);
+        Persister<GroupMembership> delegateGroupMembershipPersistor = InMemoryPersister.forType(GroupMembership.class);
+        addToContext(GroupPersister.class, new DefaultGroupPersistor(delegateGroupPersistor, delegateGroupMembershipPersistor));
         userGroupService = registerService(UserGroupService.class);
     }
 

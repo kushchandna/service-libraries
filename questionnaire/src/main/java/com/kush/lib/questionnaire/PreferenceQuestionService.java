@@ -14,20 +14,20 @@ public class PreferenceQuestionService extends BaseService {
 
     public PreferenceQuestion createQuestion(String content) throws PersistorOperationFailedException {
         Identifier addedBy = getCurrentUser().getId();
-        PreferenceQuestionPersistor persistor = getInstance(PreferenceQuestionPersistor.class);
+        PreferenceQuestionPersister persistor = getInstance(PreferenceQuestionPersister.class);
         return persistor.createQuestion(content, addedBy);
     }
 
     public PreferenceOption addOption(Identifier questionId, String content) throws PersistorOperationFailedException {
         Identifier addedBy = getCurrentUser().getId();
-        PreferenceQuestionPersistor persistor = getInstance(PreferenceQuestionPersistor.class);
+        PreferenceQuestionPersister persistor = getInstance(PreferenceQuestionPersister.class);
         return persistor.addOption(questionId, content, addedBy);
     }
 
     public PreferenceOption addOptionIfDoesNotExist(Identifier questionId, String content)
             throws PersistorOperationFailedException {
         Identifier addedBy = getCurrentUser().getId();
-        PreferenceQuestionPersistor persistor = getInstance(PreferenceQuestionPersistor.class);
+        PreferenceQuestionPersister persistor = getInstance(PreferenceQuestionPersister.class);
         Optional<PreferenceOption> option = persistor.getOption(questionId, content);
         if (option.isPresent()) {
             return option.get();
@@ -39,27 +39,27 @@ public class PreferenceQuestionService extends BaseService {
     public PreferenceAnswer addAnswer(Identifier questionId, Identifier optionId, Preference preference)
             throws PersistorOperationFailedException {
         Identifier addedBy = getCurrentUser().getId();
-        PreferenceQuestionPersistor persistor = getInstance(PreferenceQuestionPersistor.class);
+        PreferenceQuestionPersister persistor = getInstance(PreferenceQuestionPersister.class);
         return persistor.addAnswer(questionId, optionId, preference, addedBy);
     }
 
     public List<PreferenceQuestion> getAllQuestions() throws PersistorOperationFailedException {
-        PreferenceQuestionPersistor persistor = getQuestionPersistor();
+        PreferenceQuestionPersister persistor = getQuestionPersistor();
         return persistor.fetchAll();
     }
 
     public PreferenceQuestion getQuestion(Identifier questionId) throws PersistorOperationFailedException {
-        PreferenceQuestionPersistor persistor = getQuestionPersistor();
+        PreferenceQuestionPersister persistor = getQuestionPersistor();
         return persistor.fetch(questionId);
     }
 
     public List<PreferenceOption> getOptions(Identifier questionId) throws PersistorOperationFailedException {
-        PreferenceQuestionPersistor persistor = getQuestionPersistor();
+        PreferenceQuestionPersister persistor = getQuestionPersistor();
         return persistor.fetchOptions(questionId);
     }
 
     public List<PreferenceAnswer> getAnswers(Identifier questionId) throws PersistorOperationFailedException {
-        PreferenceQuestionPersistor persistor = getQuestionPersistor();
+        PreferenceQuestionPersister persistor = getQuestionPersistor();
         return persistor.fetchAnswers(questionId);
     }
 
@@ -78,12 +78,12 @@ public class PreferenceQuestionService extends BaseService {
         return ansSummary.get(ans.getPreference()).add(ans);
     }
 
-    private PreferenceQuestionPersistor getQuestionPersistor() {
-        return getInstance(PreferenceQuestionPersistor.class);
+    private PreferenceQuestionPersister getQuestionPersistor() {
+        return getInstance(PreferenceQuestionPersister.class);
     }
 
     @Override
     protected void processContext() {
-        checkContextHasValueFor(PreferenceQuestionPersistor.class);
+        checkContextHasValueFor(PreferenceQuestionPersister.class);
     }
 }

@@ -18,14 +18,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.kush.lib.persistence.api.Persistor;
-import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.persistence.api.Persister;
+import com.kush.lib.persistence.helpers.InMemoryPersister;
 import com.kush.lib.profile.entities.DefaultProfilePersistor;
 import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.fields.Field;
 import com.kush.lib.profile.fields.Fields;
 import com.kush.lib.profile.fields.validators.standard.EmailValidator;
-import com.kush.lib.profile.persistors.ProfilePersistor;
+import com.kush.lib.profile.persistors.ProfilePersister;
 import com.kush.lib.profile.template.ProfileTemplate;
 import com.kush.lib.profile.template.ProfileTemplateBuilder;
 import com.kush.lib.service.remoting.auth.User;
@@ -152,8 +152,8 @@ public class UserProfileServiceTest extends BaseServiceTest {
     }
 
     private void setupProfilePersistor() {
-        Persistor<Profile> delegate = InMemoryPersistor.forType(Profile.class);
-        addToContext(ProfilePersistor.class, new DefaultProfilePersistor(delegate));
+        Persister<Profile> delegate = InMemoryPersister.forType(Profile.class);
+        addToContext(ProfilePersister.class, new DefaultProfilePersistor(delegate));
     }
 
     private void setupProfileService() {

@@ -13,12 +13,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.kush.lib.persistence.api.Persistor;
-import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.persistence.api.Persister;
+import com.kush.lib.persistence.helpers.InMemoryPersister;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.subscription.entities.Subscription;
 import com.kush.lib.subscription.persistors.DefaultSubscriptionPersistor;
-import com.kush.lib.subscription.persistors.SubscriptionPersistor;
+import com.kush.lib.subscription.persistors.SubscriptionPersister;
 import com.kush.lib.subscription.services.SubscriptionService;
 import com.kush.service.BaseServiceTest;
 import com.kush.utils.id.Identifier;
@@ -29,8 +29,8 @@ public class SubscriptionServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        Persistor<Subscription> subscriptionPersistor = InMemoryPersistor.forType(Subscription.class);
-        addToContext(SubscriptionPersistor.class, new DefaultSubscriptionPersistor(subscriptionPersistor));
+        Persister<Subscription> subscriptionPersistor = InMemoryPersister.forType(Subscription.class);
+        addToContext(SubscriptionPersister.class, new DefaultSubscriptionPersistor(subscriptionPersistor));
         subscriptionService = registerService(SubscriptionService.class);
     }
 

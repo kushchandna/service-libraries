@@ -29,16 +29,16 @@ import org.junit.Test;
 
 import com.google.common.collect.Sets;
 import com.kush.lib.contacts.entities.Contact;
-import com.kush.lib.contacts.persistors.ContactsPersistor;
+import com.kush.lib.contacts.persistors.ContactsPersister;
 import com.kush.lib.contacts.persistors.DefaultContactsPersistor;
 import com.kush.lib.contacts.services.ContactsService;
 import com.kush.lib.group.entities.DefaultGroupPersistor;
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
-import com.kush.lib.group.persistors.GroupPersistor;
+import com.kush.lib.group.persistors.GroupPersister;
 import com.kush.lib.group.service.UserGroupService;
-import com.kush.lib.persistence.api.Persistor;
-import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.persistence.api.Persister;
+import com.kush.lib.persistence.helpers.InMemoryPersister;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.messaging.contacts.MessagingContact;
 import com.kush.messaging.content.Content;
@@ -49,7 +49,7 @@ import com.kush.messaging.destination.UserIdBasedDestination;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.metadata.Metadata;
 import com.kush.messaging.persistors.DefaultMessagePersistor;
-import com.kush.messaging.persistors.MessagePersistor;
+import com.kush.messaging.persistors.MessagePersister;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.service.BaseServiceTest;
 import com.kush.utils.id.Identifiable;
@@ -69,15 +69,15 @@ public class MessagingServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        Persistor<Group> groupPersistor = InMemoryPersistor.forType(Group.class);
-        Persistor<GroupMembership> groupMembershipPersistor = InMemoryPersistor.forType(GroupMembership.class);
-        addToContext(GroupPersistor.class, new DefaultGroupPersistor(groupPersistor, groupMembershipPersistor));
+        Persister<Group> groupPersistor = InMemoryPersister.forType(Group.class);
+        Persister<GroupMembership> groupMembershipPersistor = InMemoryPersister.forType(GroupMembership.class);
+        addToContext(GroupPersister.class, new DefaultGroupPersistor(groupPersistor, groupMembershipPersistor));
 
-        Persistor<Message> messagePersistor = InMemoryPersistor.forType(Message.class);
-        addToContext(MessagePersistor.class, new DefaultMessagePersistor(messagePersistor));
+        Persister<Message> messagePersistor = InMemoryPersister.forType(Message.class);
+        addToContext(MessagePersister.class, new DefaultMessagePersistor(messagePersistor));
 
-        Persistor<Contact> contactsPersistor = InMemoryPersistor.forType(Contact.class);
-        addToContext(ContactsPersistor.class, new DefaultContactsPersistor(contactsPersistor));
+        Persister<Contact> contactsPersistor = InMemoryPersister.forType(Contact.class);
+        addToContext(ContactsPersister.class, new DefaultContactsPersistor(contactsPersistor));
 
         messagingService = registerService(MessagingService.class);
         groupService = registerService(UserGroupService.class);

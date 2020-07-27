@@ -10,7 +10,7 @@ import java.util.Set;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.fields.Field;
-import com.kush.lib.profile.persistors.ProfilePersistor;
+import com.kush.lib.profile.persistors.ProfilePersister;
 import com.kush.lib.profile.template.ProfileTemplate;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.service.BaseService;
@@ -34,7 +34,7 @@ public class UserProfileService extends BaseService {
             throws ValidationFailedException, PersistorOperationFailedException, NoSuchFieldException {
         User currentUser = getCurrentUser();
         ProfileTemplate template = getInstance(ProfileTemplate.class);
-        ProfilePersistor profilePersistor = getProfilePersistor();
+        ProfilePersister profilePersistor = getProfilePersistor();
 
         Field field = template.getField(fieldName);
         valueValidator.validate(field, value);
@@ -54,7 +54,7 @@ public class UserProfileService extends BaseService {
     @ServiceMethod
     public Profile getProfile() throws PersistorOperationFailedException {
         User currentUser = getCurrentUser();
-        ProfilePersistor profilePersistor = getProfilePersistor();
+        ProfilePersister profilePersistor = getProfilePersistor();
         return profilePersistor.getProfile(currentUser);
     }
 
@@ -62,18 +62,18 @@ public class UserProfileService extends BaseService {
     @ServiceMethod
     public List<User> findMatchingUsers(Map<String, Set<Object>> fieldVsValues) throws PersistorOperationFailedException {
         checkSessionActive();
-        ProfilePersistor profilePersistor = getProfilePersistor();
+        ProfilePersister profilePersistor = getProfilePersistor();
         List<Profile> profiles = profilePersistor.getMatchingProfiles(fieldVsValues);
         return profiles.stream().map(p -> p.getOwner()).collect(toList());
     }
 
     @Override
     protected void processContext() {
-        checkContextHasValueFor(ProfilePersistor.class);
+        checkContextHasValueFor(ProfilePersister.class);
         checkContextHasValueFor(ProfileTemplate.class);
     }
 
-    private Profile getOrCreateProfile(ProfilePersistor profilePersistor, User user)
+    private Profile getOrCreateProfile(ProfilePersister profilePersistor, User user)
             throws PersistorOperationFailedException {
         Profile profile = profilePersistor.getProfile(user);
         if (profile == null) {
@@ -82,7 +82,7 @@ public class UserProfileService extends BaseService {
         return profile;
     }
 
-    private ProfilePersistor getProfilePersistor() {
-        return getInstance(ProfilePersistor.class);
+    private ProfilePersister getProfilePersistor() {
+        return getInstance(ProfilePersister.class);
     }
 }

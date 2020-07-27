@@ -6,17 +6,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kush.lib.group.persistors.GroupPersistor;
-import com.kush.lib.persistence.api.DelegatingPersistor;
-import com.kush.lib.persistence.api.Persistor;
+import com.kush.lib.group.persistors.GroupPersister;
+import com.kush.lib.persistence.api.DelegatingPersister;
+import com.kush.lib.persistence.api.Persister;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.utils.id.Identifier;
 
-public class DefaultGroupPersistor extends DelegatingPersistor<Group> implements GroupPersistor {
+public class DefaultGroupPersistor extends DelegatingPersister<Group> implements GroupPersister {
 
-    private final Persistor<GroupMembership> groupMembershipPersistor;
+    private final Persister<GroupMembership> groupMembershipPersistor;
 
-    public DefaultGroupPersistor(Persistor<Group> delegate, Persistor<GroupMembership> groupMembershipPersistor) {
+    public DefaultGroupPersistor(Persister<Group> delegate, Persister<GroupMembership> groupMembershipPersistor) {
         super(delegate);
         this.groupMembershipPersistor = groupMembershipPersistor;
     }

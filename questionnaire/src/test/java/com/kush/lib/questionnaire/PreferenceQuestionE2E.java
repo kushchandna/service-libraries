@@ -10,8 +10,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.kush.lib.persistence.api.Persistor;
-import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.persistence.api.Persister;
+import com.kush.lib.persistence.helpers.InMemoryPersister;
 import com.kush.service.BaseServiceTest;
 
 public class PreferenceQuestionE2E extends BaseServiceTest {
@@ -20,10 +20,10 @@ public class PreferenceQuestionE2E extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        Persistor<PreferenceQuestion> delegatePrefQuestPersistor = InMemoryPersistor.forType(PreferenceQuestion.class);
-        Persistor<PreferenceOption> optionPersistor = InMemoryPersistor.forType(PreferenceOption.class);
-        Persistor<PreferenceAnswer> answerPersistor = InMemoryPersistor.forType(PreferenceAnswer.class);
-        addToContext(PreferenceQuestionPersistor.class,
+        Persister<PreferenceQuestion> delegatePrefQuestPersistor = InMemoryPersister.forType(PreferenceQuestion.class);
+        Persister<PreferenceOption> optionPersistor = InMemoryPersister.forType(PreferenceOption.class);
+        Persister<PreferenceAnswer> answerPersistor = InMemoryPersister.forType(PreferenceAnswer.class);
+        addToContext(PreferenceQuestionPersister.class,
                 new DefaultPreferenceQuestionPersistor(delegatePrefQuestPersistor, optionPersistor, answerPersistor));
         questionService = registerService(PreferenceQuestionService.class);
     }
