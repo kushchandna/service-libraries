@@ -1,12 +1,12 @@
 package com.kush.lib.profile.services;
 
+import static org.junit.Assert.assertThrows;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import com.kush.lib.profile.fields.Field;
 import com.kush.lib.profile.fields.Fields;
@@ -22,9 +22,6 @@ public class ValueValidatorTest {
     private static final String TEST_FIELD = "testField";
 
     private final ValueValidator valueValidator = new ValueValidator();
-
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
 
     @Test
     public void freeTextFieldBuilder() throws Exception {
@@ -45,8 +42,8 @@ public class ValueValidatorTest {
         Field field = Fields.createTextFieldBuilder(TEST_FIELD)
             .addValidator(new MaximumLengthValidator(10))
             .build();
-        expected.expect(ValidationFailedException.class);
-        valueValidator.validate(field, "Long value will be rejected here");
+        assertThrows(ValidationFailedException.class, 
+        		() -> valueValidator.validate(field, "Long value will be rejected here"));
     }
 
     @Test
@@ -62,8 +59,8 @@ public class ValueValidatorTest {
         Field field = Fields.createTextFieldBuilder(TEST_FIELD)
             .addValidator(new MinimumLengthValidator(10))
             .build();
-        expected.expect(ValidationFailedException.class);
-        valueValidator.validate(field, "ten");
+		assertThrows(ValidationFailedException.class, 
+				() -> valueValidator.validate(field, "ten"));
     }
 
     @Test
@@ -71,8 +68,8 @@ public class ValueValidatorTest {
         Field field = Fields.createTextFieldBuilder(TEST_FIELD)
             .addValidator(new EmailValidator())
             .build();
-        expected.expect(ValidationFailedException.class);
-        valueValidator.validate(field, "invalid-email");
+		assertThrows(ValidationFailedException.class, 
+				() -> valueValidator.validate(field, "invalid-email"));
     }
 
     @Test
@@ -107,8 +104,8 @@ public class ValueValidatorTest {
         Field field = Fields.createIntegerFieldBuilder(TEST_FIELD)
             .addValidator(new MaximumValueValidator<>(10))
             .build();
-        expected.expect(ValidationFailedException.class);
-        valueValidator.validate(field, 100);
+		assertThrows(ValidationFailedException.class, 
+				() -> valueValidator.validate(field, 100));
     }
 
     @Test
@@ -130,8 +127,8 @@ public class ValueValidatorTest {
         Field field = Fields.createNumericFieldBuilder(TEST_FIELD)
             .addValidator(new MaximumValueValidator<>(10.5))
             .build();
-        expected.expect(ValidationFailedException.class);
-        valueValidator.validate(field, 100.5);
+		assertThrows(ValidationFailedException.class, 
+				() -> valueValidator.validate(field, 100.5));
     }
 
     @Test
@@ -147,8 +144,8 @@ public class ValueValidatorTest {
         Field field = Fields.createNumericFieldBuilder(TEST_FIELD)
             .addValidator(new RangeValidator<>(10.5, 50.5))
             .build();
-        expected.expect(ValidationFailedException.class);
-        valueValidator.validate(field, 100.5);
+		assertThrows(ValidationFailedException.class, 
+				() -> valueValidator.validate(field, 100.5));
     }
 
     @Test
@@ -176,8 +173,8 @@ public class ValueValidatorTest {
         Field field = Fields.createDateFieldBuilder(TEST_FIELD)
             .addValidator(new RangeValidator<>(LocalDate.of(2018, 1, 1), LocalDate.now()))
             .build();
-        expected.expect(ValidationFailedException.class);
-        valueValidator.validate(field, LocalDate.now().plusDays(1));
+		assertThrows(ValidationFailedException.class, 
+				() -> valueValidator.validate(field, LocalDate.now().plusDays(1)));
     }
 
     @Test
@@ -203,7 +200,7 @@ public class ValueValidatorTest {
             .addValidator(new RangeValidator<>(LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0)),
                     LocalDateTime.of(LocalDate.now(), LocalTime.now())))
             .build();
-        expected.expect(ValidationFailedException.class);
-        valueValidator.validate(field, LocalDateTime.now().plusHours(1));
+		assertThrows(ValidationFailedException.class, 
+				() -> valueValidator.validate(field, LocalDateTime.now().plusHours(1)));
     }
 }

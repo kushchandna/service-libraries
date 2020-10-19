@@ -2,11 +2,12 @@ package com.kush.lib.profile.services;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static com.kush.utils.commons.CollectionUtils.singletonMultiValueMap;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import com.kush.lib.persistence.api.Persister;
 import com.kush.lib.persistence.helpers.InMemoryPersister;
@@ -37,9 +36,6 @@ public class UserProfileServiceTest extends BaseServiceTest {
     private static final String FIELD_EMAIL = "emailId";
     private static final String FIELD_NAME = "fullName";
     private static final String FIELD_PHONE = "phone";
-
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
 
     private UserProfileService profileService;
 
@@ -67,11 +63,13 @@ public class UserProfileServiceTest extends BaseServiceTest {
     @Test
     public void invalidEmailId() throws Exception {
         runAuthenticatedOperation(() -> {
-            expected.expect(ValidationFailedException.class);
-            expected.expectMessage(""
+        	assertThrows(""
                     + "Invalid value specified for field Email Id. "
-                    + "Reason: 'invalid_email_id' is not a valid email id");
-            profileService.updateProfileField(FIELD_EMAIL, "invalid_email_id");
+                    + "Reason: 'invalid_email_id' is not a valid email id", 
+                    ValidationFailedException.class, 
+                    () -> {
+                    	profileService.updateProfileField(FIELD_EMAIL, "invalid_email_id");
+                    });
         });
     }
 
@@ -105,9 +103,11 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
         User user2 = user(1);
         runAuthenticatedOperation(user2, () -> {
-            expected.expect(ValidationFailedException.class);
-            expected.expectMessage("User with Email Id 'testuser@domain.com' already exists.");
-            profileService.updateProfileField(FIELD_EMAIL, "testuser@domain.com");
+        	assertThrows("User with Email Id 'testuser@domain.com' already exists.", 
+                    ValidationFailedException.class, 
+                    () -> {
+                    	profileService.updateProfileField(FIELD_EMAIL, "testuser@domain.com");
+                    });
         });
     }
 
