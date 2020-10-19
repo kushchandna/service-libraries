@@ -188,11 +188,13 @@ public class ValueValidatorTest {
 
     @Test
     public void dateTimeFieldBuilder_WithPassingRangeValidation() throws Exception {
-        Field field = Fields.createDateTimeFieldBuilder(TEST_FIELD)
-            .addValidator(new RangeValidator<>(LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0)),
-                    LocalDateTime.of(LocalDate.now(), LocalTime.now())))
-            .build();
-        valueValidator.validate(field, LocalDateTime.now().minusHours(1));
+    	LocalDateTime now = LocalDateTime.now();
+        LocalDateTime start = LocalDateTime.of(now.toLocalDate(), now.toLocalTime().minusMinutes(2));
+        LocalDateTime end = LocalDateTime.of(now.toLocalDate(), now.toLocalTime().plusMinutes(2));
+		Field field = Fields.createDateTimeFieldBuilder(TEST_FIELD)
+				.addValidator(new RangeValidator<>(start,end))
+				.build();
+		valueValidator.validate(field, now);
     }
 
     @Test

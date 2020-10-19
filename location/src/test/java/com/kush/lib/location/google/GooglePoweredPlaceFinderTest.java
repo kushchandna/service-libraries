@@ -2,10 +2,12 @@ package com.kush.lib.location.google;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.kush.lib.location.api.Place;
 
+@Ignore
 public class GooglePoweredPlaceFinderTest {
 
     private static String apiKey;

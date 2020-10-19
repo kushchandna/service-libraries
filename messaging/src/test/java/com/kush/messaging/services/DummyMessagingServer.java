@@ -28,7 +28,7 @@ import com.kush.messaging.persistors.MessagePersister;
 import com.kush.service.ApplicationServer;
 import com.kush.service.Context;
 import com.kush.service.ContextBuilder;
-import com.kush.service.auth.credentials.DefaultUserCredentialPersistor;
+import com.kush.service.auth.credentials.DefaultUserCredentialPersister;
 import com.kush.service.auth.credentials.UserCredential;
 import com.kush.service.auth.credentials.UserCredentialPersister;
 import com.kush.utils.remoting.server.ResolutionRequestsReceiver;
@@ -72,7 +72,7 @@ public class DummyMessagingServer {
         Persister<GroupMembership> delegateMembershipPersistor = InMemoryPersister.forType(GroupMembership.class);
         Persister<Message> delegateMessagePersistor = InMemoryPersister.forType(Message.class);
         Context context = ContextBuilder.create()
-            .withInstance(UserCredentialPersister.class, new DefaultUserCredentialPersistor(delegateCredentialPersistor))
+            .withInstance(UserCredentialPersister.class, new DefaultUserCredentialPersister(delegateCredentialPersistor))
             .withInstance(GroupPersister.class, new DefaultGroupPersistor(delegateGroupPersistor, delegateMembershipPersistor))
             .withInstance(ContactsPersister.class, new DefaultContactsPersistor(delegateContactsPersistor))
             .withInstance(MessagePersister.class, new DefaultMessagePersistor(delegateMessagePersistor))
