@@ -5,6 +5,7 @@ import static java.util.Collections.emptySet;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -16,17 +17,22 @@ import com.kush.utils.commons.IterableResult;
 import com.kush.utils.commons.Range;
 
 @NotThreadSafe
-public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<T> {
+public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<T>, Cloneable {
 
     private final Comparator<K> comparator;
     private final Function<T, K> keyGetter;
 
-    private final TreeMap<K, Collection<T>> indexedValues;
+    private final NavigableMap<K, Collection<T>> indexedValues;
 
     public NavigableMapBasedIndex(Comparator<K> comparator, Function<T, K> keyGetter) {
+        this(comparator, keyGetter, new TreeMap<>(comparator));
+    }
+
+    private NavigableMapBasedIndex(Comparator<K> comparator, Function<T, K> keyGetter,
+            NavigableMap<K, Collection<T>> indexedValues) {
         this.comparator = comparator;
         this.keyGetter = keyGetter;
-        indexedValues = new TreeMap<>(comparator);
+        this.indexedValues = indexedValues;
     }
 
     @Override
@@ -65,6 +71,12 @@ public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<
     }
 
     @Override
+    public NavigableMapBasedIndex<K, T> clone() {
+        NavigableMap<K, Collection<T>> indexedValuesClone = cloneIndexedValues();
+        return new NavigableMapBasedIndex<>(comparator, keyGetter, indexedValuesClone);
+    }
+
+    @Override
     public void onUpdate(T oldObject, T newObject) {
         K oldKey = oldObject == null ? null : keyGetter.apply(oldObject);
         K newKey = newObject == null ? null : keyGetter.apply(newObject);
@@ -88,5 +100,18 @@ public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<
             objects.remove(object);
             return objects.isEmpty() ? null : objects;
         });
+    }
+
+    private NavigableMap<K, Collection<T>> cloneIndexedValues() {
+        // create a copy of tree map in linear time using constructor accepting sorted map
+        NavigableMap<K, Collection<T>> indexedValuesClone = new TreeMap<>(this.indexedValues);
+        // iterate over all the nodes in clone in linear time and replace value collection with a copy
+        indexedValuesClone.entrySet().forEach(this::replaceValueWithCopyCollection);
+        return indexedValuesClone;
+    }
+
+    private Collection<T> replaceValueWithCopyCollection(Entry<K, Collection<T>> entry) {
+        Collection<T> objects = entry.getValue();
+        return entry.setValue(new HashSet<>(objects));
     }
 }
