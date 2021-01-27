@@ -7,9 +7,12 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -43,11 +46,13 @@ public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<
 
     @Override
     public IterableResult<T> getMatchesForKeys(Collection<K> keys) {
-        IterableResult<T> result = IterableResult.empty();
-        for (K key : keys) {
-            result = IterableResult.merge(result, getMatchesForKey(key));
-        }
-        return result;
+        AtomicLong longVal = new AtomicLong(0);
+        Stream<T> stream = keys.stream()
+            .map(indexedValues::get)
+            .filter(Objects::nonNull)
+            .peek(col -> longVal.getAndAdd(col.size()))
+            .flatMap(Collection::stream);
+        return IterableResult.fromStream(stream, longVal.get());
     }
 
     @Override
