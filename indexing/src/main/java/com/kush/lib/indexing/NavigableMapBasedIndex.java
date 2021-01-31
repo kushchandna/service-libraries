@@ -4,7 +4,6 @@ import static java.util.Collections.emptySet;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Objects;
@@ -18,6 +17,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import com.kush.utils.commons.IterableResult;
 import com.kush.utils.commons.Range;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @NotThreadSafe
 public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<T>, Cloneable {
@@ -97,7 +98,7 @@ public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<
     }
 
     private void addToIndexedValues(K key, T object) {
-        indexedValues.computeIfAbsent(key, k -> new HashSet<>()).add(object);
+        indexedValues.computeIfAbsent(key, k -> new ObjectOpenHashSet<>()).add(object);
     }
 
     private void removeFromIndexedValues(K key, T object) {
@@ -117,6 +118,6 @@ public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<
 
     private Collection<T> replaceValueWithCopyCollection(Entry<K, Collection<T>> entry) {
         Collection<T> objects = entry.getValue();
-        return entry.setValue(new HashSet<>(objects));
+        return entry.setValue(((ObjectOpenHashSet<T>) objects).clone());
     }
 }
