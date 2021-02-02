@@ -4,14 +4,13 @@ import static java.util.Collections.emptySet;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -47,13 +46,14 @@ public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<
 
     @Override
     public IterableResult<T> getMatchesForKeys(Collection<K> keys) {
-        AtomicLong longVal = new AtomicLong(0);
-        Stream<T> stream = keys.stream()
-            .map(indexedValues::get)
-            .filter(Objects::nonNull)
-            .peek(col -> longVal.getAndAdd(col.size()))
-            .flatMap(Collection::stream);
-        return IterableResult.fromStream(stream, longVal.get());
+        List<IterableResult<T>> results = new LinkedList<>();
+        keys.forEach(key -> {
+            IterableResult<T> matches = getMatchesForKey(key);
+            if (matches != null) {
+                results.add(matches);
+            }
+        });
+        return IterableResult.merge(results);
     }
 
     @Override
