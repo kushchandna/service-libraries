@@ -1,4 +1,4 @@
-package com.kush.lib.indexing.expressions;
+package com.kush.lib.expressions;
 
 import java.util.Collection;
 
