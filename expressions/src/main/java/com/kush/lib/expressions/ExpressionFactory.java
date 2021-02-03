@@ -1,10 +1,9 @@
-package com.kush.lib;
+package com.kush.lib.expressions;
 
-import com.kush.lib.expressions.AndExpression;
-import com.kush.lib.expressions.Expression;
-import com.kush.lib.expressions.FieldExpression;
-import com.kush.lib.expressions.NotExpression;
-import com.kush.lib.expressions.OrExpression;
+import com.kush.lib.expressions.types.AndExpression;
+import com.kush.lib.expressions.types.FieldExpression;
+import com.kush.lib.expressions.types.NotExpression;
+import com.kush.lib.expressions.types.OrExpression;
 
 public interface ExpressionFactory {
 

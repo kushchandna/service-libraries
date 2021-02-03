@@ -1,6 +1,4 @@
-package com.kush.lib;
-
-import com.kush.lib.expressions.Expression;
+package com.kush.lib.expressions;
 
 public interface ExpressionParser<T> {
 

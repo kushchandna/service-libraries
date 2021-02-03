@@ -1,4 +1,4 @@
-package com.kush.lib;
+package com.kush.lib.expressions;
 
 public class ExpressionParsingFailedException extends Exception {
 
