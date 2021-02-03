@@ -1,8 +1,6 @@
 package com.kush.lib.expressions.types;
 
-import com.kush.lib.expressions.Expression;
+import com.kush.lib.expressions.commons.UnaryExpression;
 
-public interface NotExpression extends Expression {
-
-    Expression getChild();
+public interface NotExpression extends UnaryExpression {
 }

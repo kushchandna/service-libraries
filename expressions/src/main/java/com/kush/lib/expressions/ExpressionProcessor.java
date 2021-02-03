@@ -4,76 +4,55 @@ import static java.util.Collections.unmodifiableMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.kush.lib.expressions.types.AndExpression;
 import com.kush.lib.expressions.types.ConstantIntExpression;
 import com.kush.lib.expressions.types.ConstantStringExpression;
+import com.kush.lib.expressions.types.EqualsExpression;
 import com.kush.lib.expressions.types.FieldExpression;
 import com.kush.lib.expressions.types.NotExpression;
 import com.kush.lib.expressions.types.OrExpression;
 
-public class ExpressionProcessor {
+public abstract class ExpressionProcessor<T> {
 
-    private static Map<Class<?>, Method> processingMethods;
+    private static Map<Class<?>, Method> handlingMethods;
 
-    private final ExpressionFactory expressionFactory;
-
-    public ExpressionProcessor(ExpressionFactory expressionFactory) {
-        this.expressionFactory = expressionFactory;
-    }
-
-    public final Expression process(Expression expression) throws ExpressionException {
-        initializeProcessingMethodsIfRequired();
+    public final T process(Expression expression) throws ExpressionException {
+        initializeHandlingMethodsIfRequired();
         return invokeSpecificProcessMethod(expression);
     }
 
-    protected FieldExpression process(FieldExpression expression) {
-        return expressionFactory.createFieldExpression(expression.getFieldName());
-    }
+    protected abstract T handle(FieldExpression expression) throws ExpressionException;
 
-    protected AndExpression process(AndExpression expression) throws ExpressionException {
-        return expressionFactory.createAndExpression(process(expression.getLeft()), process(expression.getRight()));
-    }
+    protected abstract T handle(AndExpression expression) throws ExpressionException;
 
-    protected OrExpression process(OrExpression expression) throws ExpressionException {
-        return expressionFactory.createOrExpression(process(expression.getLeft()), process(expression.getRight()));
-    }
+    protected abstract T handle(OrExpression expression) throws ExpressionException;
 
-    protected NotExpression process(NotExpression expression) throws ExpressionException {
-        return expressionFactory.createNotExpression(process(expression.getChild()));
-    }
+    protected abstract T handle(NotExpression expression) throws ExpressionException;
 
-    protected ConstantStringExpression process(ConstantStringExpression expression) {
-        return expressionFactory.createConstantStringExpression(expression.getValue());
-    }
+    protected abstract T handle(EqualsExpression expression) throws ExpressionException;
 
-    protected ConstantIntExpression process(ConstantIntExpression expression) {
-        return expressionFactory.createConstantIntExpression(expression.getValue());
-    }
+    protected abstract T handle(ConstantStringExpression expression) throws ExpressionException;
 
-    private void initializeProcessingMethodsIfRequired() {
-        if (processingMethods == null) {
-            synchronized (ExpressionProcessor.class) {
-                if (processingMethods == null) {
-                    processingMethods = loadProcessingMethods(ExpressionProcessor.class);
-                }
-            }
+    protected abstract T handle(ConstantIntExpression expression) throws ExpressionException;
+
+    private void initializeHandlingMethodsIfRequired() {
+        if (handlingMethods == null) {
+            handlingMethods = loadHandlingMethods(ExpressionProcessor.class);
         }
     }
 
-    private Map<Class<?>, Method> loadProcessingMethods(Class<?> clazz) {
-        Method[] methods = clazz.getMethods();
+    private Map<Class<?>, Method> loadHandlingMethods(Class<?> clazz) {
+        Method[] methods = clazz.getDeclaredMethods();
         int len = methods.length;
         Map<Class<?>, Method> processMethodByClass = new HashMap<>(len);
         for (int i = 0; i < len; i++) {
             Method m = methods[i];
             String name = m.getName();
 
-            int modifiers = m.getModifiers();
-            if ("process".equals(name) && !isEntryMethod(modifiers)) {
+            if ("handle".equals(name)) {
                 Class<?>[] parameterTypes = m.getParameterTypes();
                 Class<?> paramType = parameterTypes[0];
                 m.setAccessible(true);
@@ -83,34 +62,33 @@ public class ExpressionProcessor {
         return unmodifiableMap(processMethodByClass);
     }
 
-    private boolean isEntryMethod(int modifiers) {
-        return Modifier.isPublic(modifiers) && Modifier.isFinal(modifiers);
-    }
-
-    private Method getProcessMethod(Class<?> exprType) {
+    private Method getHandlerMethod(Class<?> exprType) {
         if (exprType == null) {
             return null;
         }
-        if (processingMethods.containsKey(exprType)) {
-            return processingMethods.get(exprType);
+        if (handlingMethods.containsKey(exprType)) {
+            return handlingMethods.get(exprType);
         }
+
+
         for (Class<?> interfaceVar : exprType.getInterfaces()) {
-            Method method = processingMethods.get(interfaceVar);
+            Method method = handlingMethods.get(interfaceVar);
             if (method != null) {
                 return method;
             }
         }
-        return getProcessMethod(exprType.getSuperclass());
+        return getHandlerMethod(exprType.getSuperclass());
     }
 
-    private Expression invokeSpecificProcessMethod(Expression expression) throws ExpressionException {
+    @SuppressWarnings("unchecked")
+    private T invokeSpecificProcessMethod(Expression expression) throws ExpressionException {
         Class<?> exprType = expression.getClass();
-        Method processMethod = getProcessMethod(exprType);
-        if (processMethod == null) {
+        Method handleMethod = getHandlerMethod(exprType);
+        if (handleMethod == null) {
             return null;
         }
         try {
-            return (Expression) processMethod.invoke(expression);
+            return (T) handleMethod.invoke(this, expression);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw new ExpressionException(e.getMessage(), e);
         }
