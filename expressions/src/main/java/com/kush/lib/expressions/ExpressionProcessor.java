@@ -1,6 +1,8 @@
 package com.kush.lib.expressions;
 
 import com.kush.lib.expressions.types.AndExpression;
+import com.kush.lib.expressions.types.ConstantIntExpression;
+import com.kush.lib.expressions.types.ConstantStringExpression;
 import com.kush.lib.expressions.types.FieldExpression;
 import com.kush.lib.expressions.types.NotExpression;
 import com.kush.lib.expressions.types.OrExpression;
@@ -27,5 +29,13 @@ public class ExpressionProcessor {
 
     public NotExpression process(NotExpression expression) {
         return expressionFactory.createNotExpression(expression.getChild());
+    }
+
+    public ConstantStringExpression process(ConstantStringExpression expression) {
+        return expressionFactory.createConstantStringExpression(expression.getValue());
+    }
+
+    public ConstantIntExpression process(ConstantIntExpression expression) {
+        return expressionFactory.createConstantIntExpression(expression.getValue());
     }
 }
