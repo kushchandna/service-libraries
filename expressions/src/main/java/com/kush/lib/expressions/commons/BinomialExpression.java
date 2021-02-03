@@ -1,4 +1,4 @@
-package com.kush.lib.expressions.types;
+package com.kush.lib.expressions.commons;
 
 import com.kush.lib.expressions.Expression;
 
