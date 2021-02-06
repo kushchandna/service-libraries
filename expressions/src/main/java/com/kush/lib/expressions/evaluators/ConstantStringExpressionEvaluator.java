@@ -5,11 +5,11 @@ import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
 import static com.kush.lib.expressions.utils.TypedResultFactory.stringResult;
 
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.TypedResult;
 import com.kush.lib.expressions.Type;
+import com.kush.lib.expressions.TypedResult;
 import com.kush.lib.expressions.types.ConstantStringExpression;
 
-public class ConstantStringExpressionEvaluator<T> extends BaseExpressionEvaluator<ConstantStringExpression, T> {
+class ConstantStringExpressionEvaluator<T> extends BaseExpressionEvaluator<ConstantStringExpression, T> {
 
     private final ConstantStringExpression expression;
 

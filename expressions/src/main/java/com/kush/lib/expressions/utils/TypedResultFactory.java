@@ -7,8 +7,8 @@ import static com.kush.lib.expressions.Type.INTEGER;
 import static com.kush.lib.expressions.Type.LONG;
 import static com.kush.lib.expressions.Type.STRING;
 
-import com.kush.lib.expressions.TypedResult;
 import com.kush.lib.expressions.Type;
+import com.kush.lib.expressions.TypedResult;
 
 public class TypedResultFactory {
 
@@ -312,6 +312,34 @@ public class TypedResultFactory {
         @Override
         public Type getType() {
             return type;
+        }
+
+        @Override
+        public int compareTo(TypedResult o) {
+            TypedResult o1 = this;
+            TypedResult o2 = o;
+            if (o1.getType() != o2.getType()) {
+                throw new IllegalArgumentException();
+            }
+            if (o1.isNull() || o2.isNull()) {
+                throw new IllegalStateException();
+            }
+            switch (o1.getType()) {
+            case BOOLEAN:
+                return Boolean.compare(o1.getBoolean(), o2.getBoolean());
+            case DOUBLE:
+                return Double.compare(o1.getDouble(), o2.getDouble());
+            case FLOAT:
+                return Float.compare(o1.getFloat(), o2.getFloat());
+            case INTEGER:
+                return Integer.compare(o1.getInt(), o2.getInt());
+            case LONG:
+                return Long.compare(o1.getLong(), o2.getLong());
+            case STRING:
+                return o1.getString().compareTo(o2.getString());
+            default:
+                throw new IllegalStateException();
+            }
         }
 
         @Override

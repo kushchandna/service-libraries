@@ -9,6 +9,7 @@ import com.kush.lib.expressions.types.ConstantIntExpression;
 import com.kush.lib.expressions.types.ConstantStringExpression;
 import com.kush.lib.expressions.types.EqualsExpression;
 import com.kush.lib.expressions.types.FieldExpression;
+import com.kush.lib.expressions.types.GreaterThanExpression;
 import com.kush.lib.expressions.types.NotExpression;
 import com.kush.lib.expressions.types.OrExpression;
 
@@ -43,6 +44,11 @@ public class ExpressionCloner extends ExpressionProcessor<Expression> {
     @Override
     protected Expression handle(EqualsExpression expression) {
         return expressionFactory.createEqualsExpression(expression.getLeft(), expression.getRight());
+    }
+
+    @Override
+    protected Expression handle(GreaterThanExpression expression) throws ExpressionException {
+        return expressionFactory.createGreaterThanExpression(expression.getLeft(), expression.getRight());
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.kush.lib.expressions.evaluators;
 
+import static com.kush.lib.expressions.app.AppCollation.isNullHigh;
+
 import com.kush.lib.expressions.Expression;
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
@@ -10,6 +12,7 @@ import com.kush.lib.expressions.types.ConstantIntExpression;
 import com.kush.lib.expressions.types.ConstantStringExpression;
 import com.kush.lib.expressions.types.EqualsExpression;
 import com.kush.lib.expressions.types.FieldExpression;
+import com.kush.lib.expressions.types.GreaterThanExpression;
 import com.kush.lib.expressions.types.NotExpression;
 import com.kush.lib.expressions.types.OrExpression;
 
@@ -53,6 +56,11 @@ public class DefaultExpressionEvaluatorFactory<T> implements ExpressionEvaluator
         @Override
         protected ExpressionEvaluator<T> handle(EqualsExpression expression) throws ExpressionException {
             return new EqualsExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this);
+        }
+
+        @Override
+        protected ExpressionEvaluator<T> handle(GreaterThanExpression expression) throws ExpressionException {
+            return new GreaterThanExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this, isNullHigh());
         }
 
         @Override

@@ -12,6 +12,7 @@ import com.kush.lib.expressions.types.ConstantIntExpression;
 import com.kush.lib.expressions.types.ConstantStringExpression;
 import com.kush.lib.expressions.types.EqualsExpression;
 import com.kush.lib.expressions.types.FieldExpression;
+import com.kush.lib.expressions.types.GreaterThanExpression;
 import com.kush.lib.expressions.types.NotExpression;
 import com.kush.lib.expressions.types.OrExpression;
 
@@ -33,6 +34,8 @@ public abstract class ExpressionProcessor<T> {
     protected abstract T handle(NotExpression expression) throws ExpressionException;
 
     protected abstract T handle(EqualsExpression expression) throws ExpressionException;
+
+    protected abstract T handle(GreaterThanExpression expression) throws ExpressionException;
 
     protected abstract T handle(ConstantStringExpression expression) throws ExpressionException;
 

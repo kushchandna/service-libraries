@@ -7,8 +7,8 @@ import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.TypedResult;
 import com.kush.lib.expressions.Type;
+import com.kush.lib.expressions.TypedResult;
 import com.kush.lib.expressions.types.NotExpression;
 
 /**
@@ -16,7 +16,7 @@ import com.kush.lib.expressions.types.NotExpression;
  * !true = false
  * !false = true
  */
-public class NotExpressionEvaluator<T> extends BaseExpressionEvaluator<NotExpression, T> {
+class NotExpressionEvaluator<T> extends BaseExpressionEvaluator<NotExpression, T> {
 
     private final ExpressionEvaluator<T> evaluator;
 

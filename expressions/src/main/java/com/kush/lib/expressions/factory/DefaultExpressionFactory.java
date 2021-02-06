@@ -7,6 +7,7 @@ import com.kush.lib.expressions.types.ConstantIntExpression;
 import com.kush.lib.expressions.types.ConstantStringExpression;
 import com.kush.lib.expressions.types.EqualsExpression;
 import com.kush.lib.expressions.types.FieldExpression;
+import com.kush.lib.expressions.types.GreaterThanExpression;
 import com.kush.lib.expressions.types.NotExpression;
 import com.kush.lib.expressions.types.OrExpression;
 
@@ -35,6 +36,11 @@ public class DefaultExpressionFactory implements ExpressionFactory {
     @Override
     public EqualsExpression createEqualsExpression(Expression leftExpr, Expression rightExpr) {
         return new DefaultEqualsExpression(leftExpr, rightExpr);
+    }
+
+    @Override
+    public GreaterThanExpression createGreaterThanExpression(Expression leftExpr, Expression rightExpr) {
+        return new DefaultGreaterThanExpression(leftExpr, rightExpr);
     }
 
     @Override
