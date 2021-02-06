@@ -1,10 +1,10 @@
 package com.kush.lib.expressions.handler;
 
-import com.kush.lib.expressions.Type;
+import com.kush.lib.expressions.ExpressionType;
 
 public abstract class ToBooleanTypeHandler {
 
-    public final boolean handle(Type type) {
+    public final boolean handle(ExpressionType type) {
         switch (type) {
         case BOOLEAN:
             return handleBoolean();

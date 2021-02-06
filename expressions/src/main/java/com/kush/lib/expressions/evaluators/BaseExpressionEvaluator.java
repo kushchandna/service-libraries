@@ -1,47 +1,30 @@
 package com.kush.lib.expressions.evaluators;
 
+import static com.kush.lib.expressions.ExpressionException.exceptionWithMessage;
+
 import com.kush.lib.expressions.Expression;
 import com.kush.lib.expressions.ExpressionEvaluator;
-import com.kush.lib.expressions.ExpressionEvaluatorFactory;
-import com.kush.lib.expressions.ExpressionException;
+import com.kush.lib.expressions.ExpressionType;
 
 abstract class BaseExpressionEvaluator<E extends Expression, T> implements ExpressionEvaluator<T> {
 
-    protected final E expression;
-    protected final ExpressionEvaluatorFactory<T> evaluatorFactory;
+    // utility methods
 
-    public BaseExpressionEvaluator(E expression, ExpressionEvaluatorFactory<T> evaluatorFactory) {
-        this.expression = expression;
-        this.evaluatorFactory = evaluatorFactory;
+    protected final void validateSameTypeOnBothSides(ExpressionEvaluator<T> leftExprEvaluator,
+            ExpressionEvaluator<T> rightExprEvaluator, String operation) {
+        ExpressionType leftType = leftExprEvaluator.evaluateType();
+        ExpressionType rightType = rightExprEvaluator.evaluateType();
+        if (leftType != rightType) {
+            exceptionWithMessage("Both sides of an %s expression should be same, but got %s and %s", operation, leftType,
+                    rightType);
+        }
     }
 
-    @Override
-    public int evaluateInt(T object) throws ExpressionException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public double evaluateDouble(T object) throws ExpressionException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public float evaluateFloat(T object) throws ExpressionException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public long evaluateLong(T object) throws ExpressionException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String evaluateString(T object) throws ExpressionException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean evaluateBoolean(T object) throws ExpressionException {
-        throw new UnsupportedOperationException();
+    protected final void validateType(ExpressionEvaluator<T> expressionEvaluator, ExpressionType expressionType,
+            String operation) {
+        ExpressionType type = expressionEvaluator.evaluateType();
+        if (type != expressionType) {
+            exceptionWithMessage("%s operation can only accept type %s, but got %s", operation, expressionType, type);
+        }
     }
 }
