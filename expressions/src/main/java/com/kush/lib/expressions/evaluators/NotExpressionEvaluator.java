@@ -1,14 +1,14 @@
 package com.kush.lib.expressions.evaluators;
 
-import static com.kush.lib.expressions.ExpressionType.BOOLEAN;
-import static com.kush.lib.expressions.utils.ExpressionResultFactory.booleanResult;
-import static com.kush.lib.expressions.utils.ExpressionResultFactory.nullResult;
+import static com.kush.lib.expressions.Type.BOOLEAN;
+import static com.kush.lib.expressions.utils.TypedResultFactory.booleanResult;
+import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
 
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.ExpressionResult;
-import com.kush.lib.expressions.ExpressionType;
+import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.Type;
 import com.kush.lib.expressions.types.NotExpression;
 
 /**
@@ -27,8 +27,8 @@ public class NotExpressionEvaluator<T> extends BaseExpressionEvaluator<NotExpres
     }
 
     @Override
-    public ExpressionResult evaluate(T object) throws ExpressionException {
-        ExpressionResult result = evaluator.evaluate(object);
+    public TypedResult evaluate(T object) throws ExpressionException {
+        TypedResult result = evaluator.evaluate(object);
         if (result.isNull()) {
             return nullResult(BOOLEAN);
         }
@@ -36,7 +36,7 @@ public class NotExpressionEvaluator<T> extends BaseExpressionEvaluator<NotExpres
     }
 
     @Override
-    public ExpressionType evaluateType() {
+    public Type evaluateType() {
         return BOOLEAN;
     }
 }

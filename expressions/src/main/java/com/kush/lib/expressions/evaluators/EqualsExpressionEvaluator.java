@@ -1,13 +1,13 @@
 package com.kush.lib.expressions.evaluators;
 
-import static com.kush.lib.expressions.ExpressionType.BOOLEAN;
-import static com.kush.lib.expressions.utils.ExpressionResultFactory.booleanResult;
+import static com.kush.lib.expressions.Type.BOOLEAN;
+import static com.kush.lib.expressions.utils.TypedResultFactory.booleanResult;
 
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.ExpressionResult;
-import com.kush.lib.expressions.ExpressionType;
+import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.Type;
 import com.kush.lib.expressions.types.EqualsExpression;
 
 
@@ -29,9 +29,9 @@ public class EqualsExpressionEvaluator<T> extends BaseExpressionEvaluator<Equals
     }
 
     @Override
-    public ExpressionResult evaluate(T object) throws ExpressionException {
-        ExpressionResult leftResult = leftExprEvaluator.evaluate(object);
-        ExpressionResult rightResult = rightExprEvaluator.evaluate(object);
+    public TypedResult evaluate(T object) throws ExpressionException {
+        TypedResult leftResult = leftExprEvaluator.evaluate(object);
+        TypedResult rightResult = rightExprEvaluator.evaluate(object);
         if (leftResult.isNull()) {
             if (rightResult.isNull()) {
                 return booleanResult(true);
@@ -49,7 +49,7 @@ public class EqualsExpressionEvaluator<T> extends BaseExpressionEvaluator<Equals
     }
 
     @Override
-    public ExpressionType evaluateType() {
+    public Type evaluateType() {
         return BOOLEAN;
     }
 }

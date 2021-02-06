@@ -4,7 +4,7 @@ import static com.kush.lib.expressions.ExpressionException.exceptionWithMessage;
 
 import com.kush.lib.expressions.Expression;
 import com.kush.lib.expressions.ExpressionEvaluator;
-import com.kush.lib.expressions.ExpressionType;
+import com.kush.lib.expressions.Type;
 
 abstract class BaseExpressionEvaluator<E extends Expression, T> implements ExpressionEvaluator<T> {
 
@@ -12,17 +12,17 @@ abstract class BaseExpressionEvaluator<E extends Expression, T> implements Expre
 
     protected final void validateSameTypeOnBothSides(ExpressionEvaluator<T> leftExprEvaluator,
             ExpressionEvaluator<T> rightExprEvaluator, String operation) {
-        ExpressionType leftType = leftExprEvaluator.evaluateType();
-        ExpressionType rightType = rightExprEvaluator.evaluateType();
+        Type leftType = leftExprEvaluator.evaluateType();
+        Type rightType = rightExprEvaluator.evaluateType();
         if (leftType != rightType) {
             exceptionWithMessage("Both sides of an %s expression should be same, but got %s and %s", operation, leftType,
                     rightType);
         }
     }
 
-    protected final void validateType(ExpressionEvaluator<T> expressionEvaluator, ExpressionType expressionType,
+    protected final void validateType(ExpressionEvaluator<T> expressionEvaluator, Type expressionType,
             String operation) {
-        ExpressionType type = expressionEvaluator.evaluateType();
+        Type type = expressionEvaluator.evaluateType();
         if (type != expressionType) {
             exceptionWithMessage("%s operation can only accept type %s, but got %s", operation, expressionType, type);
         }

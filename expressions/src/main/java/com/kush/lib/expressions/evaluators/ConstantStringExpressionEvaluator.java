@@ -1,12 +1,12 @@
 package com.kush.lib.expressions.evaluators;
 
-import static com.kush.lib.expressions.ExpressionType.STRING;
-import static com.kush.lib.expressions.utils.ExpressionResultFactory.nullResult;
-import static com.kush.lib.expressions.utils.ExpressionResultFactory.stringResult;
+import static com.kush.lib.expressions.Type.STRING;
+import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
+import static com.kush.lib.expressions.utils.TypedResultFactory.stringResult;
 
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.ExpressionResult;
-import com.kush.lib.expressions.ExpressionType;
+import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.Type;
 import com.kush.lib.expressions.types.ConstantStringExpression;
 
 public class ConstantStringExpressionEvaluator<T> extends BaseExpressionEvaluator<ConstantStringExpression, T> {
@@ -18,7 +18,7 @@ public class ConstantStringExpressionEvaluator<T> extends BaseExpressionEvaluato
     }
 
     @Override
-    public ExpressionResult evaluate(T object) throws ExpressionException {
+    public TypedResult evaluate(T object) throws ExpressionException {
         String value = expression.getValue();
         if (value == null) {
             return nullResult(STRING);
@@ -27,7 +27,7 @@ public class ConstantStringExpressionEvaluator<T> extends BaseExpressionEvaluato
     }
 
     @Override
-    public ExpressionType evaluateType() {
+    public Type evaluateType() {
         return STRING;
     }
 }

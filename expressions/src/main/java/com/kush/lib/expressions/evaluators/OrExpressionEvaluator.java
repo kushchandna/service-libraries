@@ -1,14 +1,14 @@
 package com.kush.lib.expressions.evaluators;
 
-import static com.kush.lib.expressions.ExpressionType.BOOLEAN;
-import static com.kush.lib.expressions.utils.ExpressionResultFactory.booleanResult;
-import static com.kush.lib.expressions.utils.ExpressionResultFactory.nullResult;
+import static com.kush.lib.expressions.Type.BOOLEAN;
+import static com.kush.lib.expressions.utils.TypedResultFactory.booleanResult;
+import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
 
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.ExpressionResult;
-import com.kush.lib.expressions.ExpressionType;
+import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.Type;
 import com.kush.lib.expressions.types.OrExpression;
 
 /**
@@ -38,8 +38,8 @@ class OrExpressionEvaluator<T> extends BaseExpressionEvaluator<OrExpression, T> 
     }
 
     @Override
-    public ExpressionResult evaluate(T object) throws ExpressionException {
-        ExpressionResult leftResult = leftExprEvaluator.evaluate(object);
+    public TypedResult evaluate(T object) throws ExpressionException {
+        TypedResult leftResult = leftExprEvaluator.evaluate(object);
         boolean leftValue = leftResult.getBoolean();
         if (!leftResult.isNull() && leftValue == true) {
             // left != null && left == true
@@ -47,7 +47,7 @@ class OrExpressionEvaluator<T> extends BaseExpressionEvaluator<OrExpression, T> 
         }
 
         // left == null || left == false
-        ExpressionResult rightResult = rightExprEvaluator.evaluate(object);
+        TypedResult rightResult = rightExprEvaluator.evaluate(object);
         boolean rightValue = rightResult.getBoolean();
         if (leftResult.isNull() && rightValue != true) {
             // left == null
@@ -59,7 +59,7 @@ class OrExpressionEvaluator<T> extends BaseExpressionEvaluator<OrExpression, T> 
     }
 
     @Override
-    public ExpressionType evaluateType() {
+    public Type evaluateType() {
         return BOOLEAN;
     }
 }

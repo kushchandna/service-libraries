@@ -1,6 +1,6 @@
 package com.kush.lib.expressions;
 
-public interface ExpressionResult extends ExpressionTypeAware {
+public interface TypedResult {
 
     boolean isNull();
 
@@ -17,4 +17,6 @@ public interface ExpressionResult extends ExpressionTypeAware {
     String getString();
 
     Object getObject();
+
+    Type getType();
 }

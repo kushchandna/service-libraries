@@ -1,13 +1,13 @@
 package com.kush.lib.expressions.evaluators;
 
-import static com.kush.lib.expressions.ExpressionType.INTEGER;
-import static com.kush.lib.expressions.utils.ExpressionResultFactory.intResult;
-import static com.kush.lib.expressions.utils.ExpressionResultFactory.nullResult;
+import static com.kush.lib.expressions.Type.INTEGER;
+import static com.kush.lib.expressions.utils.TypedResultFactory.intResult;
+import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
 import static com.kush.lib.expressions.utils.SpecialValues.NULL_INT;
 
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.ExpressionResult;
-import com.kush.lib.expressions.ExpressionType;
+import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.Type;
 import com.kush.lib.expressions.types.ConstantIntExpression;
 
 public class ConstantIntExpressionEvaluator<T> extends BaseExpressionEvaluator<ConstantIntExpression, T> {
@@ -19,7 +19,7 @@ public class ConstantIntExpressionEvaluator<T> extends BaseExpressionEvaluator<C
     }
 
     @Override
-    public ExpressionResult evaluate(T object) throws ExpressionException {
+    public TypedResult evaluate(T object) throws ExpressionException {
         int value = expression.getValue();
         if (value == NULL_INT) {
             return nullResult(INTEGER);
@@ -28,7 +28,7 @@ public class ConstantIntExpressionEvaluator<T> extends BaseExpressionEvaluator<C
     }
 
     @Override
-    public ExpressionType evaluateType() {
+    public Type evaluateType() {
         return INTEGER;
     }
 }

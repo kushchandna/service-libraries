@@ -1,14 +1,10 @@
 package com.kush.lib.expressions.evaluators;
 
-import java.util.function.Function;
-
-import com.kush.lib.expressions.Accessor;
 import com.kush.lib.expressions.Expression;
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.ExpressionProcessor;
-import com.kush.lib.expressions.ExpressionType;
 import com.kush.lib.expressions.types.AndExpression;
 import com.kush.lib.expressions.types.ConstantIntExpression;
 import com.kush.lib.expressions.types.ConstantStringExpression;
@@ -20,14 +16,11 @@ import com.kush.lib.expressions.types.OrExpression;
 public class DefaultExpressionEvaluatorFactory<T> implements ExpressionEvaluatorFactory<T> {
 
     private final InternalExpressionEvaluatorFactory internalFactory;
-    private final Function<String, Accessor<T>> accessorGetter;
-    private final Function<String, ExpressionType> typeGetter;
+    private final FieldExpressionEvaluatorFactory<T> fieldEvaluatorFactory;
 
-    public DefaultExpressionEvaluatorFactory(Function<String, Accessor<T>> accessorGetter,
-            Function<String, ExpressionType> typeGetter) {
+    public DefaultExpressionEvaluatorFactory(FieldExpressionEvaluatorFactory<T> fieldEvaluatorFactory) {
+        this.fieldEvaluatorFactory = fieldEvaluatorFactory;
         internalFactory = new InternalExpressionEvaluatorFactory();
-        this.accessorGetter = accessorGetter;
-        this.typeGetter = typeGetter;
     }
 
     @Override
@@ -38,8 +31,8 @@ public class DefaultExpressionEvaluatorFactory<T> implements ExpressionEvaluator
     private class InternalExpressionEvaluatorFactory extends ExpressionProcessor<ExpressionEvaluator<T>> {
 
         @Override
-        protected ExpressionEvaluator<T> handle(FieldExpression expression) {
-            return new FieldExpressionEvaluator<>(expression, accessorGetter, typeGetter);
+        protected ExpressionEvaluator<T> handle(FieldExpression expression) throws ExpressionException {
+            return fieldEvaluatorFactory.create(expression);
         }
 
         @Override

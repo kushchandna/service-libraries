@@ -1,18 +1,18 @@
 package com.kush.lib.expressions.utils;
 
-import static com.kush.lib.expressions.ExpressionType.BOOLEAN;
-import static com.kush.lib.expressions.ExpressionType.DOUBLE;
-import static com.kush.lib.expressions.ExpressionType.FLOAT;
-import static com.kush.lib.expressions.ExpressionType.INTEGER;
-import static com.kush.lib.expressions.ExpressionType.LONG;
-import static com.kush.lib.expressions.ExpressionType.STRING;
+import static com.kush.lib.expressions.Type.BOOLEAN;
+import static com.kush.lib.expressions.Type.DOUBLE;
+import static com.kush.lib.expressions.Type.FLOAT;
+import static com.kush.lib.expressions.Type.INTEGER;
+import static com.kush.lib.expressions.Type.LONG;
+import static com.kush.lib.expressions.Type.STRING;
 
-import com.kush.lib.expressions.ExpressionResult;
-import com.kush.lib.expressions.ExpressionType;
+import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.Type;
 
-public class ExpressionResultFactory {
+public class TypedResultFactory {
 
-    public static ExpressionResult intResult(int value) {
+    public static TypedResult intResult(int value) {
         return new BaseExpressionResult(INTEGER) {
 
             @Override
@@ -37,7 +37,7 @@ public class ExpressionResultFactory {
         };
     }
 
-    public static ExpressionResult longResult(long value) {
+    public static TypedResult longResult(long value) {
         return new BaseExpressionResult(LONG) {
 
             @Override
@@ -62,7 +62,7 @@ public class ExpressionResultFactory {
         };
     }
 
-    public static ExpressionResult floatResult(float value) {
+    public static TypedResult floatResult(float value) {
         return new BaseExpressionResult(FLOAT) {
 
             @Override
@@ -87,7 +87,7 @@ public class ExpressionResultFactory {
         };
     }
 
-    public static ExpressionResult doubleResult(double value) {
+    public static TypedResult doubleResult(double value) {
         return new BaseExpressionResult(DOUBLE) {
 
             @Override
@@ -112,7 +112,7 @@ public class ExpressionResultFactory {
         };
     }
 
-    public static ExpressionResult booleanResult(boolean value) {
+    public static TypedResult booleanResult(boolean value) {
         return new BaseExpressionResult(BOOLEAN) {
 
             @Override
@@ -137,14 +137,14 @@ public class ExpressionResultFactory {
         };
     }
 
-    public static ExpressionResult stringResult(String value) {
+    public static TypedResult stringResult(String value) {
         if (value == null) {
             throw new NullPointerException();
         }
         return new StringExpressionResult(value);
     }
 
-    public static ExpressionResult nullResult(ExpressionType type) {
+    public static TypedResult nullResult(Type type) {
         if (type == STRING) {
             return new StringExpressionResult(null) {
 
@@ -179,7 +179,7 @@ public class ExpressionResultFactory {
         }
     }
 
-    public static ExpressionResult nullableResult(Object value, ExpressionType type) {
+    public static TypedResult nullableResult(Object value, Type type) {
         if (value == null) {
             return nullResult(type);
         }
@@ -261,11 +261,11 @@ public class ExpressionResultFactory {
         }
     }
 
-    private static abstract class BaseExpressionResult implements ExpressionResult {
+    private static abstract class BaseExpressionResult implements TypedResult {
 
-        private final ExpressionType type;
+        private final Type type;
 
-        public BaseExpressionResult(ExpressionType type) {
+        public BaseExpressionResult(Type type) {
             this.type = type;
         }
 
@@ -310,7 +310,7 @@ public class ExpressionResultFactory {
         }
 
         @Override
-        public ExpressionType getType() {
+        public Type getType() {
             return type;
         }
 
@@ -354,7 +354,7 @@ public class ExpressionResultFactory {
         protected abstract int valueHashCode();
     }
 
-    private ExpressionResultFactory() {
+    private TypedResultFactory() {
         throw new UnsupportedOperationException();
     }
 }

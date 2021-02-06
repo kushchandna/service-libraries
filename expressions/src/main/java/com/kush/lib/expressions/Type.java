@@ -1,6 +1,6 @@
 package com.kush.lib.expressions;
 
-public enum ExpressionType {
+public enum Type {
     STRING,
     DOUBLE,
     FLOAT,

@@ -2,5 +2,5 @@ package com.kush.lib.expressions;
 
 public interface Accessor<T> {
 
-    ExpressionResult access(T object);
+    TypedResult access(T object);
 }
