@@ -7,7 +7,7 @@ import java.util.Collection;
 import com.kush.lib.expressions.Expression;
 import com.kush.lib.expressions.commons.BinomialExpression;
 
-abstract class BaseBinomialExpression implements Expression, BinomialExpression {
+abstract class BaseBinomialExpression implements BinomialExpression {
 
     private final Expression left;
     private final Expression right;
