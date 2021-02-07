@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import javax.tools.JavaFileObject;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kush.lib.expressions.Expression;
 import com.squareup.javapoet.JavaFile;
@@ -46,7 +44,7 @@ public class ExpressionsGenerator {
             .skipJavaLangImports(true)
             .build();
 
-        JavaFileObject javaFileObject = javaFile.toJavaFileObject();
+        javaFile.toJavaFileObject();
         return null;
     }
 
