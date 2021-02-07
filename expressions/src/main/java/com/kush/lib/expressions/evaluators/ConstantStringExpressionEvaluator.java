@@ -4,30 +4,21 @@ import static com.kush.lib.expressions.Type.STRING;
 import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
 import static com.kush.lib.expressions.utils.TypedResultFactory.stringResult;
 
-import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.Type;
 import com.kush.lib.expressions.TypedResult;
 import com.kush.lib.expressions.types.ConstantStringExpression;
 
-class ConstantStringExpressionEvaluator<T> extends BaseExpressionEvaluator<ConstantStringExpression, T> {
-
-    private final ConstantStringExpression expression;
+class ConstantStringExpressionEvaluator<T> extends BaseConstantExpressionEvaluator<ConstantStringExpression, T> {
 
     public ConstantStringExpressionEvaluator(ConstantStringExpression expression) {
-        this.expression = expression;
+        super(expression, STRING);
     }
 
     @Override
-    public TypedResult evaluate(T object) throws ExpressionException {
+    protected TypedResult evaluateConstantResult(ConstantStringExpression expression) {
         String value = expression.getValue();
         if (value == null) {
             return nullResult(STRING);
         }
         return stringResult(value);
-    }
-
-    @Override
-    public Type evaluateType() {
-        return STRING;
     }
 }

@@ -8,6 +8,12 @@ import com.kush.lib.expressions.Type;
 
 abstract class BaseExpressionEvaluator<E extends Expression, T> implements ExpressionEvaluator<T> {
 
+    protected final E expression;
+
+    public BaseExpressionEvaluator(E expression) {
+        this.expression = expression;
+    }
+
     // utility methods
 
     protected final void validateSameTypeOnBothSides(ExpressionEvaluator<T> leftExprEvaluator,

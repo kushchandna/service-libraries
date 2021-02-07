@@ -7,8 +7,8 @@ import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.TypedResult;
 import com.kush.lib.expressions.Type;
+import com.kush.lib.expressions.TypedResult;
 import com.kush.lib.expressions.types.AndExpression;
 
 /**
@@ -31,6 +31,7 @@ class AndExpressionEvaluator<T> extends BaseExpressionEvaluator<AndExpression, T
 
     public AndExpressionEvaluator(AndExpression expression, ExpressionEvaluatorFactory<T> evaluatorFactory)
             throws ExpressionException {
+        super(expression);
         leftExprEvaluator = evaluatorFactory.create(expression.getLeft());
         validateType(leftExprEvaluator, BOOLEAN, "AND");
         rightExprEvaluator = evaluatorFactory.create(expression.getRight());

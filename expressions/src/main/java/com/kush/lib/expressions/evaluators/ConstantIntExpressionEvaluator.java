@@ -5,30 +5,21 @@ import static com.kush.lib.expressions.utils.SpecialValues.NULL_INT;
 import static com.kush.lib.expressions.utils.TypedResultFactory.intResult;
 import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
 
-import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.Type;
 import com.kush.lib.expressions.TypedResult;
 import com.kush.lib.expressions.types.ConstantIntExpression;
 
-class ConstantIntExpressionEvaluator<T> extends BaseExpressionEvaluator<ConstantIntExpression, T> {
-
-    private final ConstantIntExpression expression;
+class ConstantIntExpressionEvaluator<T> extends BaseConstantExpressionEvaluator<ConstantIntExpression, T> {
 
     public ConstantIntExpressionEvaluator(ConstantIntExpression expression) {
-        this.expression = expression;
+        super(expression, INTEGER);
     }
 
     @Override
-    public TypedResult evaluate(T object) throws ExpressionException {
+    protected TypedResult evaluateConstantResult(ConstantIntExpression expression) {
         int value = expression.getValue();
         if (value == NULL_INT) {
             return nullResult(INTEGER);
         }
         return intResult(value);
-    }
-
-    @Override
-    public Type evaluateType() {
-        return INTEGER;
     }
 }

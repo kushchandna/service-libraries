@@ -7,8 +7,8 @@ import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.TypedResult;
 import com.kush.lib.expressions.Type;
+import com.kush.lib.expressions.TypedResult;
 import com.kush.lib.expressions.types.OrExpression;
 
 /**
@@ -31,6 +31,7 @@ class OrExpressionEvaluator<T> extends BaseExpressionEvaluator<OrExpression, T> 
 
     public OrExpressionEvaluator(OrExpression expression, ExpressionEvaluatorFactory<T> evaluatorFactory)
             throws ExpressionException {
+        super(expression);
         leftExprEvaluator = evaluatorFactory.create(expression.getLeft());
         validateType(leftExprEvaluator, BOOLEAN, "OR");
         rightExprEvaluator = evaluatorFactory.create(expression.getRight());

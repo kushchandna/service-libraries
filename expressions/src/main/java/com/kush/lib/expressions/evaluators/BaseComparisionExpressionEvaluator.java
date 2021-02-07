@@ -19,8 +19,9 @@ abstract class BaseComparisionExpressionEvaluator<E extends ComparisionExpressio
     private final ExpressionEvaluator<T> leftExprEvaluator;
     private final ExpressionEvaluator<T> rightExprEvaluator;
 
-    public BaseComparisionExpressionEvaluator(ComparisionExpression expression, ExpressionEvaluatorFactory<T> evaluatorFactory)
+    public BaseComparisionExpressionEvaluator(E expression, ExpressionEvaluatorFactory<T> evaluatorFactory)
             throws ExpressionException {
+        super(expression);
         leftExprEvaluator = evaluatorFactory.create(expression.getLeft());
         rightExprEvaluator = evaluatorFactory.create(expression.getRight());
         validateSameTypeOnBothSides(leftExprEvaluator, rightExprEvaluator, "EQUALS");
