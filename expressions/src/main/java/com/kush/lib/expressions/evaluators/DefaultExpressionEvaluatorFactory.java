@@ -12,7 +12,10 @@ import com.kush.lib.expressions.types.ConstantIntExpression;
 import com.kush.lib.expressions.types.ConstantStringExpression;
 import com.kush.lib.expressions.types.EqualsExpression;
 import com.kush.lib.expressions.types.FieldExpression;
+import com.kush.lib.expressions.types.GreaterThanEqualsExpression;
 import com.kush.lib.expressions.types.GreaterThanExpression;
+import com.kush.lib.expressions.types.LessThanEqualsExpression;
+import com.kush.lib.expressions.types.LessThanExpression;
 import com.kush.lib.expressions.types.NotExpression;
 import com.kush.lib.expressions.types.OrExpression;
 
@@ -61,6 +64,21 @@ public class DefaultExpressionEvaluatorFactory<T> implements ExpressionEvaluator
         @Override
         protected ExpressionEvaluator<T> handle(GreaterThanExpression expression) throws ExpressionException {
             return new GreaterThanExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this, isNullHigh());
+        }
+
+        @Override
+        protected ExpressionEvaluator<T> handle(GreaterThanEqualsExpression expression) throws ExpressionException {
+            return new GreaterThanEqualsExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this, isNullHigh());
+        }
+
+        @Override
+        protected ExpressionEvaluator<T> handle(LessThanExpression expression) throws ExpressionException {
+            return new LessThanExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this, isNullHigh());
+        }
+
+        @Override
+        protected ExpressionEvaluator<T> handle(LessThanEqualsExpression expression) throws ExpressionException {
+            return new LessThanEqualsExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this, isNullHigh());
         }
 
         @Override
