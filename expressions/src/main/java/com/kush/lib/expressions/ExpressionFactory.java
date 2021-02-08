@@ -5,7 +5,10 @@ import com.kush.lib.expressions.types.ConstantIntExpression;
 import com.kush.lib.expressions.types.ConstantStringExpression;
 import com.kush.lib.expressions.types.EqualsExpression;
 import com.kush.lib.expressions.types.FieldExpression;
+import com.kush.lib.expressions.types.GreaterThanEqualsExpression;
 import com.kush.lib.expressions.types.GreaterThanExpression;
+import com.kush.lib.expressions.types.LessThanEqualsExpression;
+import com.kush.lib.expressions.types.LessThanExpression;
 import com.kush.lib.expressions.types.NotExpression;
 import com.kush.lib.expressions.types.OrExpression;
 
@@ -22,6 +25,12 @@ public interface ExpressionFactory {
     EqualsExpression createEqualsExpression(Expression leftExpr, Expression rightExpr);
 
     GreaterThanExpression createGreaterThanExpression(Expression leftExpr, Expression rightExpr);
+
+    GreaterThanEqualsExpression createGreaterThanEqualsExpression(Expression leftExpr, Expression rightExpr);
+
+    LessThanExpression createLessThanExpression(Expression leftExpr, Expression rightExpr);
+
+    LessThanEqualsExpression createLessThanEqualsExpression(Expression leftExpr, Expression rightExpr);
 
     ConstantStringExpression createConstantStringExpression(String value);
 

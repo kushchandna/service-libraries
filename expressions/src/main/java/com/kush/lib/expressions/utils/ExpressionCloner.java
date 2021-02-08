@@ -9,7 +9,10 @@ import com.kush.lib.expressions.types.ConstantIntExpression;
 import com.kush.lib.expressions.types.ConstantStringExpression;
 import com.kush.lib.expressions.types.EqualsExpression;
 import com.kush.lib.expressions.types.FieldExpression;
+import com.kush.lib.expressions.types.GreaterThanEqualsExpression;
 import com.kush.lib.expressions.types.GreaterThanExpression;
+import com.kush.lib.expressions.types.LessThanEqualsExpression;
+import com.kush.lib.expressions.types.LessThanExpression;
 import com.kush.lib.expressions.types.NotExpression;
 import com.kush.lib.expressions.types.OrExpression;
 
@@ -42,13 +45,28 @@ public class ExpressionCloner extends ExpressionProcessor<Expression> {
     }
 
     @Override
-    protected Expression handle(EqualsExpression expression) {
-        return expressionFactory.createEqualsExpression(expression.getLeft(), expression.getRight());
+    protected Expression handle(EqualsExpression expression) throws ExpressionException {
+        return expressionFactory.createEqualsExpression(process(expression.getLeft()), process(expression.getRight()));
     }
 
     @Override
     protected Expression handle(GreaterThanExpression expression) throws ExpressionException {
-        return expressionFactory.createGreaterThanExpression(expression.getLeft(), expression.getRight());
+        return expressionFactory.createGreaterThanExpression(process(expression.getLeft()), process(expression.getRight()));
+    }
+
+    @Override
+    protected Expression handle(GreaterThanEqualsExpression expression) throws ExpressionException {
+        return expressionFactory.createGreaterThanEqualsExpression(process(expression.getLeft()), process(expression.getRight()));
+    }
+
+    @Override
+    protected Expression handle(LessThanExpression expression) throws ExpressionException {
+        return expressionFactory.createLessThanExpression(process(expression.getLeft()), process(expression.getRight()));
+    }
+
+    @Override
+    protected Expression handle(LessThanEqualsExpression expression) throws ExpressionException {
+        return expressionFactory.createLessThanEqualsExpression(process(expression.getLeft()), process(expression.getRight()));
     }
 
     @Override
