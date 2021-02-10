@@ -1,10 +1,11 @@
 package com.kush.lib.expressions.handler;
 
+import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.Type;
 
 public abstract class TypeHandler<T> {
 
-    public final T handle(Type type) {
+    public final T handle(Type type) throws ExpressionException {
         switch (type) {
         case BOOLEAN:
             return handleBoolean();
@@ -23,15 +24,15 @@ public abstract class TypeHandler<T> {
         }
     }
 
-    protected abstract T handleString();
+    protected abstract T handleString() throws ExpressionException;
 
-    protected abstract T handleLong();
+    protected abstract T handleLong() throws ExpressionException;
 
-    protected abstract T handleInteger();
+    protected abstract T handleInteger() throws ExpressionException;
 
-    protected abstract T handleFloat();
+    protected abstract T handleFloat() throws ExpressionException;
 
-    protected abstract T handleDouble();
+    protected abstract T handleDouble() throws ExpressionException;
 
-    protected abstract T handleBoolean();
+    protected abstract T handleBoolean() throws ExpressionException;
 }
