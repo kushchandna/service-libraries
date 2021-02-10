@@ -9,44 +9,60 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
 import com.kush.lib.expressions.aspect.Aspect;
 import com.kush.lib.expressions.aspect.AspectFieldEvaluationFactory;
-import com.kush.lib.expressions.aspect.MapBasedAspect;
+import com.kush.lib.expressions.aspect.Aspects;
 import com.kush.lib.expressions.evaluators.DefaultExpressionEvaluatorFactory;
 import com.kush.lib.expressions.factory.DefaultExpressionFactory;
 
 public class ExpressionEndToEndTest {
 
     @Test
-    public void e2e() throws Exception {
+    public void e2e_mapBased() throws Exception {
+        Aspect<Map<String, Object>> aspect = Aspects.mapBased(ImmutableMap.of(
+                "field1", INTEGER,
+                "field2", INTEGER));
         String sql = "field1 = 1 and field2 = 2";
+        runTest(aspect, sql, ImmutableMap.of(
+                getMap(1, 2), true,
+                getMap(3, 2), false,
+                getMap(1, 3), false));
+    }
+
+    @Test
+    public void e2e_classBased() throws Exception {
+        Aspect<SampleObject> aspect = Aspects.classBased(SampleObject.class);
+        String sql = "field1 = 1 and field2 = 2";
+        runTest(aspect, sql, ImmutableMap.of(
+                obj(1, 2), true,
+                obj(3, 2), false,
+                obj(1, 3), false));
+    }
+
+    private <T> void runTest(Aspect<T> aspect, String sql, Map<T, Boolean> objectVsExpectedResult) throws Exception {
 
         ExpressionParser<String> parser = createParser();
         Expression expression = parser.parse(sql);
 
-        Aspect<Map<String, Object>> aspect = new MapBasedAspect(ImmutableMap.of(
-                "field1", INTEGER,
-                "field2", INTEGER));
-        AspectFieldEvaluationFactory<Map<String, Object>> fieldEvaluatorFactory = new AspectFieldEvaluationFactory<>(aspect);
-        ExpressionEvaluatorFactory<Map<String, Object>> evaluatorFactory =
-                new DefaultExpressionEvaluatorFactory<>(fieldEvaluatorFactory);
-        ExpressionEvaluator<Map<String, Object>> evaluator = evaluatorFactory.create(expression);
+        AspectFieldEvaluationFactory<T> fieldEvaluatorFactory = new AspectFieldEvaluationFactory<>(aspect);
+        ExpressionEvaluatorFactory<T> evaluatorFactory = new DefaultExpressionEvaluatorFactory<>(fieldEvaluatorFactory);
+        ExpressionEvaluator<T> evaluator = evaluatorFactory.create(expression);
 
         Type type = evaluator.evaluateType();
         assertThat(type, is(equalTo(BOOLEAN)));
 
-        TypedResult result1 = evaluator.evaluate(getMap(1, 2));
-        assertThat(result1, is(equalTo(booleanResult(true))));
+        for (Entry<T, Boolean> entry : objectVsExpectedResult.entrySet()) {
+            T testObject = entry.getKey();
+            Boolean expectedResult = entry.getValue();
 
-        TypedResult result2 = evaluator.evaluate(getMap(3, 2));
-        assertThat(result2, is(equalTo(booleanResult(false))));
-
-        TypedResult result3 = evaluator.evaluate(getMap(1, 3));
-        assertThat(result3, is(equalTo(booleanResult(false))));
+            TypedResult result = evaluator.evaluate(testObject);
+            assertThat(String.valueOf(testObject), result, is(equalTo(booleanResult(expectedResult))));
+        }
     }
 
     private Map<String, Object> getMap(int field1, int field2) {
@@ -82,6 +98,26 @@ public class ExpressionEndToEndTest {
             Expression leftExpr = expressionFactory.createEqualsExpression(leftExpr1, rightExpr1);
             Expression rightExpr = expressionFactory.createEqualsExpression(leftExpr2, rightExpr2);
             return expressionFactory.createAndExpression(leftExpr, rightExpr);
+        }
+    }
+
+    private static SampleObject obj(int field1, int field2) {
+        return new SampleObject(field1, field2);
+    }
+
+    private static class SampleObject {
+
+        private final int field1;
+        private final int field2;
+
+        public SampleObject(int field1, int field2) {
+            this.field1 = field1;
+            this.field2 = field2;
+        }
+
+        @Override
+        public String toString() {
+            return "SampleObject [field1=" + field1 + ", field2=" + field2 + "]";
         }
     }
 }

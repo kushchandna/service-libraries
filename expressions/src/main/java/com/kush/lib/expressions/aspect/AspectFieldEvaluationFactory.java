@@ -4,6 +4,7 @@ import static com.kush.lib.expressions.ExpressionException.exceptionWithMessage;
 
 import java.util.Optional;
 
+import com.kush.lib.expressions.AccessException;
 import com.kush.lib.expressions.Accessor;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.Type;
@@ -41,7 +42,11 @@ public class AspectFieldEvaluationFactory<T> implements FieldExpressionEvaluator
         @Override
         public TypedResult evaluate(T object) throws ExpressionException {
             Accessor<T> accessor = field.getAccessor();
-            return accessor.access(object);
+            try {
+                return accessor.access(object);
+            } catch (AccessException e) {
+                throw new ExpressionException(e.getMessage(), e);
+            }
         }
 
         @Override
