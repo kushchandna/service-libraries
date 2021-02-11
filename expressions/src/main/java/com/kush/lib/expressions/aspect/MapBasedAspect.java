@@ -1,6 +1,6 @@
 package com.kush.lib.expressions.aspect;
 
-import static com.kush.lib.expressions.utils.TypedResultFactory.nullableResult;
+import static com.kush.lib.expressions.utils.TypedValueFactory.nullableValue;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
@@ -23,7 +23,7 @@ class MapBasedAspect extends BaseAspect<Map<String, Object>> {
     }
 
     private static Field<Map<String, Object>> createField(String fieldName, Type fieldType) {
-        Accessor<Map<String, Object>> accessor = map -> nullableResult(map.get(fieldName), fieldType);
+        Accessor<Map<String, Object>> accessor = map -> nullableValue(map.get(fieldName), fieldType);
         return new DefaultField<>(fieldName, fieldType, accessor);
     }
 }

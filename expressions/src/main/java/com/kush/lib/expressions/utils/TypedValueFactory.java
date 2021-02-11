@@ -8,12 +8,12 @@ import static com.kush.lib.expressions.Type.LONG;
 import static com.kush.lib.expressions.Type.STRING;
 
 import com.kush.lib.expressions.Type;
-import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.TypedValue;
 
-public class TypedResultFactory {
+public class TypedValueFactory {
 
-    public static TypedResult intResult(int value) {
-        return new BaseExpressionResult(INTEGER) {
+    public static TypedValue intValue(int value) {
+        return new BaseTypedValue(INTEGER) {
 
             @Override
             public int getInt() {
@@ -26,7 +26,7 @@ public class TypedResultFactory {
             }
 
             @Override
-            protected boolean valueEquals(BaseExpressionResult other) {
+            protected boolean valueEquals(BaseTypedValue other) {
                 return value == other.getInt();
             }
 
@@ -37,8 +37,8 @@ public class TypedResultFactory {
         };
     }
 
-    public static TypedResult longResult(long value) {
-        return new BaseExpressionResult(LONG) {
+    public static TypedValue longValue(long value) {
+        return new BaseTypedValue(LONG) {
 
             @Override
             public long getLong() {
@@ -51,7 +51,7 @@ public class TypedResultFactory {
             }
 
             @Override
-            protected boolean valueEquals(BaseExpressionResult other) {
+            protected boolean valueEquals(BaseTypedValue other) {
                 return value == other.getLong();
             }
 
@@ -62,8 +62,8 @@ public class TypedResultFactory {
         };
     }
 
-    public static TypedResult floatResult(float value) {
-        return new BaseExpressionResult(FLOAT) {
+    public static TypedValue floatValue(float value) {
+        return new BaseTypedValue(FLOAT) {
 
             @Override
             public float getFloat() {
@@ -76,7 +76,7 @@ public class TypedResultFactory {
             }
 
             @Override
-            protected boolean valueEquals(BaseExpressionResult other) {
+            protected boolean valueEquals(BaseTypedValue other) {
                 return value == other.getFloat();
             }
 
@@ -87,8 +87,8 @@ public class TypedResultFactory {
         };
     }
 
-    public static TypedResult doubleResult(double value) {
-        return new BaseExpressionResult(DOUBLE) {
+    public static TypedValue doubleValue(double value) {
+        return new BaseTypedValue(DOUBLE) {
 
             @Override
             public double getDouble() {
@@ -101,7 +101,7 @@ public class TypedResultFactory {
             }
 
             @Override
-            protected boolean valueEquals(BaseExpressionResult other) {
+            protected boolean valueEquals(BaseTypedValue other) {
                 return value == other.getDouble();
             }
 
@@ -112,8 +112,8 @@ public class TypedResultFactory {
         };
     }
 
-    public static TypedResult booleanResult(boolean value) {
-        return new BaseExpressionResult(BOOLEAN) {
+    public static TypedValue booleanValue(boolean value) {
+        return new BaseTypedValue(BOOLEAN) {
 
             @Override
             public boolean getBoolean() {
@@ -126,7 +126,7 @@ public class TypedResultFactory {
             }
 
             @Override
-            protected boolean valueEquals(BaseExpressionResult other) {
+            protected boolean valueEquals(BaseTypedValue other) {
                 return value == other.getBoolean();
             }
 
@@ -137,16 +137,16 @@ public class TypedResultFactory {
         };
     }
 
-    public static TypedResult stringResult(String value) {
+    public static TypedValue stringValue(String value) {
         if (value == null) {
             throw new NullPointerException();
         }
-        return new StringExpressionResult(value);
+        return new StringValue(value);
     }
 
-    public static TypedResult nullResult(Type type) {
+    public static TypedValue nullValue(Type type) {
         if (type == STRING) {
-            return new StringExpressionResult(null) {
+            return new StringValue(null) {
 
                 @Override
                 public boolean isNull() {
@@ -154,7 +154,7 @@ public class TypedResultFactory {
                 }
             };
         } else {
-            return new BaseExpressionResult(type) {
+            return new BaseTypedValue(type) {
 
                 @Override
                 public boolean isNull() {
@@ -167,7 +167,7 @@ public class TypedResultFactory {
                 }
 
                 @Override
-                protected boolean valueEquals(BaseExpressionResult other) {
+                protected boolean valueEquals(BaseTypedValue other) {
                     return true;
                 }
 
@@ -179,33 +179,33 @@ public class TypedResultFactory {
         }
     }
 
-    public static TypedResult nullableResult(Object value, Type type) {
+    public static TypedValue nullableValue(Object value, Type type) {
         if (value == null) {
-            return nullResult(type);
+            return nullValue(type);
         }
         switch (type) {
         case BOOLEAN:
-            return booleanResult((Boolean) value);
+            return booleanValue((Boolean) value);
         case DOUBLE:
-            return doubleResult((Double) value);
+            return doubleValue((Double) value);
         case FLOAT:
-            return floatResult((Float) value);
+            return floatValue((Float) value);
         case INTEGER:
-            return intResult((Integer) value);
+            return intValue((Integer) value);
         case LONG:
-            return longResult((Long) value);
+            return longValue((Long) value);
         case STRING:
-            return stringResult((String) value);
+            return stringValue((String) value);
         default:
             throw new UnsupportedOperationException();
         }
     }
 
-    private static class StringExpressionResult extends BaseExpressionResult {
+    private static class StringValue extends BaseTypedValue {
 
         private final String value;
 
-        public StringExpressionResult(String value) {
+        public StringValue(String value) {
             super(STRING);
             this.value = value;
         }
@@ -221,7 +221,7 @@ public class TypedResultFactory {
         }
 
         @Override
-        protected boolean valueEquals(BaseExpressionResult other) {
+        protected boolean valueEquals(BaseTypedValue other) {
             throw new UnsupportedOperationException();
         }
 
@@ -249,7 +249,7 @@ public class TypedResultFactory {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            StringExpressionResult other = (StringExpressionResult) obj;
+            StringValue other = (StringValue) obj;
             if (value == null) {
                 if (other.value != null) {
                     return false;
@@ -261,11 +261,11 @@ public class TypedResultFactory {
         }
     }
 
-    private static abstract class BaseExpressionResult implements TypedResult {
+    private static abstract class BaseTypedValue implements TypedValue {
 
         private final Type type;
 
-        public BaseExpressionResult(Type type) {
+        public BaseTypedValue(Type type) {
             this.type = type;
         }
 
@@ -315,9 +315,9 @@ public class TypedResultFactory {
         }
 
         @Override
-        public int compareTo(TypedResult o) {
-            TypedResult o1 = this;
-            TypedResult o2 = o;
+        public int compareTo(TypedValue o) {
+            TypedValue o1 = this;
+            TypedValue o2 = o;
             if (o1.getType() != o2.getType()) {
                 throw new IllegalArgumentException();
             }
@@ -367,7 +367,7 @@ public class TypedResultFactory {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            BaseExpressionResult other = (BaseExpressionResult) obj;
+            BaseTypedValue other = (BaseTypedValue) obj;
             if (type != other.type) {
                 return false;
             }
@@ -377,12 +377,12 @@ public class TypedResultFactory {
             return valueEquals(other);
         }
 
-        protected abstract boolean valueEquals(BaseExpressionResult other);
+        protected abstract boolean valueEquals(BaseTypedValue other);
 
         protected abstract int valueHashCode();
     }
 
-    private TypedResultFactory() {
+    private TypedValueFactory() {
         throw new UnsupportedOperationException();
     }
 }

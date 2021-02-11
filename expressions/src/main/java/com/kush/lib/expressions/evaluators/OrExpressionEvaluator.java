@@ -1,14 +1,14 @@
 package com.kush.lib.expressions.evaluators;
 
 import static com.kush.lib.expressions.Type.BOOLEAN;
-import static com.kush.lib.expressions.utils.TypedResultFactory.booleanResult;
-import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
+import static com.kush.lib.expressions.utils.TypedValueFactory.booleanValue;
+import static com.kush.lib.expressions.utils.TypedValueFactory.nullValue;
 
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.Type;
-import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.TypedValue;
 import com.kush.lib.expressions.types.OrExpression;
 
 /**
@@ -39,24 +39,24 @@ class OrExpressionEvaluator<T> extends BaseExpressionEvaluator<OrExpression, T> 
     }
 
     @Override
-    public TypedResult evaluate(T object) throws ExpressionException {
-        TypedResult leftResult = leftExprEvaluator.evaluate(object);
-        boolean leftValue = leftResult.getBoolean();
-        if (!leftResult.isNull() && leftValue == true) {
+    public TypedValue evaluate(T object) throws ExpressionException {
+        TypedValue leftValue = leftExprEvaluator.evaluate(object);
+        boolean leftResult = leftValue.getBoolean();
+        if (!leftValue.isNull() && leftResult == true) {
             // left != null && left == true
-            return booleanResult(true);
+            return booleanValue(true);
         }
 
         // left == null || left == false
-        TypedResult rightResult = rightExprEvaluator.evaluate(object);
-        boolean rightValue = rightResult.getBoolean();
-        if (leftResult.isNull() && rightValue != true) {
+        TypedValue rightValue = rightExprEvaluator.evaluate(object);
+        boolean rightResult = rightValue.getBoolean();
+        if (leftValue.isNull() && rightResult != true) {
             // left == null
-            return nullResult(BOOLEAN);
+            return nullValue(BOOLEAN);
         }
 
         // left == true
-        return rightResult;
+        return rightValue;
     }
 
     @Override

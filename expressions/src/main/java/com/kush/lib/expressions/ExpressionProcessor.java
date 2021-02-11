@@ -81,8 +81,6 @@ public abstract class ExpressionProcessor<T> {
         if (handlingMethods.containsKey(exprType)) {
             return handlingMethods.get(exprType);
         }
-
-
         for (Class<?> interfaceVar : exprType.getInterfaces()) {
             Method method = handlingMethods.get(interfaceVar);
             if (method != null) {

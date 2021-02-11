@@ -1,7 +1,5 @@
 package com.kush.lib.expressions.evaluators;
 
-import static com.kush.lib.expressions.app.AppCollation.isNullHigh;
-
 import com.kush.lib.expressions.Expression;
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
@@ -63,22 +61,22 @@ public class DefaultExpressionEvaluatorFactory<T> implements ExpressionEvaluator
 
         @Override
         protected ExpressionEvaluator<T> handle(GreaterThanExpression expression) throws ExpressionException {
-            return new GreaterThanExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this, isNullHigh());
+            return new GreaterThanExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this);
         }
 
         @Override
         protected ExpressionEvaluator<T> handle(GreaterThanEqualsExpression expression) throws ExpressionException {
-            return new GreaterThanEqualsExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this, isNullHigh());
+            return new GreaterThanEqualsExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this);
         }
 
         @Override
         protected ExpressionEvaluator<T> handle(LessThanExpression expression) throws ExpressionException {
-            return new LessThanExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this, isNullHigh());
+            return new LessThanExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this);
         }
 
         @Override
         protected ExpressionEvaluator<T> handle(LessThanEqualsExpression expression) throws ExpressionException {
-            return new LessThanEqualsExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this, isNullHigh());
+            return new LessThanEqualsExpressionEvaluator<>(expression, DefaultExpressionEvaluatorFactory.this);
         }
 
         @Override

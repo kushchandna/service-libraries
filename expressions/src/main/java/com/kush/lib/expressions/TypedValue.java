@@ -1,6 +1,6 @@
 package com.kush.lib.expressions;
 
-public interface TypedResult extends Comparable<TypedResult> {
+public interface TypedValue extends Comparable<TypedValue> {
 
     boolean isNull();
 

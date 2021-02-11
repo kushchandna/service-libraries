@@ -1,18 +1,19 @@
 package com.kush.lib.expressions.evaluators;
 
 import static com.kush.lib.expressions.Type.BOOLEAN;
-import static com.kush.lib.expressions.utils.TypedResultFactory.booleanResult;
-import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
+import static com.kush.lib.expressions.utils.TypedValueFactory.booleanValue;
+import static com.kush.lib.expressions.utils.TypedValueFactory.nullValue;
 
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.Type;
-import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.TypedValue;
 import com.kush.lib.expressions.commons.ComparisionExpression;
 
 /**
  * null compared with null is null
+ * null compared with non-null is also null
  */
 abstract class BaseComparisionExpressionEvaluator<E extends ComparisionExpression, T> extends BaseExpressionEvaluator<E, T> {
 
@@ -28,23 +29,13 @@ abstract class BaseComparisionExpressionEvaluator<E extends ComparisionExpressio
     }
 
     @Override
-    public TypedResult evaluate(T object) throws ExpressionException {
-        TypedResult leftResult = leftExprEvaluator.evaluate(object);
-        TypedResult rightResult = rightExprEvaluator.evaluate(object);
-        if (leftResult.isNull()) {
-            if (rightResult.isNull()) {
-                return nullResult(BOOLEAN);
-            } else {
-                return booleanResult(evaluateWithLeftNullRightNonNull(rightResult));
-            }
+    public TypedValue evaluate(T object) throws ExpressionException {
+        TypedValue leftValue = leftExprEvaluator.evaluate(object);
+        TypedValue rightValue = rightExprEvaluator.evaluate(object);
+        if (leftValue.isNull() || rightValue.isNull()) {
+            return nullValue(BOOLEAN);
         }
-
-        // left != null
-        if (rightResult.isNull()) {
-            return booleanResult(evaluateWithRightNullLeftNonNull(leftResult));
-        }
-
-        return booleanResult(evaluateLeftRightNonNull(leftResult, rightResult));
+        return booleanValue(evaluateNonNullComparision(leftValue, rightValue));
     }
 
     @Override
@@ -52,9 +43,5 @@ abstract class BaseComparisionExpressionEvaluator<E extends ComparisionExpressio
         return BOOLEAN;
     }
 
-    protected abstract boolean evaluateWithLeftNullRightNonNull(TypedResult rightResult);
-
-    protected abstract boolean evaluateWithRightNullLeftNonNull(TypedResult leftResult);
-
-    protected abstract boolean evaluateLeftRightNonNull(TypedResult leftResult, TypedResult rightResult);
+    protected abstract boolean evaluateNonNullComparision(TypedValue leftValue, TypedValue rightValue);
 }

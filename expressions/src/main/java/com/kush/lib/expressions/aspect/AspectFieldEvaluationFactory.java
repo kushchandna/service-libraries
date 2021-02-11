@@ -8,7 +8,7 @@ import com.kush.lib.expressions.AccessException;
 import com.kush.lib.expressions.Accessor;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.Type;
-import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.TypedValue;
 import com.kush.lib.expressions.evaluators.FieldExpressionEvaluator;
 import com.kush.lib.expressions.evaluators.FieldExpressionEvaluatorFactory;
 import com.kush.lib.expressions.types.FieldExpression;
@@ -40,7 +40,7 @@ public class AspectFieldEvaluationFactory<T> implements FieldExpressionEvaluator
         }
 
         @Override
-        public TypedResult evaluate(T object) throws ExpressionException {
+        public TypedValue evaluate(T object) throws ExpressionException {
             Accessor<T> accessor = field.getAccessor();
             try {
                 return accessor.access(object);

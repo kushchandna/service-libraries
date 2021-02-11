@@ -1,10 +1,10 @@
 package com.kush.lib.expressions.evaluators;
 
 import static com.kush.lib.expressions.Type.STRING;
-import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
-import static com.kush.lib.expressions.utils.TypedResultFactory.stringResult;
+import static com.kush.lib.expressions.utils.TypedValueFactory.nullValue;
+import static com.kush.lib.expressions.utils.TypedValueFactory.stringValue;
 
-import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.TypedValue;
 import com.kush.lib.expressions.types.ConstantStringExpression;
 
 class ConstantStringExpressionEvaluator<T> extends BaseConstantExpressionEvaluator<ConstantStringExpression, T> {
@@ -14,11 +14,11 @@ class ConstantStringExpressionEvaluator<T> extends BaseConstantExpressionEvaluat
     }
 
     @Override
-    protected TypedResult evaluateConstantResult(ConstantStringExpression expression) {
+    protected TypedValue evaluateConstantValue(ConstantStringExpression expression) {
         String value = expression.getValue();
         if (value == null) {
-            return nullResult(STRING);
+            return nullValue(STRING);
         }
-        return stringResult(value);
+        return stringValue(value);
     }
 }

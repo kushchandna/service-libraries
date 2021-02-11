@@ -1,13 +1,13 @@
 package com.kush.lib.expressions.aspect;
 
 import static com.kush.lib.expressions.Type.STRING;
-import static com.kush.lib.expressions.utils.TypedResultFactory.booleanResult;
-import static com.kush.lib.expressions.utils.TypedResultFactory.doubleResult;
-import static com.kush.lib.expressions.utils.TypedResultFactory.floatResult;
-import static com.kush.lib.expressions.utils.TypedResultFactory.intResult;
-import static com.kush.lib.expressions.utils.TypedResultFactory.longResult;
-import static com.kush.lib.expressions.utils.TypedResultFactory.nullResult;
-import static com.kush.lib.expressions.utils.TypedResultFactory.stringResult;
+import static com.kush.lib.expressions.utils.TypedValueFactory.booleanValue;
+import static com.kush.lib.expressions.utils.TypedValueFactory.doubleValue;
+import static com.kush.lib.expressions.utils.TypedValueFactory.floatValue;
+import static com.kush.lib.expressions.utils.TypedValueFactory.intValue;
+import static com.kush.lib.expressions.utils.TypedValueFactory.longValue;
+import static com.kush.lib.expressions.utils.TypedValueFactory.nullValue;
+import static com.kush.lib.expressions.utils.TypedValueFactory.stringValue;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Arrays;
@@ -19,7 +19,7 @@ import com.kush.lib.expressions.AccessException;
 import com.kush.lib.expressions.Accessor;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.Type;
-import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.TypedValue;
 import com.kush.lib.expressions.handler.TypeHandler;
 
 class ClassBasedAspect<T> extends BaseAspect<T> {
@@ -42,7 +42,7 @@ class ClassBasedAspect<T> extends BaseAspect<T> {
         Accessor<T> accessor = new Accessor<T>() {
 
             @Override
-            public TypedResult access(T object) throws AccessException {
+            public TypedValue access(T object) throws AccessException {
                 ClassFieldToTypedResultHandler handler = new ClassFieldToTypedResultHandler(classField, object);
                 try {
                     return handler.handle(fieldType.get());
@@ -58,7 +58,7 @@ class ClassBasedAspect<T> extends BaseAspect<T> {
         return field;
     }
 
-    private static class ClassFieldToTypedResultHandler extends TypeHandler<TypedResult> {
+    private static class ClassFieldToTypedResultHandler extends TypeHandler<TypedValue> {
 
         private final java.lang.reflect.Field classField;
         private final Object object;
@@ -69,13 +69,13 @@ class ClassBasedAspect<T> extends BaseAspect<T> {
         }
 
         @Override
-        protected TypedResult handleString() throws ExpressionException {
+        protected TypedValue handleString() throws ExpressionException {
             try {
                 Object value = classField.get(object);
                 if (value == null) {
-                    return nullResult(STRING);
+                    return nullValue(STRING);
                 } else {
-                    return stringResult((String) value);
+                    return stringValue((String) value);
                 }
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 throw new ExpressionException(e.getMessage(), e);
@@ -83,50 +83,50 @@ class ClassBasedAspect<T> extends BaseAspect<T> {
         }
 
         @Override
-        protected TypedResult handleLong() throws ExpressionException {
+        protected TypedValue handleLong() throws ExpressionException {
             try {
                 long value = classField.getLong(object);
-                return longResult(value);
+                return longValue(value);
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 throw new ExpressionException(e.getMessage(), e);
             }
         }
 
         @Override
-        protected TypedResult handleInteger() throws ExpressionException {
+        protected TypedValue handleInteger() throws ExpressionException {
             try {
                 int value = classField.getInt(object);
-                return intResult(value);
+                return intValue(value);
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 throw new ExpressionException(e.getMessage(), e);
             }
         }
 
         @Override
-        protected TypedResult handleFloat() throws ExpressionException {
+        protected TypedValue handleFloat() throws ExpressionException {
             try {
                 float value = classField.getFloat(object);
-                return floatResult(value);
+                return floatValue(value);
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 throw new ExpressionException(e.getMessage(), e);
             }
         }
 
         @Override
-        protected TypedResult handleDouble() throws ExpressionException {
+        protected TypedValue handleDouble() throws ExpressionException {
             try {
                 double value = classField.getDouble(object);
-                return doubleResult(value);
+                return doubleValue(value);
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 throw new ExpressionException(e.getMessage(), e);
             }
         }
 
         @Override
-        protected TypedResult handleBoolean() throws ExpressionException {
+        protected TypedValue handleBoolean() throws ExpressionException {
             try {
                 boolean value = classField.getBoolean(object);
-                return booleanResult(value);
+                return booleanValue(value);
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 throw new ExpressionException(e.getMessage(), e);
             }
