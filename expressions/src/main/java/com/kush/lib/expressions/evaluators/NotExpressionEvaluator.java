@@ -9,7 +9,7 @@ import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.Type;
 import com.kush.lib.expressions.TypedValue;
-import com.kush.lib.expressions.types.NotExpression;
+import com.kush.lib.expressions.clauses.NotExpression;
 
 /**
  * !null = null

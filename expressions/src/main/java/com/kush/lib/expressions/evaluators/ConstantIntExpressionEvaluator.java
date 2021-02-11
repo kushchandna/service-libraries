@@ -6,7 +6,7 @@ import static com.kush.lib.expressions.utils.TypedValueFactory.intValue;
 import static com.kush.lib.expressions.utils.TypedValueFactory.nullValue;
 
 import com.kush.lib.expressions.TypedValue;
-import com.kush.lib.expressions.types.ConstantIntExpression;
+import com.kush.lib.expressions.clauses.ConstantIntExpression;
 
 class ConstantIntExpressionEvaluator<T> extends BaseConstantExpressionEvaluator<ConstantIntExpression, T> {
 

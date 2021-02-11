@@ -5,7 +5,7 @@ import static com.kush.lib.expressions.utils.TypedValueFactory.nullValue;
 import static com.kush.lib.expressions.utils.TypedValueFactory.stringValue;
 
 import com.kush.lib.expressions.TypedValue;
-import com.kush.lib.expressions.types.ConstantStringExpression;
+import com.kush.lib.expressions.clauses.ConstantStringExpression;
 
 class ConstantStringExpressionEvaluator<T> extends BaseConstantExpressionEvaluator<ConstantStringExpression, T> {
 

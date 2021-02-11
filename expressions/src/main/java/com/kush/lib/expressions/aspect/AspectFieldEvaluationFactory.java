@@ -9,9 +9,9 @@ import com.kush.lib.expressions.Accessor;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.Type;
 import com.kush.lib.expressions.TypedValue;
+import com.kush.lib.expressions.clauses.FieldExpression;
 import com.kush.lib.expressions.evaluators.FieldExpressionEvaluator;
 import com.kush.lib.expressions.evaluators.FieldExpressionEvaluatorFactory;
-import com.kush.lib.expressions.types.FieldExpression;
 
 public class AspectFieldEvaluationFactory<T> implements FieldExpressionEvaluatorFactory<T> {
 

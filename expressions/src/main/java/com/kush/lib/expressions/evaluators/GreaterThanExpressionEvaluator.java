@@ -3,7 +3,7 @@ package com.kush.lib.expressions.evaluators;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.TypedValue;
-import com.kush.lib.expressions.types.GreaterThanExpression;
+import com.kush.lib.expressions.clauses.GreaterThanExpression;
 
 class GreaterThanExpressionEvaluator<T> extends BaseComparisionExpressionEvaluator<GreaterThanExpression, T> {
 

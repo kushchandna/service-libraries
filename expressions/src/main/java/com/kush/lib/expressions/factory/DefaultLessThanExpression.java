@@ -1,7 +1,7 @@
 package com.kush.lib.expressions.factory;
 
 import com.kush.lib.expressions.Expression;
-import com.kush.lib.expressions.types.LessThanExpression;
+import com.kush.lib.expressions.clauses.LessThanExpression;
 
 class DefaultLessThanExpression extends BaseBinomialExpression implements LessThanExpression {
 

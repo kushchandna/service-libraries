@@ -4,17 +4,17 @@ import com.kush.lib.expressions.Expression;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.ExpressionFactory;
 import com.kush.lib.expressions.ExpressionProcessor;
-import com.kush.lib.expressions.types.AndExpression;
-import com.kush.lib.expressions.types.ConstantIntExpression;
-import com.kush.lib.expressions.types.ConstantStringExpression;
-import com.kush.lib.expressions.types.EqualsExpression;
-import com.kush.lib.expressions.types.FieldExpression;
-import com.kush.lib.expressions.types.GreaterThanEqualsExpression;
-import com.kush.lib.expressions.types.GreaterThanExpression;
-import com.kush.lib.expressions.types.LessThanEqualsExpression;
-import com.kush.lib.expressions.types.LessThanExpression;
-import com.kush.lib.expressions.types.NotExpression;
-import com.kush.lib.expressions.types.OrExpression;
+import com.kush.lib.expressions.clauses.AndExpression;
+import com.kush.lib.expressions.clauses.ConstantIntExpression;
+import com.kush.lib.expressions.clauses.ConstantStringExpression;
+import com.kush.lib.expressions.clauses.EqualsExpression;
+import com.kush.lib.expressions.clauses.FieldExpression;
+import com.kush.lib.expressions.clauses.GreaterThanEqualsExpression;
+import com.kush.lib.expressions.clauses.GreaterThanExpression;
+import com.kush.lib.expressions.clauses.LessThanEqualsExpression;
+import com.kush.lib.expressions.clauses.LessThanExpression;
+import com.kush.lib.expressions.clauses.NotExpression;
+import com.kush.lib.expressions.clauses.OrExpression;
 
 public class ExpressionCloner extends ExpressionProcessor<Expression> {
 

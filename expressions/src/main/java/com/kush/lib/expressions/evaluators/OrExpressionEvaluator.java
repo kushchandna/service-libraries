@@ -9,7 +9,7 @@ import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.Type;
 import com.kush.lib.expressions.TypedValue;
-import com.kush.lib.expressions.types.OrExpression;
+import com.kush.lib.expressions.clauses.OrExpression;
 
 /**
  * true OR true = true
