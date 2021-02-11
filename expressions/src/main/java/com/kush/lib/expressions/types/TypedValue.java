@@ -1,4 +1,4 @@
-package com.kush.lib.expressions;
+package com.kush.lib.expressions.types;
 
 public interface TypedValue extends Comparable<TypedValue> {
 

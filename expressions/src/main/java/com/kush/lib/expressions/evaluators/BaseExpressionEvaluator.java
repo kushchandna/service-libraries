@@ -4,7 +4,7 @@ import static com.kush.lib.expressions.ExpressionException.exceptionWithMessage;
 
 import com.kush.lib.expressions.Expression;
 import com.kush.lib.expressions.ExpressionEvaluator;
-import com.kush.lib.expressions.Type;
+import com.kush.lib.expressions.types.Type;
 
 abstract class BaseExpressionEvaluator<E extends Expression, T> implements ExpressionEvaluator<T> {
 

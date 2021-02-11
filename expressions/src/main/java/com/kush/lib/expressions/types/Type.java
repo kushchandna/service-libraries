@@ -1,4 +1,4 @@
-package com.kush.lib.expressions;
+package com.kush.lib.expressions.types;
 
 import java.util.Arrays;
 import java.util.List;
