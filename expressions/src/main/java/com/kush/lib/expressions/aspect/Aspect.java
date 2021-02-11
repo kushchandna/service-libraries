@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface Aspect<T> {
 
-    Optional<? extends Field<T>> getField(String fieldName);
+    Optional<Field<T>> getField(String fieldName);
 
     Collection<Field<T>> getFields();
 }
