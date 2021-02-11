@@ -1,7 +1,7 @@
 package com.kush.lib.expressions.evaluators;
 
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.types.FieldExpression;
+import com.kush.lib.expressions.clauses.FieldExpression;
 
 public interface FieldExpressionEvaluatorFactory<T> {
 

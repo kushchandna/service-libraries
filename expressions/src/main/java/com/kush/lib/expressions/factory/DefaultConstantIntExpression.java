@@ -1,6 +1,6 @@
 package com.kush.lib.expressions.factory;
 
-import com.kush.lib.expressions.types.ConstantIntExpression;
+import com.kush.lib.expressions.clauses.ConstantIntExpression;
 
 class DefaultConstantIntExpression extends BaseTerminalExpression implements ConstantIntExpression {
 

@@ -1,6 +1,6 @@
 package com.kush.lib.expressions.factory;
 
-import com.kush.lib.expressions.types.FieldExpression;
+import com.kush.lib.expressions.clauses.FieldExpression;
 
 class DefaultFieldExpression extends BaseTerminalExpression implements FieldExpression {
 

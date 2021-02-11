@@ -1,6 +1,6 @@
 package com.kush.lib.expressions.factory;
 
-import com.kush.lib.expressions.types.ConstantStringExpression;
+import com.kush.lib.expressions.clauses.ConstantStringExpression;
 
 class DefaultConstantStringExpression extends BaseTerminalExpression implements ConstantStringExpression {
 
