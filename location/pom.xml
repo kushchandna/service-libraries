@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>location</artifactId>
-	<groupId>com.kush.lib</groupId>
 	<name>location</name>
 	<url>http://maven.apache.org</url>
 	<packaging>jar</packaging>
@@ -13,7 +12,7 @@
 	</properties>
 
 	<parent>
-		<groupId>com.kush</groupId>
+		<groupId>com.kush.lib</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
