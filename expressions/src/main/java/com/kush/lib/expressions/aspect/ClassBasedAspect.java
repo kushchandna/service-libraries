@@ -1,13 +1,13 @@
 package com.kush.lib.expressions.aspect;
 
-import static com.kush.lib.expressions.Type.STRING;
-import static com.kush.lib.expressions.utils.TypedValueFactory.booleanValue;
-import static com.kush.lib.expressions.utils.TypedValueFactory.doubleValue;
-import static com.kush.lib.expressions.utils.TypedValueFactory.floatValue;
-import static com.kush.lib.expressions.utils.TypedValueFactory.intValue;
-import static com.kush.lib.expressions.utils.TypedValueFactory.longValue;
-import static com.kush.lib.expressions.utils.TypedValueFactory.nullValue;
-import static com.kush.lib.expressions.utils.TypedValueFactory.stringValue;
+import static com.kush.lib.expressions.types.Type.STRING;
+import static com.kush.lib.expressions.types.TypedValueFactory.booleanValue;
+import static com.kush.lib.expressions.types.TypedValueFactory.doubleValue;
+import static com.kush.lib.expressions.types.TypedValueFactory.floatValue;
+import static com.kush.lib.expressions.types.TypedValueFactory.intValue;
+import static com.kush.lib.expressions.types.TypedValueFactory.longValue;
+import static com.kush.lib.expressions.types.TypedValueFactory.nullValue;
+import static com.kush.lib.expressions.types.TypedValueFactory.stringValue;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Arrays;
@@ -18,9 +18,9 @@ import java.util.Optional;
 import com.kush.lib.expressions.AccessException;
 import com.kush.lib.expressions.Accessor;
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.Type;
-import com.kush.lib.expressions.TypedValue;
 import com.kush.lib.expressions.handler.TypeHandler;
+import com.kush.lib.expressions.types.Type;
+import com.kush.lib.expressions.types.TypedValue;
 
 class ClassBasedAspect<T> extends BaseAspect<T> {
 

@@ -1,13 +1,13 @@
 package com.kush.lib.expressions.aspect;
 
-import static com.kush.lib.expressions.utils.TypedValueFactory.nullableValue;
+import static com.kush.lib.expressions.types.TypedValueFactory.nullableValue;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Map;
 
 import com.kush.lib.expressions.Accessor;
-import com.kush.lib.expressions.Type;
+import com.kush.lib.expressions.types.Type;
 
 class MapBasedAspect extends BaseAspect<Map<String, Object>> {
 

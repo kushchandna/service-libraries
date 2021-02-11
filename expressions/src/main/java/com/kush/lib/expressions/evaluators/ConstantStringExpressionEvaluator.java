@@ -1,11 +1,11 @@
 package com.kush.lib.expressions.evaluators;
 
-import static com.kush.lib.expressions.Type.STRING;
-import static com.kush.lib.expressions.utils.TypedValueFactory.nullValue;
-import static com.kush.lib.expressions.utils.TypedValueFactory.stringValue;
+import static com.kush.lib.expressions.types.Type.STRING;
+import static com.kush.lib.expressions.types.TypedValueFactory.nullValue;
+import static com.kush.lib.expressions.types.TypedValueFactory.stringValue;
 
-import com.kush.lib.expressions.TypedValue;
 import com.kush.lib.expressions.clauses.ConstantStringExpression;
+import com.kush.lib.expressions.types.TypedValue;
 
 class ConstantStringExpressionEvaluator<T> extends BaseConstantExpressionEvaluator<ConstantStringExpression, T> {
 

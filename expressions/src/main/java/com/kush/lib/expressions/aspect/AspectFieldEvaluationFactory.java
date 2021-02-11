@@ -7,11 +7,11 @@ import java.util.Optional;
 import com.kush.lib.expressions.AccessException;
 import com.kush.lib.expressions.Accessor;
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.Type;
-import com.kush.lib.expressions.TypedValue;
 import com.kush.lib.expressions.clauses.FieldExpression;
 import com.kush.lib.expressions.evaluators.FieldExpressionEvaluator;
 import com.kush.lib.expressions.evaluators.FieldExpressionEvaluatorFactory;
+import com.kush.lib.expressions.types.Type;
+import com.kush.lib.expressions.types.TypedValue;
 
 public class AspectFieldEvaluationFactory<T> implements FieldExpressionEvaluatorFactory<T> {
 

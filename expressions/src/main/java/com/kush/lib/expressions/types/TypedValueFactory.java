@@ -1,14 +1,13 @@
-package com.kush.lib.expressions.utils;
+package com.kush.lib.expressions.types;
 
-import static com.kush.lib.expressions.Type.BOOLEAN;
-import static com.kush.lib.expressions.Type.DOUBLE;
-import static com.kush.lib.expressions.Type.FLOAT;
-import static com.kush.lib.expressions.Type.INTEGER;
-import static com.kush.lib.expressions.Type.LONG;
-import static com.kush.lib.expressions.Type.STRING;
+import static com.kush.lib.expressions.types.Type.BOOLEAN;
+import static com.kush.lib.expressions.types.Type.DOUBLE;
+import static com.kush.lib.expressions.types.Type.FLOAT;
+import static com.kush.lib.expressions.types.Type.INTEGER;
+import static com.kush.lib.expressions.types.Type.LONG;
+import static com.kush.lib.expressions.types.Type.STRING;
 
-import com.kush.lib.expressions.Type;
-import com.kush.lib.expressions.TypedValue;
+import com.kush.lib.expressions.utils.SpecialValues;
 
 public class TypedValueFactory {
 

@@ -1,9 +1,9 @@
 package com.kush.lib.expressions.evaluators;
 
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.Type;
-import com.kush.lib.expressions.TypedValue;
 import com.kush.lib.expressions.commons.ConstantExpression;
+import com.kush.lib.expressions.types.Type;
+import com.kush.lib.expressions.types.TypedValue;
 
 abstract class BaseConstantExpressionEvaluator<E extends ConstantExpression, T> extends BaseExpressionEvaluator<E, T> {
 

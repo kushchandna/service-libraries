@@ -1,6 +1,6 @@
 package com.kush.lib.expressions.handler;
 
-import com.kush.lib.expressions.Type;
+import com.kush.lib.expressions.types.Type;
 
 public abstract class ToBooleanTypeHandler {
 

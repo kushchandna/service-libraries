@@ -1,8 +1,8 @@
 package com.kush.lib.expressions;
 
-import static com.kush.lib.expressions.Type.BOOLEAN;
-import static com.kush.lib.expressions.Type.INTEGER;
-import static com.kush.lib.expressions.utils.TypedValueFactory.booleanValue;
+import static com.kush.lib.expressions.types.Type.BOOLEAN;
+import static com.kush.lib.expressions.types.Type.INTEGER;
+import static com.kush.lib.expressions.types.TypedValueFactory.booleanValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -19,6 +19,8 @@ import com.kush.lib.expressions.aspect.AspectFieldEvaluationFactory;
 import com.kush.lib.expressions.aspect.Aspects;
 import com.kush.lib.expressions.evaluators.DefaultExpressionEvaluatorFactory;
 import com.kush.lib.expressions.factory.DefaultExpressionFactory;
+import com.kush.lib.expressions.types.Type;
+import com.kush.lib.expressions.types.TypedValue;
 
 public class ExpressionEndToEndTest {
 

@@ -1,15 +1,15 @@
 package com.kush.lib.expressions.evaluators;
 
-import static com.kush.lib.expressions.Type.BOOLEAN;
-import static com.kush.lib.expressions.utils.TypedValueFactory.booleanValue;
-import static com.kush.lib.expressions.utils.TypedValueFactory.nullValue;
+import static com.kush.lib.expressions.types.Type.BOOLEAN;
+import static com.kush.lib.expressions.types.TypedValueFactory.booleanValue;
+import static com.kush.lib.expressions.types.TypedValueFactory.nullValue;
 
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;
 import com.kush.lib.expressions.ExpressionException;
-import com.kush.lib.expressions.Type;
-import com.kush.lib.expressions.TypedValue;
 import com.kush.lib.expressions.clauses.AndExpression;
+import com.kush.lib.expressions.types.Type;
+import com.kush.lib.expressions.types.TypedValue;
 
 /**
  * true AND true = true
