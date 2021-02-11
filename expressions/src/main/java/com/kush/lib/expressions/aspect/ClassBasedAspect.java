@@ -38,7 +38,7 @@ class ClassBasedAspect<T> extends BaseAspect<T> {
     private static <T> Field<T> createField(java.lang.reflect.Field classField) {
         classField.setAccessible(true);
         String fieldName = classField.getName();
-        Optional<Type> fieldType = Type.fromClass(classField.getType());
+        Optional<Type> fieldType = Type.forClass(classField.getType());
         Accessor<T> accessor = new Accessor<T>() {
 
             @Override
