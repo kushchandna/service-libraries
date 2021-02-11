@@ -21,8 +21,8 @@ abstract class BaseExpressionEvaluator<E extends Expression, T> implements Expre
         Type leftType = leftExprEvaluator.evaluateType();
         Type rightType = rightExprEvaluator.evaluateType();
         if (leftType != rightType) {
-            exceptionWithMessage("Both sides of an %s expression should be same, but got %s and %s", operation, leftType,
-                    rightType);
+            exceptionWithMessage("Both sides of an %s expression should be same, but got %s and %s",
+                    operation, leftType, rightType);
         }
     }
 
@@ -30,7 +30,8 @@ abstract class BaseExpressionEvaluator<E extends Expression, T> implements Expre
             String operation) {
         Type type = expressionEvaluator.evaluateType();
         if (type != expressionType) {
-            exceptionWithMessage("%s operation can only accept type %s, but got %s", operation, expressionType, type);
+            exceptionWithMessage("%s operation can only accept type %s, but got %s",
+                    operation, expressionType, type);
         }
     }
 }

@@ -2,7 +2,7 @@ package com.kush.lib.expressions;
 
 import static com.kush.lib.expressions.Type.BOOLEAN;
 import static com.kush.lib.expressions.Type.INTEGER;
-import static com.kush.lib.expressions.utils.TypedResultFactory.booleanResult;
+import static com.kush.lib.expressions.utils.TypedValueFactory.booleanValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -60,8 +60,8 @@ public class ExpressionEndToEndTest {
             T testObject = entry.getKey();
             Boolean expectedResult = entry.getValue();
 
-            TypedResult result = evaluator.evaluate(testObject);
-            assertThat(String.valueOf(testObject), result, is(equalTo(booleanResult(expectedResult))));
+            TypedValue actualResult = evaluator.evaluate(testObject);
+            assertThat(String.valueOf(testObject), actualResult, is(equalTo(booleanValue(expectedResult))));
         }
     }
 

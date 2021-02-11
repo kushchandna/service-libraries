@@ -2,23 +2,23 @@ package com.kush.lib.expressions.evaluators;
 
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.Type;
-import com.kush.lib.expressions.TypedResult;
+import com.kush.lib.expressions.TypedValue;
 import com.kush.lib.expressions.commons.ConstantExpression;
 
 abstract class BaseConstantExpressionEvaluator<E extends ConstantExpression, T> extends BaseExpressionEvaluator<E, T> {
 
-    private final TypedResult result;
+    private final TypedValue constantValue;
     private final Type type;
 
     public BaseConstantExpressionEvaluator(E expression, Type type) {
         super(expression);
         this.type = type;
-        result = evaluateConstantResult(expression);
+        constantValue = evaluateConstantValue(expression);
     }
 
     @Override
-    public TypedResult evaluate(T object) throws ExpressionException {
-        return result;
+    public TypedValue evaluate(T object) throws ExpressionException {
+        return constantValue;
     }
 
     @Override
@@ -26,5 +26,5 @@ abstract class BaseConstantExpressionEvaluator<E extends ConstantExpression, T> 
         return type;
     }
 
-    protected abstract TypedResult evaluateConstantResult(E expression);
+    protected abstract TypedValue evaluateConstantValue(E expression);
 }
