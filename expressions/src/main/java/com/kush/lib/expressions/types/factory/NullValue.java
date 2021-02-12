@@ -1,6 +1,5 @@
 package com.kush.lib.expressions.types.factory;
 
-import com.kush.lib.expressions.types.ComparableObject;
 import com.kush.lib.expressions.types.Type;
 
 class NullValue extends BaseTypedValue {
@@ -17,7 +16,7 @@ class NullValue extends BaseTypedValue {
     }
 
     @Override
-    public ComparableObject getObject() {
+    public Object getObject() {
         return null;
     }
 
