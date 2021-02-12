@@ -7,8 +7,10 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.kush.lib.expressions.Accessor;
+import com.kush.lib.expressions.types.ImpactedByAutoBoxing;
 import com.kush.lib.expressions.types.Type;
 
+@ImpactedByAutoBoxing
 class MapBasedAspect extends BaseAspect<Map<String, Object>> {
 
     public MapBasedAspect(Map<String, Type> fieldTypes) {
