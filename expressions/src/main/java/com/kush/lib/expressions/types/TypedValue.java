@@ -2,21 +2,21 @@ package com.kush.lib.expressions.types;
 
 public interface TypedValue extends Comparable<TypedValue> {
 
+    Type getType();
+
     boolean isNull();
+
+    boolean getBoolean();
 
     int getInt();
 
-    double getDouble();
+    long getLong();
 
     float getFloat();
 
-    long getLong();
-
-    boolean getBoolean();
+    double getDouble();
 
     String getString();
 
     Object getObject();
-
-    Type getType();
 }
