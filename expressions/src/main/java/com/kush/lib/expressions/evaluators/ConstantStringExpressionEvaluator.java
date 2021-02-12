@@ -1,7 +1,6 @@
 package com.kush.lib.expressions.evaluators;
 
 import static com.kush.lib.expressions.types.Type.STRING;
-import static com.kush.lib.expressions.types.factory.TypedValueFactory.nullValue;
 import static com.kush.lib.expressions.types.factory.TypedValueFactory.stringValue;
 
 import com.kush.lib.expressions.clauses.ConstantStringExpression;
@@ -16,9 +15,6 @@ class ConstantStringExpressionEvaluator<T> extends BaseConstantExpressionEvaluat
     @Override
     protected TypedValue evaluateConstantValue(ConstantStringExpression expression) {
         String value = expression.getValue();
-        if (value == null) {
-            return nullValue(STRING);
-        }
         return stringValue(value);
     }
 }
