@@ -22,5 +22,6 @@ public interface TypedValue extends Comparable<TypedValue> {
 
     String getString();
 
+    @ImpactedByAutoBoxing
     Object getObject();
 }

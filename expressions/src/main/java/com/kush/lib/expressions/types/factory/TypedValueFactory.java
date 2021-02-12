@@ -1,5 +1,6 @@
 package com.kush.lib.expressions.types.factory;
 
+import com.kush.lib.expressions.types.ImpactedByAutoBoxing;
 import com.kush.lib.expressions.types.Type;
 import com.kush.lib.expressions.types.TypedValue;
 
@@ -41,6 +42,7 @@ public class TypedValueFactory {
         return new NullValue(type);
     }
 
+    @ImpactedByAutoBoxing
     public static TypedValue nullableValue(Object value, Type type) {
         if (value == null) {
             return nullValue(type);

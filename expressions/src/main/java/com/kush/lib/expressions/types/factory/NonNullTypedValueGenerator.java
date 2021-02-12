@@ -9,9 +9,11 @@ import static com.kush.lib.expressions.types.factory.TypedValueFactory.intValue;
 import static com.kush.lib.expressions.types.factory.TypedValueFactory.longValue;
 import static com.kush.lib.expressions.types.factory.TypedValueFactory.stringValue;
 
+import com.kush.lib.expressions.types.ImpactedByAutoBoxing;
 import com.kush.lib.expressions.types.TypedValue;
 import com.kush.lib.expressions.types.processors.TypeProcessor;
 
+@ImpactedByAutoBoxing
 class NonNullTypedValueGenerator extends TypeProcessor<TypedValue> {
 
     private final Object value;
