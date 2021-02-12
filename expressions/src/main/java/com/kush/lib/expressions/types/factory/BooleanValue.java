@@ -1,5 +1,6 @@
 package com.kush.lib.expressions.types.factory;
 
+import com.kush.lib.expressions.types.ComparableObject;
 import com.kush.lib.expressions.types.Type;
 
 final class BooleanValue extends BaseTypedValue {
@@ -16,8 +17,8 @@ final class BooleanValue extends BaseTypedValue {
     }
 
     @Override
-    public Object getObject() {
-        return Boolean.valueOf(value);
+    public ComparableObject getObject() {
+        return ComparableObject.on(Boolean.valueOf(value));
     }
 
     @Override

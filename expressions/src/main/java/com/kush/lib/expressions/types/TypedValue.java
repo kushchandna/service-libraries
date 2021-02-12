@@ -22,5 +22,5 @@ public interface TypedValue extends Comparable<TypedValue> {
 
     String getString();
 
-    Object getObject();
+    ComparableObject getObject();
 }

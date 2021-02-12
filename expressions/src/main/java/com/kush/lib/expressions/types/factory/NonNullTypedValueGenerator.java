@@ -7,8 +7,10 @@ import static com.kush.lib.expressions.types.factory.TypedValueFactory.doubleVal
 import static com.kush.lib.expressions.types.factory.TypedValueFactory.floatValue;
 import static com.kush.lib.expressions.types.factory.TypedValueFactory.intValue;
 import static com.kush.lib.expressions.types.factory.TypedValueFactory.longValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.objectValue;
 import static com.kush.lib.expressions.types.factory.TypedValueFactory.stringValue;
 
+import com.kush.lib.expressions.types.ComparableObject;
 import com.kush.lib.expressions.types.TypedValue;
 import com.kush.lib.expressions.types.processors.TypeProcessor;
 
@@ -62,6 +64,6 @@ class NonNullTypedValueGenerator extends TypeProcessor<TypedValue> {
 
     @Override
     protected TypedValue handleObject() {
-        return null;
+        return objectValue((ComparableObject) value);
     }
 }
