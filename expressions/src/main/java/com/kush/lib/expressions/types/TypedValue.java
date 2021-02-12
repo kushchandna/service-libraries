@@ -8,6 +8,10 @@ public interface TypedValue extends Comparable<TypedValue> {
 
     boolean getBoolean();
 
+    byte getByte();
+
+    char getChar();
+
     int getInt();
 
     long getLong();

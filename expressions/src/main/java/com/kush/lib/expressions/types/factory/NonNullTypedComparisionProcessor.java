@@ -3,7 +3,7 @@ package com.kush.lib.expressions.types.factory;
 import com.kush.lib.expressions.types.TypedValue;
 import com.kush.lib.expressions.types.processors.IntReturningTypeProcessor;
 
-class NonNullTypedComparisionProcessor extends IntReturningTypeProcessor {
+abstract class NonNullTypedComparisionProcessor extends IntReturningTypeProcessor {
 
     private final TypedValue o1;
     private final TypedValue o2;
@@ -16,6 +16,16 @@ class NonNullTypedComparisionProcessor extends IntReturningTypeProcessor {
     @Override
     protected int handleBoolean() {
         return Boolean.compare(o1.getBoolean(), o2.getBoolean());
+    }
+
+    @Override
+    protected int handleByte() {
+        return Byte.compare(o1.getByte(), o2.getByte());
+    }
+
+    @Override
+    protected int handleChar() {
+        return Character.compare(o1.getChar(), o2.getChar());
     }
 
     @Override

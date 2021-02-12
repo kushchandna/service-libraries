@@ -8,6 +8,10 @@ public abstract class TypeProcessor<T> {
         switch (type) {
         case BOOLEAN:
             return handleBoolean();
+        case BYTE:
+            return handleByte();
+        case CHAR:
+            return handleChar();
         case INTEGER:
             return handleInt();
         case LONG:
@@ -18,12 +22,18 @@ public abstract class TypeProcessor<T> {
             return handleDouble();
         case STRING:
             return handleString();
+        case OBJECT:
+            return handleObject();
         default:
             throw new UnsupportedOperationException();
         }
     }
 
     protected abstract T handleBoolean();
+
+    protected abstract T handleByte();
+
+    protected abstract T handleChar();
 
     protected abstract T handleInt();
 
@@ -34,4 +44,6 @@ public abstract class TypeProcessor<T> {
     protected abstract T handleDouble();
 
     protected abstract T handleString();
+
+    protected abstract T handleObject();
 }
