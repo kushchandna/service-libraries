@@ -1,13 +1,13 @@
 package com.kush.lib.expressions.aspect;
 
 import static com.kush.lib.expressions.types.Type.STRING;
-import static com.kush.lib.expressions.types.TypedValueFactory.booleanValue;
-import static com.kush.lib.expressions.types.TypedValueFactory.doubleValue;
-import static com.kush.lib.expressions.types.TypedValueFactory.floatValue;
-import static com.kush.lib.expressions.types.TypedValueFactory.intValue;
-import static com.kush.lib.expressions.types.TypedValueFactory.longValue;
-import static com.kush.lib.expressions.types.TypedValueFactory.nullValue;
-import static com.kush.lib.expressions.types.TypedValueFactory.stringValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.booleanValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.doubleValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.floatValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.intValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.longValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.nullValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.stringValue;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Arrays;

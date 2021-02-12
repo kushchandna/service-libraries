@@ -1,8 +1,8 @@
 package com.kush.lib.expressions.evaluators;
 
 import static com.kush.lib.expressions.types.Type.BOOLEAN;
-import static com.kush.lib.expressions.types.TypedValueFactory.booleanValue;
-import static com.kush.lib.expressions.types.TypedValueFactory.nullValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.booleanValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.nullValue;
 
 import com.kush.lib.expressions.ExpressionEvaluator;
 import com.kush.lib.expressions.ExpressionEvaluatorFactory;

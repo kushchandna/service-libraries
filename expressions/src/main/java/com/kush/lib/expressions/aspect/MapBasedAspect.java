@@ -1,6 +1,6 @@
 package com.kush.lib.expressions.aspect;
 
-import static com.kush.lib.expressions.types.TypedValueFactory.nullableValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.nullableValue;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
