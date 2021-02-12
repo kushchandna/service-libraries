@@ -10,17 +10,22 @@ abstract class BaseTypedValue implements TypedValue {
     }
 
     @Override
+    public boolean getBoolean() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public byte getByte() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public char getChar() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public int getInt() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public double getDouble() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public float getFloat() {
         throw new UnsupportedOperationException();
     }
 
@@ -30,17 +35,17 @@ abstract class BaseTypedValue implements TypedValue {
     }
 
     @Override
-    public boolean getBoolean() {
+    public float getFloat() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public double getDouble() {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public String getString() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object getObject() {
         throw new UnsupportedOperationException();
     }
 
@@ -54,7 +59,13 @@ abstract class BaseTypedValue implements TypedValue {
         if (o1.isNull() || o2.isNull()) {
             throw new IllegalStateException();
         }
-        NonNullTypedComparisionProcessor processor = new NonNullTypedComparisionProcessor(o1, o2);
+        NonNullTypedComparisionProcessor processor = new NonNullTypedComparisionProcessor(o1, o2) {
+
+            @Override
+            protected int handleObject() {
+                return compareNonNullObjects(o1.getObject(), o2.getObject());
+            }
+        };
         return processor.process(getType());
     }
 
@@ -94,6 +105,10 @@ abstract class BaseTypedValue implements TypedValue {
             return true;
         }
         return nonNullValueEquals(other);
+    }
+
+    protected int compareNonNullObjects(Object o1, Object o2) {
+        throw new UnsupportedOperationException();
     }
 
     protected abstract boolean nonNullValueEquals(BaseTypedValue other);

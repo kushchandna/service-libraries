@@ -2,15 +2,18 @@ package com.kush.lib.expressions.types;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public enum Type {
-    STRING(String.class),
-    DOUBLE(double.class, Double.class),
-    FLOAT(float.class, Float.class),
-    LONG(long.class, Long.class),
+
+    BOOLEAN(boolean.class, Boolean.class),
+    BYTE(byte.class, Byte.class),
+    CHAR(char.class, Character.class),
     INTEGER(int.class, Integer.class),
-    BOOLEAN(boolean.class, Boolean.class);
+    LONG(long.class, Long.class),
+    FLOAT(float.class, Float.class),
+    DOUBLE(double.class, Double.class),
+    STRING(String.class),
+    OBJECT;
 
     private List<Class<?>> javaClasses;
 
@@ -18,11 +21,7 @@ public enum Type {
         this.javaClasses = Arrays.asList(javaClasses);
     }
 
-    public static Optional<Type> forClass(Class<?> clazz) {
-        return Optional.ofNullable(getType(clazz));
-    }
-
-    private static Type getType(Class<?> clazz) {
+    public static Type forClass(Class<?> clazz) {
         for (Type type : values()) {
             for (Class<?> typeClass : type.javaClasses) {
                 if (typeClass.isAssignableFrom(clazz)) {
@@ -30,6 +29,6 @@ public enum Type {
                 }
             }
         }
-        return null;
+        return OBJECT;
     }
 }

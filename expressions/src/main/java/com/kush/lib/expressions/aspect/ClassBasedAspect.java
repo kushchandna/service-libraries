@@ -13,7 +13,6 @@ import static java.util.stream.Collectors.toList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 
 import com.kush.lib.expressions.AccessException;
 import com.kush.lib.expressions.Accessor;
@@ -38,24 +37,20 @@ class ClassBasedAspect<T> extends BaseAspect<T> {
     private static <T> Field<T> createField(java.lang.reflect.Field classField) {
         classField.setAccessible(true);
         String fieldName = classField.getName();
-        Optional<Type> fieldType = Type.forClass(classField.getType());
+        Type fieldType = Type.forClass(classField.getType());
         Accessor<T> accessor = new Accessor<T>() {
 
             @Override
             public TypedValue access(T object) throws AccessException {
                 ClassFieldToTypedResultHandler handler = new ClassFieldToTypedResultHandler(classField, object);
                 try {
-                    return handler.handle(fieldType.get());
+                    return handler.handle(fieldType);
                 } catch (ExpressionException e) {
                     throw new AccessException(e.getMessage(), e);
                 }
             }
         };
-        Field<T> field = null;
-        if (fieldType.isPresent()) {
-            field = new DefaultField<>(fieldName, fieldType.get(), accessor);
-        }
-        return field;
+        return new DefaultField<>(fieldName, fieldType, accessor);
     }
 
     private static class ClassFieldToTypedResultHandler extends TypeHandler<TypedValue> {

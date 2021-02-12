@@ -8,6 +8,10 @@ public abstract class IntReturningTypeProcessor {
         switch (type) {
         case BOOLEAN:
             return handleBoolean();
+        case BYTE:
+            return handleByte();
+        case CHAR:
+            return handleChar();
         case INTEGER:
             return handleInt();
         case LONG:
@@ -18,12 +22,18 @@ public abstract class IntReturningTypeProcessor {
             return handleDouble();
         case STRING:
             return handleString();
+        case OBJECT:
+            return handleObject();
         default:
             throw new UnsupportedOperationException();
         }
     }
 
     protected abstract int handleBoolean();
+
+    protected abstract int handleByte();
+
+    protected abstract int handleChar();
 
     protected abstract int handleInt();
 
@@ -34,4 +44,6 @@ public abstract class IntReturningTypeProcessor {
     protected abstract int handleDouble();
 
     protected abstract int handleString();
+
+    protected abstract int handleObject();
 }

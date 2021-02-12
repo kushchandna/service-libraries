@@ -1,6 +1,8 @@
 package com.kush.lib.expressions.types.factory;
 
 import static com.kush.lib.expressions.types.factory.TypedValueFactory.booleanValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.byteValue;
+import static com.kush.lib.expressions.types.factory.TypedValueFactory.charValue;
 import static com.kush.lib.expressions.types.factory.TypedValueFactory.doubleValue;
 import static com.kush.lib.expressions.types.factory.TypedValueFactory.floatValue;
 import static com.kush.lib.expressions.types.factory.TypedValueFactory.intValue;
@@ -21,6 +23,16 @@ class NonNullTypedValueGenerator extends TypeProcessor<TypedValue> {
     @Override
     protected TypedValue handleBoolean() {
         return booleanValue((Boolean) value);
+    }
+
+    @Override
+    protected TypedValue handleByte() {
+        return byteValue((Byte) value);
+    }
+
+    @Override
+    protected TypedValue handleChar() {
+        return charValue((Character) value);
     }
 
     @Override
@@ -46,5 +58,10 @@ class NonNullTypedValueGenerator extends TypeProcessor<TypedValue> {
     @Override
     protected TypedValue handleString() {
         return stringValue((String) value);
+    }
+
+    @Override
+    protected TypedValue handleObject() {
+        return null;
     }
 }
