@@ -50,6 +50,9 @@ class ClassBasedAspect<T> extends BaseAspect<T> {
                 }
             }
         };
+        if (fieldType == Type.OBJECT) {
+            return null;
+        }
         return new DefaultField<>(fieldName, fieldType, accessor);
     }
 
