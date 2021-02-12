@@ -20,11 +20,9 @@ import com.kush.lib.expressions.clauses.OrExpression;
 public class DefaultExpressionEvaluatorFactory<T> implements ExpressionEvaluatorFactory<T> {
 
     private final InternalExpressionEvaluatorFactory internalFactory;
-    private final FieldExpressionEvaluatorFactory<T> fieldEvaluatorFactory;
 
     public DefaultExpressionEvaluatorFactory(FieldExpressionEvaluatorFactory<T> fieldEvaluatorFactory) {
-        this.fieldEvaluatorFactory = fieldEvaluatorFactory;
-        internalFactory = new InternalExpressionEvaluatorFactory();
+        internalFactory = new InternalExpressionEvaluatorFactory(fieldEvaluatorFactory);
     }
 
     @Override
@@ -33,6 +31,12 @@ public class DefaultExpressionEvaluatorFactory<T> implements ExpressionEvaluator
     }
 
     private class InternalExpressionEvaluatorFactory extends ExpressionProcessor<ExpressionEvaluator<T>> {
+
+        private final FieldExpressionEvaluatorFactory<T> fieldEvaluatorFactory;
+
+        public InternalExpressionEvaluatorFactory(FieldExpressionEvaluatorFactory<T> fieldEvaluatorFactory) {
+            this.fieldEvaluatorFactory = fieldEvaluatorFactory;
+        }
 
         @Override
         protected ExpressionEvaluator<T> handle(FieldExpression expression) throws ExpressionException {
