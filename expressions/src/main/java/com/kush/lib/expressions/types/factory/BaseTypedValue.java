@@ -59,13 +59,7 @@ abstract class BaseTypedValue implements TypedValue {
         if (o1.isNull() || o2.isNull()) {
             throw new IllegalStateException();
         }
-        NonNullTypedComparisionProcessor processor = new NonNullTypedComparisionProcessor(o1, o2) {
-
-            @Override
-            protected int handleObject() {
-                return compareNonNullObjects(o1.getObject(), o2.getObject());
-            }
-        };
+        NonNullTypedComparisionProcessor processor = new NonNullTypedComparisionProcessor(o1, o2);
         return processor.process(getType());
     }
 
@@ -105,10 +99,6 @@ abstract class BaseTypedValue implements TypedValue {
             return true;
         }
         return nonNullValueEquals(other);
-    }
-
-    protected int compareNonNullObjects(Object o1, Object o2) {
-        throw new UnsupportedOperationException();
     }
 
     protected abstract boolean nonNullValueEquals(BaseTypedValue other);

@@ -1,7 +1,5 @@
 package com.kush.lib.expressions.types.factory;
 
-import java.util.Comparator;
-
 import com.kush.lib.expressions.types.Type;
 import com.kush.lib.expressions.types.TypedValue;
 
@@ -37,10 +35,6 @@ public class TypedValueFactory {
 
     public static TypedValue stringValue(String value) {
         return new StringValue(value);
-    }
-
-    public static TypedValue objectValue(Object value, Comparator<Object> comparator) {
-        return new ObjectValue(value, comparator);
     }
 
     public static TypedValue nullValue(Type type) {
