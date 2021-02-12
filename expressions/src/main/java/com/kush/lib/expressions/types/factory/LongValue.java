@@ -1,6 +1,5 @@
 package com.kush.lib.expressions.types.factory;
 
-import com.kush.lib.expressions.types.ComparableObject;
 import com.kush.lib.expressions.types.Type;
 
 final class LongValue extends BaseTypedValue {
@@ -17,8 +16,8 @@ final class LongValue extends BaseTypedValue {
     }
 
     @Override
-    public ComparableObject getObject() {
-        return ComparableObject.on(Long.valueOf(value));
+    public Object getObject() {
+        return Long.valueOf(value);
     }
 
     @Override
