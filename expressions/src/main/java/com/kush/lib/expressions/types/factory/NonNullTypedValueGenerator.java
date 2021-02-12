@@ -62,6 +62,6 @@ class NonNullTypedValueGenerator extends TypeProcessor<TypedValue> {
 
     @Override
     protected TypedValue handleObject() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
