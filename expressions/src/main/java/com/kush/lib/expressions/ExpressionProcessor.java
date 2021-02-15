@@ -59,7 +59,7 @@ public abstract class ExpressionProcessor<T> {
     private Map<Class<?>, Method> loadHandlingMethods(Class<?> clazz) {
         Method[] methods = clazz.getDeclaredMethods();
         int len = methods.length;
-        Map<Class<?>, Method> processMethodByClass = new HashMap<>(len);
+        Map<Class<?>, Method> handlerMethodByClass = new HashMap<>(len);
         for (int i = 0; i < len; i++) {
             Method m = methods[i];
             String name = m.getName();
@@ -68,10 +68,10 @@ public abstract class ExpressionProcessor<T> {
                 Class<?>[] parameterTypes = m.getParameterTypes();
                 Class<?> paramType = parameterTypes[0];
                 m.setAccessible(true);
-                processMethodByClass.put(paramType, m);
+                handlerMethodByClass.put(paramType, m);
             }
         }
-        return unmodifiableMap(processMethodByClass);
+        return unmodifiableMap(handlerMethodByClass);
     }
 
     private Method getHandlerMethod(Class<?> exprType) {
