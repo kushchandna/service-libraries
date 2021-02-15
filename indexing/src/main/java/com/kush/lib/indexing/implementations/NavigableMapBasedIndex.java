@@ -1,4 +1,4 @@
-package com.kush.lib.indexing;
+package com.kush.lib.indexing.implementations;
 
 import static java.util.Collections.emptySet;
 
@@ -14,6 +14,8 @@ import java.util.function.Function;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import com.kush.lib.indexing.Index;
+import com.kush.lib.indexing.UpdateHandler;
 import com.kush.utils.commons.IterableResult;
 import com.kush.utils.commons.Range;
 

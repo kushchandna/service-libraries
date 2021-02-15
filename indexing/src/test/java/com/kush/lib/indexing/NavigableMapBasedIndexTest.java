@@ -12,6 +12,7 @@ import java.util.function.Function;
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.kush.lib.indexing.implementations.NavigableMapBasedIndex;
 import com.kush.utils.commons.IterableResult;
 import com.kush.utils.commons.Range;
 import com.kush.utils.testhelpers.SampleObject;
