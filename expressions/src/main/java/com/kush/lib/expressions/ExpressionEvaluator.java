@@ -7,5 +7,5 @@ public interface ExpressionEvaluator<T> {
 
     TypedValue evaluate(T object) throws ExpressionException;
 
-    Type evaluateType();
+    Type evaluateType() throws ExpressionException;
 }
