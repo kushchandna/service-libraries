@@ -14,6 +14,7 @@ import com.kush.lib.expressions.clauses.EqualsExpression;
 import com.kush.lib.expressions.clauses.FieldExpression;
 import com.kush.lib.expressions.clauses.GreaterThanEqualsExpression;
 import com.kush.lib.expressions.clauses.GreaterThanExpression;
+import com.kush.lib.expressions.clauses.InExpression;
 import com.kush.lib.expressions.clauses.LessThanEqualsExpression;
 import com.kush.lib.expressions.clauses.LessThanExpression;
 import com.kush.lib.expressions.clauses.NotExpression;
@@ -37,6 +38,8 @@ public abstract class ExpressionProcessor<T> {
     protected abstract T handle(NotExpression expression) throws ExpressionException;
 
     protected abstract T handle(EqualsExpression expression) throws ExpressionException;
+
+    protected abstract T handle(InExpression expression) throws ExpressionException;
 
     protected abstract T handle(GreaterThanExpression expression) throws ExpressionException;
 

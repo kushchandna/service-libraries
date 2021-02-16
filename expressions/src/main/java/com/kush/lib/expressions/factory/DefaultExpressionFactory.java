@@ -1,5 +1,7 @@
 package com.kush.lib.expressions.factory;
 
+import java.util.Collection;
+
 import com.kush.lib.expressions.Expression;
 import com.kush.lib.expressions.ExpressionFactory;
 import com.kush.lib.expressions.clauses.AndExpression;
@@ -9,6 +11,7 @@ import com.kush.lib.expressions.clauses.EqualsExpression;
 import com.kush.lib.expressions.clauses.FieldExpression;
 import com.kush.lib.expressions.clauses.GreaterThanEqualsExpression;
 import com.kush.lib.expressions.clauses.GreaterThanExpression;
+import com.kush.lib.expressions.clauses.InExpression;
 import com.kush.lib.expressions.clauses.LessThanEqualsExpression;
 import com.kush.lib.expressions.clauses.LessThanExpression;
 import com.kush.lib.expressions.clauses.NotExpression;
@@ -39,6 +42,11 @@ public class DefaultExpressionFactory implements ExpressionFactory {
     @Override
     public EqualsExpression createEqualsExpression(Expression leftExpr, Expression rightExpr) {
         return new DefaultEqualsExpression(leftExpr, rightExpr);
+    }
+
+    @Override
+    public InExpression createInExpression(Expression targetExpr, Collection<Expression> inExprs) {
+        return new DefaultInExpression(targetExpr, inExprs);
     }
 
     @Override

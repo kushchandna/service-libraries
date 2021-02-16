@@ -1,5 +1,9 @@
 package com.kush.lib.expressions.utils;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import com.kush.lib.expressions.Expression;
 import com.kush.lib.expressions.ExpressionException;
 import com.kush.lib.expressions.ExpressionFactory;
@@ -11,6 +15,7 @@ import com.kush.lib.expressions.clauses.EqualsExpression;
 import com.kush.lib.expressions.clauses.FieldExpression;
 import com.kush.lib.expressions.clauses.GreaterThanEqualsExpression;
 import com.kush.lib.expressions.clauses.GreaterThanExpression;
+import com.kush.lib.expressions.clauses.InExpression;
 import com.kush.lib.expressions.clauses.LessThanEqualsExpression;
 import com.kush.lib.expressions.clauses.LessThanExpression;
 import com.kush.lib.expressions.clauses.NotExpression;
@@ -47,6 +52,17 @@ public class ExpressionCloner extends ExpressionProcessor<Expression> {
     @Override
     protected Expression handle(EqualsExpression expression) throws ExpressionException {
         return expressionFactory.createEqualsExpression(process(expression.getLeft()), process(expression.getRight()));
+    }
+
+    @Override
+    protected Expression handle(InExpression expression) throws ExpressionException {
+        Expression targetCopy = process(expression.getTarget());
+        Collection<Expression> inExpressions = expression.getInExpressions();
+        List<Expression> inExpressionsCopy = new ArrayList<>(inExpressions.size());
+        for (Expression inExpr : inExpressions) {
+            inExpressionsCopy.add(process(inExpr));
+        }
+        return expressionFactory.createInExpression(targetCopy, inExpressionsCopy);
     }
 
     @Override
