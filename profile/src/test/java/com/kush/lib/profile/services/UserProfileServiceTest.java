@@ -1,7 +1,7 @@
 package com.kush.lib.profile.services;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static com.kush.utils.commons.CollectionUtils.singletonMultiValueMap;
+import static com.kush.lib.collections.utils.CollectionUtils.singletonMultiValueMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;

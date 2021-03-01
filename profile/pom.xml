@@ -91,5 +91,10 @@
 			<artifactId>libphonenumber</artifactId>
 			<version>8.9.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.kush.lib</groupId>
+			<artifactId>collections</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -2,8 +2,8 @@ package com.kush.lib.indexing;
 
 import java.util.Collection;
 
-import com.kush.utils.commons.IterableResult;
-import com.kush.utils.commons.Range;
+import com.kush.lib.collections.iterables.IterableResult;
+import com.kush.lib.collections.ranges.Range;
 
 public interface Index<K, T> {
 

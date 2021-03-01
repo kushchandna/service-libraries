@@ -14,10 +14,10 @@ import java.util.function.Function;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import com.kush.lib.collections.iterables.IterableResult;
+import com.kush.lib.collections.ranges.Range;
 import com.kush.lib.indexing.Index;
 import com.kush.lib.indexing.UpdateHandler;
-import com.kush.utils.commons.IterableResult;
-import com.kush.utils.commons.Range;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
