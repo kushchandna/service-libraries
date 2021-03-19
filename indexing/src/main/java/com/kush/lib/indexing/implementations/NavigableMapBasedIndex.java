@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Function;
 
@@ -16,6 +15,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import com.kush.lib.collections.iterables.IterableResult;
 import com.kush.lib.collections.ranges.Range;
+import com.kush.lib.collections.utils.NullableOptional;
 import com.kush.lib.indexing.Index;
 import com.kush.lib.indexing.UpdateHandler;
 
@@ -63,8 +63,8 @@ public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<
         if (range == null) {
             throw new NullPointerException("range");
         }
-        Optional<K> start = range.getStart();
-        Optional<K> end = range.getEnd();
+        NullableOptional<K> start = range.getStart();
+        NullableOptional<K> end = range.getEnd();
         NavigableMap<K, Collection<T>> resultMap;
         if (start.isPresent() && end.isPresent()) {
             resultMap = indexedValues.subMap(start.get(), range.isStartInclusive(), end.get(), range.isEndInclusive());
