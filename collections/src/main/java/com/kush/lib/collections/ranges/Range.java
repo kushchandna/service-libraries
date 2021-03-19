@@ -1,27 +1,28 @@
 package com.kush.lib.collections.ranges;
 
 import java.util.Comparator;
-import java.util.Optional;
+
+import com.kush.lib.collections.utils.NullableOptional;
 
 public class Range<T> {
 
-    private final Optional<T> start;
+    private final NullableOptional<T> start;
     private final boolean isStartInclusive;
-    private final Optional<T> end;
+    private final NullableOptional<T> end;
     private final boolean isEndInclusive;
 
     public static <T> Range.Builder<T> builder() {
         return new Range.Builder<>();
     }
 
-    private Range(T start, boolean isStartInclusive, T end, boolean isEndInclusive) {
-        this.start = Optional.ofNullable(start);
-        this.isStartInclusive = isStartInclusive;
-        this.end = Optional.ofNullable(end);
-        this.isEndInclusive = isEndInclusive;
+    private Range(Range.Builder<T> builder) {
+        this.start = builder.start;
+        this.isStartInclusive = builder.isStartInclusive;
+        this.end = builder.end;
+        this.isEndInclusive = builder.isEndInclusive;
     }
 
-    public Optional<T> getStart() {
+    public NullableOptional<T> getStart() {
         return start;
     }
 
@@ -29,7 +30,7 @@ public class Range<T> {
         return isStartInclusive;
     }
 
-    public Optional<T> getEnd() {
+    public NullableOptional<T> getEnd() {
         return end;
     }
 
@@ -70,7 +71,7 @@ public class Range<T> {
         return builder.toString();
     }
 
-    private StringBuilder append(StringBuilder builder, String tag, Optional<T> value, boolean isInclusive) {
+    private StringBuilder append(StringBuilder builder, String tag, NullableOptional<T> value, boolean isInclusive) {
         if (value.isPresent()) {
             builder = builder.append(tag)
                 .append(" ")
@@ -87,17 +88,17 @@ public class Range<T> {
 
     public static class Builder<T> {
 
-        private T start;
+        private NullableOptional<T> start = NullableOptional.empty();
         private boolean isStartInclusive;
-        private T end;
+        private NullableOptional<T> end = NullableOptional.empty();
         private boolean isEndInclusive;
 
         public Range<T> build() {
-            return new Range<>(start, isStartInclusive, end, isEndInclusive);
+            return new Range<>(this);
         }
 
         public Range.Builder<T> startingFrom(T value, boolean isInclusive) {
-            start = value;
+            start = NullableOptional.of(value);
             isStartInclusive = isInclusive;
             return this;
         }
@@ -107,7 +108,7 @@ public class Range<T> {
         }
 
         public Range.Builder<T> endingAt(T value, boolean isInclusive) {
-            end = value;
+            end = NullableOptional.of(value);
             isEndInclusive = isInclusive;
             return this;
         }
