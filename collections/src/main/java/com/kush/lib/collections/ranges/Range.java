@@ -114,7 +114,7 @@ public class Range<T> {
         }
 
         public Range.Builder<T> endingAt(T value) {
-            return endingAt(value, false);
+            return endingAt(value, true);
         }
     }
 }
