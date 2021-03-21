@@ -1,5 +1,7 @@
 package com.kush.lib.collections.ranges;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Objects;
 
 import com.kush.lib.collections.utils.NullableOptional;
@@ -39,6 +41,8 @@ public class Range<T> {
     }
 
     private Range(Range.Builder<T> builder) {
+        requireNonNull(builder.start, "start");
+        requireNonNull(builder.end, "end");
         this.start = builder.start;
         this.isStartInclusive = builder.isStartInclusive;
         this.end = builder.end;
@@ -81,6 +85,49 @@ public class Range<T> {
         }
         builder = append(builder, "TO", end, isEndInclusive);
         return builder.toString();
+    }
+
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + start.hashCode();
+        if (start.isPresent()) {
+            result = prime * result + (isStartInclusive ? 1231 : 1237);
+        }
+        result = prime * result + end.hashCode();
+        if (end.isPresent()) {
+            result = prime * result + (isEndInclusive ? 1231 : 1237);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Range<?> other = (Range<?>) obj;
+        if (!start.equals(other.start)) {
+            return false;
+        }
+        if (start.isPresent() && isStartInclusive != other.isStartInclusive) {
+            return false;
+        }
+        if (!end.equals(other.end)) {
+            return false;
+        }
+        if (end.isPresent() && isEndInclusive != other.isEndInclusive) {
+            return false;
+        }
+        return true;
     }
 
     private StringBuilder append(StringBuilder builder, String tag, NullableOptional<T> value, boolean isInclusive) {
