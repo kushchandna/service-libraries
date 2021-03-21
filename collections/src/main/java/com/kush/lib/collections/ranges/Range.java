@@ -26,6 +26,18 @@ public class Range<T> {
             .build();
     }
 
+    public static <T> Range<T> between(T start, T end) {
+        return Range.<T>builder()
+            .startingFrom(start, true)
+            .endingAt(end, true)
+            .build();
+    }
+
+    public static <T> Range.Builder<T> from(T value) {
+        return Range.<T>builder()
+            .startingFrom(value, true);
+    }
+
     private Range(Range.Builder<T> builder) {
         this.start = builder.start;
         this.isStartInclusive = builder.isStartInclusive;
@@ -115,6 +127,10 @@ public class Range<T> {
 
         public Range.Builder<T> endingAt(T value) {
             return endingAt(value, true);
+        }
+
+        public Range<T> to(T value) {
+            return endingAt(value, true).build();
         }
     }
 }
