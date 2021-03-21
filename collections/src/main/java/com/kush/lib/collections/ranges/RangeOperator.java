@@ -4,6 +4,7 @@ import static java.util.Comparator.nullsFirst;
 import static java.util.Comparator.nullsLast;
 
 import java.util.Comparator;
+import java.util.Optional;
 
 import com.kush.lib.collections.utils.NullableOptional;
 
@@ -53,6 +54,40 @@ public class RangeOperator<T> {
             return false;
         }
         return true;
+    }
+
+    public Optional<Range<T>> intersect(Range<T> range1, Range<T> range2) {
+        if (isEmpty(range1) || isEmpty(range2)) {
+            return Optional.empty();
+        }
+        Range.Builder<T> rangeBuilder = Range.builder();
+
+        NullableOptional<T> maxStart = max(range1.getStart(), range2.getStart(), startComparator());
+        if (maxStart.isPresent()) {
+            T startValue = maxStart.get();
+            boolean isStartInclusive = isInRange(range1, startValue) && isInRange(range2, startValue);
+            rangeBuilder = rangeBuilder.startingFrom(startValue, isStartInclusive);
+        }
+
+        NullableOptional<T> minEnd = min(range1.getEnd(), range2.getEnd(), endComparator());
+        if (minEnd.isPresent()) {
+            T endValue = minEnd.get();
+            boolean isEndInclusive = isInRange(range1, endValue) && isInRange(range2, endValue);
+            rangeBuilder = rangeBuilder.endingAt(endValue, isEndInclusive);
+        }
+
+        Range<T> intersection = rangeBuilder.build();
+        return isEmpty(intersection) ? Optional.empty() : Optional.of(intersection);
+    }
+
+    private static <T> T max(T o1, T o2, Comparator<T> comparator) {
+        int comparision = comparator.compare(o1, o2);
+        return comparision <= 0 ? o1 : o2;
+    }
+
+    private static <T> T min(T o1, T o2, Comparator<T> comparator) {
+        int comparision = comparator.compare(o1, o2);
+        return comparision >= 0 ? o1 : o2;
     }
 
     private Comparator<NullableOptional<T>> startComparator() {
