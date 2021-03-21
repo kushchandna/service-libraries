@@ -11,6 +11,7 @@ import java.util.Map;
 
 import com.kush.lib.collections.iterables.IterableResult;
 import com.kush.lib.collections.ranges.Range;
+import com.kush.lib.collections.ranges.RangeOperator;
 import com.kush.lib.indexing.Index;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -20,9 +21,11 @@ public class HashMapBasedIndex<K, T> implements Index<K, T> {
     private final Comparator<K> comparator;
 
     private final Map<K, Collection<T>> indexedValues;
+    private final boolean isNullHigh;
 
-    public HashMapBasedIndex(Comparator<K> comparator) {
+    public HashMapBasedIndex(Comparator<K> comparator, boolean isNullHigh) {
         this.comparator = comparator;
+        this.isNullHigh = isNullHigh;
         indexedValues = new Object2ObjectOpenHashMap<>();
     }
 
@@ -46,15 +49,12 @@ public class HashMapBasedIndex<K, T> implements Index<K, T> {
 
     @Override
     public IterableResult<T> getMatchesForRange(Range<K> range) {
+        RangeOperator<K> rangeOperator = new RangeOperator<>(comparator, isNullHigh);
         List<Collection<T>> matchingLists = indexedValues.entrySet()
             .stream()
-            .filter(entry -> isInRange(entry.getKey(), range))
+            .filter(entry -> rangeOperator.isInRange(range, entry.getKey()))
             .map(entry -> entry.getValue())
             .collect(toList());
         return IterableResult.fromCollections(matchingLists);
-    }
-
-    private boolean isInRange(K key, Range<K> range) {
-        return range.isInRange(key, comparator);
     }
 }
