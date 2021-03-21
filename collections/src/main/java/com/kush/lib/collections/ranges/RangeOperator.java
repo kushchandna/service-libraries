@@ -4,6 +4,7 @@ import static java.util.Comparator.nullsFirst;
 import static java.util.Comparator.nullsLast;
 
 import java.util.Comparator;
+import java.util.Optional;
 
 public class RangeOperator<T> {
 
@@ -13,8 +14,8 @@ public class RangeOperator<T> {
         this.comparator = isNullHigh ? nullsLast(comparator) : nullsFirst(comparator);
     }
 
-    public boolean isEmpty(Range<T> range) {
-        return range.isEmpty();
+    public boolean isAll(Range<T> range) {
+        return range.isAll();
     }
 
     public boolean isPointRange(Range<T> range) {
@@ -41,5 +42,9 @@ public class RangeOperator<T> {
             }
         }
         return true;
+    }
+
+    public Optional<Range<T>> intersect(Range<T> range1, Range<T> range2) {
+        return null;
     }
 }

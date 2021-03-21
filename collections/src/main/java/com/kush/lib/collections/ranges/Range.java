@@ -49,7 +49,7 @@ public class Range<T> {
         return isEndInclusive;
     }
 
-    public boolean isEmpty() {
+    public boolean isAll() {
         return start.isAbsent() && end.isAbsent();
     }
 
