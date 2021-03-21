@@ -1,6 +1,6 @@
 package com.kush.lib.collections.ranges;
 
-import java.util.Comparator;
+import java.util.Objects;
 
 import com.kush.lib.collections.utils.NullableOptional;
 
@@ -11,8 +11,19 @@ public class Range<T> {
     private final NullableOptional<T> end;
     private final boolean isEndInclusive;
 
-    public static <T> Range.Builder<T> builder() {
+    public static <T extends Comparable<T>> Range.Builder<T> builder() {
         return new Range.Builder<>();
+    }
+
+    public static <T extends Comparable<T>> Range<T> all() {
+        return Range.<T>builder().build();
+    }
+
+    public static <T extends Comparable<T>> Range<T> fromValue(T value) {
+        return Range.<T>builder()
+            .startingFrom(value, true)
+            .endingAt(value, true)
+            .build();
     }
 
     private Range(Range.Builder<T> builder) {
@@ -38,26 +49,15 @@ public class Range<T> {
         return isEndInclusive;
     }
 
-    public boolean isInRange(T key, Comparator<T> comparator) {
-        if (start.isPresent()) {
-            int resultStart = comparator.compare(key, start.get());
-            if (resultStart < 0) {
-                return false;
-            }
-            if (resultStart == 0 && !isStartInclusive) {
-                return false;
-            }
+    public boolean isEmpty() {
+        return start.isAbsent() && end.isAbsent();
+    }
+
+    public boolean isPointRange() {
+        if (start.isPresent() && end.isPresent() && isStartInclusive && isEndInclusive) {
+            return Objects.equals(start.get(), end.get());
         }
-        if (end.isPresent()) {
-            int resultEnd = comparator.compare(key, end.get());
-            if (resultEnd < 0) {
-                return false;
-            }
-            if (resultEnd == 0 && !isEndInclusive) {
-                return false;
-            }
-        }
-        return true;
+        return false;
     }
 
     @Override
