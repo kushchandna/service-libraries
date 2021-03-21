@@ -11,15 +11,15 @@ public class Range<T> {
     private final NullableOptional<T> end;
     private final boolean isEndInclusive;
 
-    public static <T extends Comparable<T>> Range.Builder<T> builder() {
+    public static <T> Range.Builder<T> builder() {
         return new Range.Builder<>();
     }
 
-    public static <T extends Comparable<T>> Range<T> all() {
+    public static <T> Range<T> all() {
         return Range.<T>builder().build();
     }
 
-    public static <T extends Comparable<T>> Range<T> fromValue(T value) {
+    public static <T> Range<T> fromValue(T value) {
         return Range.<T>builder()
             .startingFrom(value, true)
             .endingAt(value, true)
