@@ -18,12 +18,8 @@ class MultiRootTree<K, V> implements Tree<K, V> {
     private final Set<K> keys = new HashSet<>();
 
     public MultiRootTree(PathSplitter<K> pathSplitter) {
-        this(pathSplitter, new Node<>());
-    }
-
-    private MultiRootTree(PathSplitter<K> pathSplitter, Node<V> root) {
         this.pathSplitter = pathSplitter;
-        this.root = root;
+        this.root = new Node<>();
     }
 
     @Override
@@ -53,8 +49,14 @@ class MultiRootTree<K, V> implements Tree<K, V> {
 
     @Override
     public Tree<K, V> getSubTree(K key) {
-        Node<V> node = getBranch(key);
-        return node == null ? null : new MultiRootTree<>(pathSplitter, node);
+        Object[] paths = getPaths(key);
+        Node<V> node = getBranch(paths);
+        if (node == null) {
+            return null;
+        }
+        MultiRootTree<K, V> subTree = new MultiRootTree<>(pathSplitter);
+        subTree.root.addChildNode(paths[paths.length - 1], node);
+        return subTree;
     }
 
     @Override
@@ -144,6 +146,10 @@ class MultiRootTree<K, V> implements Tree<K, V> {
 
         public Node<V> addChild(Object path) {
             Node<V> node = new Node<>();
+            return addChildNode(path, node);
+        }
+
+        private Node<V> addChildNode(Object path, Node<V> node) {
             node.parent = this;
             children.put(path, node);
             return node;
