@@ -170,19 +170,22 @@ public class RangeOperator<T> {
         public int compare(NullableOptional<T> o1, NullableOptional<T> o2) {
             if (o1.isAbsent() && o2.isAbsent()) {
                 return 0;
-            }
-            if (o1.isAbsent()) {
+
+            } else if (o1.isAbsent()) {
                 // isEmptyHigh true - o1 is larger than o2
                 // isEmptyHigh false - o1 is smaller than o2
                 return isEmptyHigh ? 1 : -1;
-            }
-            if (o2.isAbsent()) {
+
+            } else if (o2.isAbsent()) {
                 // isEmptyHigh true - o2 is larger than o1
                 // isEmptyHigh false - o2 is smaller than o1
                 return isEmptyHigh ? -1 : 1;
+
+            } else {
+                // both o1 and o2 contain a value
+                return valueComparator.compare(o1.get(), o2.get());
+
             }
-            // both o1 and o2 contain a value
-            return valueComparator.compare(o1.get(), o2.get());
         }
     }
 }
