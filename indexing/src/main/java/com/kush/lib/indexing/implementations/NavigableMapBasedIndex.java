@@ -1,7 +1,5 @@
 package com.kush.lib.indexing.implementations;
 
-import static java.util.Collections.emptySet;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -15,6 +13,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import com.kush.lib.collections.iterables.IterableResult;
 import com.kush.lib.collections.ranges.Range;
+import com.kush.lib.collections.ranges.RangeSet;
 import com.kush.lib.collections.utils.NullableOptional;
 import com.kush.lib.indexing.Index;
 import com.kush.lib.indexing.UpdateHandler;
@@ -41,28 +40,16 @@ public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<
     }
 
     @Override
-    public IterableResult<T> getMatchesForKey(K key) {
-        Collection<T> matchingObjects = indexedValues.getOrDefault(key, emptySet());
-        return IterableResult.fromCollection(matchingObjects);
-    }
-
-    @Override
-    public IterableResult<T> getMatchesForKeys(Collection<K> keys) {
+    public IterableResult<T> getMatches(RangeSet<K> rangeSet) {
         List<IterableResult<T>> results = new LinkedList<>();
-        keys.forEach(key -> {
-            IterableResult<T> matches = getMatchesForKey(key);
-            if (matches != null) {
-                results.add(matches);
-            }
+        rangeSet.getRanges().forEach(range -> {
+            IterableResult<T> matches = getMatchesForRange(range);
+            results.add(matches);
         });
         return IterableResult.merge(results);
     }
 
-    @Override
-    public IterableResult<T> getMatchesForRange(Range<K> range) {
-        if (range == null) {
-            throw new NullPointerException("range");
-        }
+    private IterableResult<T> getMatchesForRange(Range<K> range) {
         NullableOptional<K> start = range.getStart();
         NullableOptional<K> end = range.getEnd();
         NavigableMap<K, Collection<T>> resultMap;
