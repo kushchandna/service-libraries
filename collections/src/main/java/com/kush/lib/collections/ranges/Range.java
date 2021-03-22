@@ -35,9 +35,12 @@ public class Range<T> {
             .build();
     }
 
-    public static <T> Range.Builder<T> from(T value) {
-        return Range.<T>builder()
-            .startingFrom(value, true);
+    public static <T> Range.Builder<T> from(NullableOptional<T> value, boolean isInclusive) {
+        Builder<T> rangeBuilder = Range.<T>builder();
+        if (value.isPresent()) {
+            rangeBuilder = rangeBuilder.startingFrom(value.get(), isInclusive);
+        }
+        return rangeBuilder;
     }
 
     private Range(Range.Builder<T> builder) {
@@ -176,8 +179,12 @@ public class Range<T> {
             return endingAt(value, true);
         }
 
-        public Range<T> to(T value) {
-            return endingAt(value, true).build();
+        public Range<T> to(NullableOptional<T> value, boolean isInclusive) {
+            Builder<T> rangeBuilder = this;
+            if (value.isPresent()) {
+                rangeBuilder = rangeBuilder.endingAt(value.get(), isInclusive);
+            }
+            return rangeBuilder.build();
         }
     }
 }

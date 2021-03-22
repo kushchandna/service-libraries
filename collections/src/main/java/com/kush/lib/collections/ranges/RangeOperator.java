@@ -40,24 +40,35 @@ public class RangeOperator<T> {
     }
 
     public boolean isInRange(Range<T> range, T key) {
-        if (isEmpty(range)) {
-            return false;
+        return locate(range, key) == 0;
+    }
+
+    public int locate(Range<T> range, T key) {
+        checkRangeIsValid(range);
+        if (range.isAll()) {
+            return 0;
         }
         int startComparision = startComparator().compare(range.getStart(), NullableOptional.of(key));
         if (startComparision > 0) {
-            return false;
+            return -1;
         }
         if (startComparision == 0 && !range.isStartInclusive()) {
-            return false;
+            return -1;
         }
         int endComparision = endComparator().compare(NullableOptional.of(key), range.getEnd());
-        if (endComparision > 0) {
-            return false;
+        if (endComparision < 0) {
+            return 1;
         }
         if (endComparision == 0 && !range.isEndInclusive()) {
-            return false;
+            return 1;
         }
-        return true;
+        return 0;
+    }
+
+    public void checkRangeIsValid(Range<T> range) {
+        if (isEmpty(range)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public boolean areOverlapping(Range<T> range1, Range<T> range2) {
@@ -138,6 +149,14 @@ public class RangeOperator<T> {
         }
     }
 
+    private Comparator<NullableOptional<T>> startComparator() {
+        return new RangePointComparator<>(comparator, false);
+    }
+
+    private Comparator<NullableOptional<T>> endComparator() {
+        return new RangePointComparator<>(comparator, true);
+    }
+
     private static <T> T max(T o1, T o2, Comparator<T> comparator) {
         int comparision = comparator.compare(o1, o2);
         return comparision <= 0 ? o1 : o2;
@@ -146,14 +165,6 @@ public class RangeOperator<T> {
     private static <T> T min(T o1, T o2, Comparator<T> comparator) {
         int comparision = comparator.compare(o1, o2);
         return comparision >= 0 ? o1 : o2;
-    }
-
-    private Comparator<NullableOptional<T>> startComparator() {
-        return new RangePointComparator<>(comparator, false);
-    }
-
-    private Comparator<NullableOptional<T>> endComparator() {
-        return new RangePointComparator<>(comparator, true);
     }
 
     private static class RangePointComparator<T> implements Comparator<NullableOptional<T>> {
