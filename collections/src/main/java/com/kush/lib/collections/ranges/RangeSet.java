@@ -37,7 +37,7 @@ public class RangeSet<T> {
 
     // assumes specified lists are valid
     private RangeSet(RangeOperator<T> rangeOperator, boolean isInvalid, List<Range<T>> ranges) {
-        if (isInvalid != ranges.isEmpty()) {
+        if (isInvalid && !ranges.isEmpty()) {
             throw new IllegalStateException();
         }
         this.rangeOperator = rangeOperator;
