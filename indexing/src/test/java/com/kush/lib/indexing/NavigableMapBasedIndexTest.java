@@ -2,11 +2,11 @@ package com.kush.lib.indexing;
 
 import static com.kush.utils.testhelpers.SampleObjectUtils.obj;
 import static com.kush.utils.testhelpers.SampleObjectsTestRepository.addObjects;
-import static java.util.Arrays.asList;
 import static java.util.Comparator.naturalOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
+import java.util.Comparator;
 import java.util.function.Function;
 
 import org.junit.Rule;
@@ -14,10 +14,13 @@ import org.junit.Test;
 
 import com.kush.lib.collections.iterables.IterableResult;
 import com.kush.lib.collections.ranges.Range;
+import com.kush.lib.collections.ranges.RangeSets;
 import com.kush.lib.indexing.implementations.NavigableMapBasedIndex;
 import com.kush.utils.testhelpers.SampleObject;
 
 public class NavigableMapBasedIndexTest {
+
+    private static final Comparator<String> COMPARATOR = naturalOrder();
 
     @Rule
     public IndexableSampleObjectsTestRepository repository = new IndexableSampleObjectsTestRepository();
@@ -34,7 +37,7 @@ public class NavigableMapBasedIndexTest {
                 obj("id4", "name4"),
                 obj("id5", "name5"));
 
-        IterableResult<SampleObject> result = index.getMatchesForKey("name2");
+        IterableResult<SampleObject> result = index.getMatches(RangeSets.fromValues("name2"));
         assertThat(result.asList(), containsInAnyOrder(
                 obj("id2")));
     }
@@ -51,7 +54,7 @@ public class NavigableMapBasedIndexTest {
                 obj("id4", "name4"),
                 obj("id5", "name5"));
 
-        IterableResult<SampleObject> result = index.getMatchesForKeys(asList("name2", "name4"));
+        IterableResult<SampleObject> result = index.getMatches(RangeSets.fromValues("name2", "name4"));
         assertThat(result.asList(), containsInAnyOrder(
                 obj("id2"),
                 obj("id4")));
@@ -69,10 +72,10 @@ public class NavigableMapBasedIndexTest {
                 obj("id4", "name4"),
                 obj("id5", "name5"));
 
-        IterableResult<SampleObject> result = index.getMatchesForRange(Range.<String>builder()
+        IterableResult<SampleObject> result = index.getMatches(RangeSets.fromRanges(Range.<String>builder()
             .startingFrom("name2", true)
             .endingAt("name5", false)
-            .build());
+            .build()));
         assertThat(result.asList(), containsInAnyOrder(
                 obj("id2"),
                 obj("id3"),
@@ -80,6 +83,6 @@ public class NavigableMapBasedIndexTest {
     }
 
     private NavigableMapBasedIndex<String, SampleObject> createIndex(Function<SampleObject, String> keyGetter) {
-        return new NavigableMapBasedIndex<>(naturalOrder(), keyGetter);
+        return new NavigableMapBasedIndex<>(COMPARATOR, keyGetter);
     }
 }

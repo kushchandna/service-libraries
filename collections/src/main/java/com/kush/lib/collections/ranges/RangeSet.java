@@ -1,7 +1,6 @@
 package com.kush.lib.collections.ranges;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
@@ -18,15 +17,17 @@ public class RangeSet<T> {
     private final RangeOperator<T> rangeOperator;
     private final boolean isInvalid;
 
+    public static <T> RangeSet<T> empty(RangeOperator<T> rangeOperator) {
+        return new RangeSet<>(rangeOperator, false, emptyList());
+    }
+
     public static <T> RangeSet<T> invalid(RangeOperator<T> rangeOperator) {
         return new RangeSet<>(rangeOperator, true, emptyList());
     }
 
     public static <T> RangeSet<T> withRange(RangeOperator<T> rangeOperator, Range<T> range) {
-        if (rangeOperator.isEmpty(range)) {
-            throw new IllegalStateException();
-        }
-        return new RangeSet<>(rangeOperator, false, singletonList(range));
+        RangeSet<T> rangeSet = empty(rangeOperator);
+        return rangeSet.union(range);
     }
 
     // assumes specified lists are valid
