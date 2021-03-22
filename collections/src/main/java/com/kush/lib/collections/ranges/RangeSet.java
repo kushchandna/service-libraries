@@ -48,6 +48,10 @@ public class RangeSet<T> {
         return unmodifiableList(ranges);
     }
 
+    public boolean isInRangeSet(T value) {
+        return ranges.stream().anyMatch(range -> rangeOperator.isInRange(range, value));
+    }
+
     public RangeSet<T> union(RangeSet<T> rangeSet) {
         RangeSet<T> union = this;
         for (Range<T> range : rangeSet.getRanges()) {
