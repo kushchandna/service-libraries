@@ -1,9 +1,13 @@
 package com.kush.lib.collections.ranges;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Comparator.nullsFirst;
 import static java.util.Comparator.nullsLast;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 import com.kush.lib.collections.utils.NullableOptional;
@@ -56,6 +60,10 @@ public class RangeOperator<T> {
         return true;
     }
 
+    public boolean areOverlapping(Range<T> range1, Range<T> range2) {
+        return intersect(range1, range2).isPresent();
+    }
+
     public Optional<Range<T>> intersect(Range<T> range1, Range<T> range2) {
         if (isEmpty(range1) || isEmpty(range2)) {
             return Optional.empty();
@@ -78,6 +86,56 @@ public class RangeOperator<T> {
 
         Range<T> intersection = rangeBuilder.build();
         return isEmpty(intersection) ? Optional.empty() : Optional.of(intersection);
+    }
+
+    public List<Range<T>> union(Range<T> range1, Range<T> range2) {
+        boolean range1Empty = isEmpty(range1);
+        boolean range2Empty = isEmpty(range2);
+        if (range1Empty && range2Empty) {
+            return emptyList();
+        } else if (range1Empty) {
+            return singletonList(range2);
+        } else if (range2Empty) {
+            return singletonList(range1);
+        }
+
+        if (areOverlapping(range1, range2)) {
+            Range.Builder<T> rangeBuilder = Range.builder();
+
+            NullableOptional<T> minStart = min(range1.getStart(), range2.getStart(), startComparator());
+            if (minStart.isPresent()) {
+                T startValue = minStart.get();
+                boolean isStartInclusive = isInRange(range1, startValue) && isInRange(range2, startValue);
+                rangeBuilder = rangeBuilder.startingFrom(startValue, isStartInclusive);
+            }
+
+            NullableOptional<T> maxEnd = max(range1.getEnd(), range2.getEnd(), endComparator());
+            if (maxEnd.isPresent()) {
+                T endValue = maxEnd.get();
+                boolean isEndInclusive = isInRange(range1, endValue) && isInRange(range2, endValue);
+                rangeBuilder = rangeBuilder.endingAt(endValue, isEndInclusive);
+            }
+
+            Range<T> union = rangeBuilder.build();
+            return singletonList(union);
+        }
+
+        int startComparision = startComparator().compare(range1.getStart(), range2.getStart());
+        if (startComparision > 0) {
+            return asList(range2, range1);
+        } else if (startComparision < 0) {
+            return asList(range1, range2);
+        }
+
+        // both starts are same
+        // one should be inclusive point range and other should have non-inclusive same start value
+        if (range1.isStartInclusive()) {
+            return asList(range1, range2);
+        } else if (range2.isStartInclusive()) {
+            return asList(range2, range1);
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     private static <T> T max(T o1, T o2, Comparator<T> comparator) {
