@@ -37,6 +37,10 @@ public final class NullableOptional<T> {
         return !defined;
     }
 
+    public T orElse(T defaultValue) {
+        return defined ? value : defaultValue;
+    }
+
     public static <T> Optional<T> toJavaOptional(NullableOptional<T> nullableOptional) {
         return nullableOptional.isPresent() ? Optional.ofNullable(nullableOptional.get()) : Optional.empty();
     }

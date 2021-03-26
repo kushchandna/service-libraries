@@ -21,7 +21,7 @@ class DefaultRangeParser implements RangeParser {
         }
         boolean isStartInclusive = text.startsWith("[");
         boolean isEndInclusive = text.endsWith("]");
-        text = text.substring(1, text.length() - 2);
+        text = text.substring(1, text.length() - 1);
         String[] textStartEnd = text.split(" - ");
 
         Builder<T> rangeBuilder = Range.<T>builder();

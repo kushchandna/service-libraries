@@ -1,10 +1,12 @@
 package com.kush.lib.collections.ranges;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.kush.lib.collections.ranges.Range.Builder;
@@ -79,7 +81,6 @@ public class RangeSet<T> {
         final int prime = 31;
         int result = 1;
         result = prime * result + (isInvalid ? 1231 : 1237);
-        result = prime * result + rangeOperator.hashCode();
         result = prime * result + ranges.hashCode();
         return result;
     }
@@ -99,9 +100,6 @@ public class RangeSet<T> {
         if (isInvalid != other.isInvalid) {
             return false;
         }
-        if (!rangeOperator.equals(other.rangeOperator)) {
-            return false;
-        }
         if (!ranges.equals(other.ranges)) {
             return false;
         }
@@ -113,12 +111,15 @@ public class RangeSet<T> {
             return this;
         }
         if (range.isAll()) {
-            return RangeSet.withRange(rangeOperator, Range.all());
+            return RangeSet.withRanges(rangeOperator, asList(Range.all()));
         }
         if (isInvalid) {
-            return RangeSet.withRange(rangeOperator, range);
+            return RangeSet.withRanges(rangeOperator, asList(range));
         }
+        return unionWithoutNormalization(range).normalize();
+    }
 
+    private RangeSet<T> unionWithoutNormalization(Range<T> range) {
         NullableOptional<T> startingPoint = range.getStart();
         boolean startInclusive = range.isStartInclusive();
 
@@ -179,6 +180,38 @@ public class RangeSet<T> {
         }
 
         return RangeSet.withRanges(rangeOperator, newRanges);
+    }
+
+    private RangeSet<T> normalize() {
+        RangeSet<T> normalized = RangeSet.empty(rangeOperator);
+        for (int i = 1; i < ranges.size(); i++) {
+
+            Range<T> lastRange = ranges.get(i - 1);
+            // lastRange's end is guaranteed to exist here as end value of a non-last range can not be empty
+
+            Range<T> currentRange = ranges.get(i);
+            // currentRange's start is guaranteed to exist here as start value of a non-first range can not be empty
+
+            if (Objects.equals(lastRange.getEnd().get(), currentRange.getStart().get())
+                    && (lastRange.isEndInclusive() || currentRange.isStartInclusive())) {
+
+                Builder<T> rangeBuilder = Range.<T>builder();
+                if (lastRange.getStart().isPresent()) {
+                    rangeBuilder = rangeBuilder.startingFrom(lastRange.getStart().get(), lastRange.isStartInclusive());
+                }
+                if (currentRange.getEnd().isPresent()) {
+                    rangeBuilder = rangeBuilder.endingAt(currentRange.getEnd().get(), currentRange.isEndInclusive());
+                }
+                Range<T> mergedRange = rangeBuilder.build();
+                normalized = normalized.union(mergedRange);
+                continue;
+            }
+
+            normalized = normalized
+                .unionWithoutNormalization(lastRange)
+                .unionWithoutNormalization(currentRange);
+        }
+        return normalized;
     }
 
     private RangeSet<T> intersect(Range<T> range) {

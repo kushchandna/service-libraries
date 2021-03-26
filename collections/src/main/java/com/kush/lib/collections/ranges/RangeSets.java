@@ -6,9 +6,13 @@ public class RangeSets {
 
     private static final boolean DEFAULT_IS_NULL_HIGH = false;
 
+    public static <T extends Comparable<T>> RangeSet<T> empty() {
+        return RangeSet.<T>empty(rangeOperator());
+    }
+
     @SafeVarargs
     public static <T extends Comparable<T>> RangeSet<T> fromValues(T... values) {
-        RangeOperator<T> rangeOperator = new RangeOperator<T>(naturalOrder(), DEFAULT_IS_NULL_HIGH);
+        RangeOperator<T> rangeOperator = rangeOperator();
         RangeSet<T> rangeSet = RangeSet.empty(rangeOperator);
         for (T value : values) {
             RangeSet<T> valueRangeSet = fromValue(rangeOperator, value);
@@ -35,5 +39,9 @@ public class RangeSets {
 
     private static <T extends Comparable<T>> RangeSet<T> fromRange(RangeOperator<T> rangeOperator, Range<T> range) {
         return RangeSet.withRange(rangeOperator, range);
+    }
+
+    private static <T extends Comparable<T>> RangeOperator<T> rangeOperator() {
+        return new RangeOperator<T>(naturalOrder(), DEFAULT_IS_NULL_HIGH);
     }
 }

@@ -34,7 +34,7 @@ public class RangeOperator<T> {
         }
         int comparision = comparator.compare(range.getStart().get(), range.getEnd().get());
         if (comparision == 0) {
-            return range.isStartInclusive() && range.isEndInclusive();
+            return !range.isStartInclusive() && !range.isEndInclusive();
         }
         return comparision > 0;
     }
@@ -55,7 +55,7 @@ public class RangeOperator<T> {
         if (startComparision == 0 && !range.isStartInclusive()) {
             return -1;
         }
-        int endComparision = endComparator().compare(NullableOptional.of(key), range.getEnd());
+        int endComparision = endComparator().compare(range.getEnd(), NullableOptional.of(key));
         if (endComparision < 0) {
             return 1;
         }
@@ -159,12 +159,12 @@ public class RangeOperator<T> {
 
     private static <T> T max(T o1, T o2, Comparator<T> comparator) {
         int comparision = comparator.compare(o1, o2);
-        return comparision <= 0 ? o1 : o2;
+        return comparision < 0 ? o2 : o1;
     }
 
     private static <T> T min(T o1, T o2, Comparator<T> comparator) {
         int comparision = comparator.compare(o1, o2);
-        return comparision >= 0 ? o1 : o2;
+        return comparision > 0 ? o2 : o1;
     }
 
     private static class RangePointComparator<T> implements Comparator<NullableOptional<T>> {
