@@ -183,6 +183,9 @@ public class RangeSet<T> {
     }
 
     private RangeSet<T> normalize() {
+        if (ranges.size() <= 1) {
+            return this;
+        }
         RangeSet<T> normalized = RangeSet.empty(rangeOperator);
         for (int i = 1; i < ranges.size(); i++) {
 
