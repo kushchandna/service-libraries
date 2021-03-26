@@ -15,7 +15,7 @@ import org.junit.Test;
 import com.kush.lib.collections.iterables.IterableResult;
 import com.kush.lib.collections.ranges.Range;
 import com.kush.lib.collections.ranges.RangeSets;
-import com.kush.lib.indexing.implementations.NavigableMapBasedIndex;
+import com.kush.lib.indexing.implementations.SortedKeyBasedIndex;
 import com.kush.utils.testhelpers.SampleObject;
 
 public class NavigableMapBasedIndexTest {
@@ -27,7 +27,7 @@ public class NavigableMapBasedIndexTest {
 
     @Test
     public void getMatchesForKey() throws Exception {
-        NavigableMapBasedIndex<String, SampleObject> index = createIndex(SampleObject::getName);
+        SortedKeyBasedIndex<String, SampleObject> index = createIndex(SampleObject::getName);
         repository.setUpdateHandler(index);
 
         addObjects(repository,
@@ -44,7 +44,7 @@ public class NavigableMapBasedIndexTest {
 
     @Test
     public void getMatchesForKeys() throws Exception {
-        NavigableMapBasedIndex<String, SampleObject> index = createIndex(SampleObject::getName);
+        SortedKeyBasedIndex<String, SampleObject> index = createIndex(SampleObject::getName);
         repository.setUpdateHandler(index);
 
         addObjects(repository,
@@ -62,7 +62,7 @@ public class NavigableMapBasedIndexTest {
 
     @Test
     public void getMatchesForRange() throws Exception {
-        NavigableMapBasedIndex<String, SampleObject> index = createIndex(SampleObject::getName);
+        SortedKeyBasedIndex<String, SampleObject> index = createIndex(SampleObject::getName);
         repository.setUpdateHandler(index);
 
         addObjects(repository,
@@ -82,7 +82,7 @@ public class NavigableMapBasedIndexTest {
                 obj("id4")));
     }
 
-    private NavigableMapBasedIndex<String, SampleObject> createIndex(Function<SampleObject, String> keyGetter) {
-        return new NavigableMapBasedIndex<>(COMPARATOR, keyGetter);
+    private SortedKeyBasedIndex<String, SampleObject> createIndex(Function<SampleObject, String> keyGetter) {
+        return new SortedKeyBasedIndex<>(COMPARATOR, keyGetter);
     }
 }

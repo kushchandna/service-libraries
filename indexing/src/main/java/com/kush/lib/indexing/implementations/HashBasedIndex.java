@@ -12,11 +12,11 @@ import com.kush.lib.indexing.Index;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-public class HashMapBasedIndex<K, T> implements Index<K, T> {
+public class HashBasedIndex<K, T> implements Index<K, T> {
 
     private final Map<K, Collection<T>> indexedValues;
 
-    public HashMapBasedIndex() {
+    public HashBasedIndex() {
         indexedValues = new Object2ObjectOpenHashMap<>();
     }
 

@@ -7,9 +7,9 @@ import java.util.function.Function;
 import com.kush.lib.indexing.CompositeIndex;
 import com.kush.lib.indexing.CompositeIndex.MultiKey;
 
-public class NavigableMapBasedCompositeIndex<T> extends NavigableMapBasedIndex<MultiKey, T> implements CompositeIndex<T> {
+public class SortedKeysBasedCompositeIndex<T> extends SortedKeyBasedIndex<MultiKey, T> implements CompositeIndex<T> {
 
-    public NavigableMapBasedCompositeIndex(Function<T, MultiKey> keyGetter) {
+    public SortedKeysBasedCompositeIndex(Function<T, MultiKey> keyGetter) {
         super(naturalOrder(), keyGetter);
     }
 }

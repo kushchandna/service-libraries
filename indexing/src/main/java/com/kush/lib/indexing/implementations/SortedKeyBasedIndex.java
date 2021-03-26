@@ -21,18 +21,18 @@ import com.kush.lib.indexing.UpdateHandler;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @NotThreadSafe
-public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<T>, Cloneable {
+public class SortedKeyBasedIndex<K, T> implements Index<K, T>, UpdateHandler<T>, Cloneable {
 
     private final Comparator<K> comparator;
     private final Function<T, K> keyGetter;
 
     private final NavigableMap<K, Collection<T>> indexedValues;
 
-    public NavigableMapBasedIndex(Comparator<K> comparator, Function<T, K> keyGetter) {
+    public SortedKeyBasedIndex(Comparator<K> comparator, Function<T, K> keyGetter) {
         this(comparator, keyGetter, new TreeMap<>(comparator));
     }
 
-    private NavigableMapBasedIndex(Comparator<K> comparator, Function<T, K> keyGetter,
+    private SortedKeyBasedIndex(Comparator<K> comparator, Function<T, K> keyGetter,
             NavigableMap<K, Collection<T>> indexedValues) {
         this.comparator = comparator;
         this.keyGetter = keyGetter;
@@ -66,9 +66,9 @@ public class NavigableMapBasedIndex<K, T> implements Index<K, T>, UpdateHandler<
     }
 
     @Override
-    public NavigableMapBasedIndex<K, T> clone() {
+    public SortedKeyBasedIndex<K, T> clone() {
         NavigableMap<K, Collection<T>> indexedValuesClone = cloneIndexedValues();
-        return new NavigableMapBasedIndex<>(comparator, keyGetter, indexedValuesClone);
+        return new SortedKeyBasedIndex<>(comparator, keyGetter, indexedValuesClone);
     }
 
     @Override
