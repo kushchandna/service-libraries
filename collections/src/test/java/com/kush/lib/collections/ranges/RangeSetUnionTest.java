@@ -19,7 +19,7 @@ public class RangeSetUnionTest {
         return new Object[][] {
                 assertThatUnionOf(ranges("[30 - 40]"), with("[10 - 20]"), is("[10 - 20]", "[30 - 40]")),
                 assertThatUnionOf(ranges("[30 - 40]"), with("[20 - 30)"), is("[20 - 40]")),
-                assertThatUnionOf(ranges("(30 - 40]"), with("[20 - 30]"), is("[20 - 30]", "(30 - 40]")),
+                assertThatUnionOf(ranges("(30 - 40]"), with("[20 - 30]"), is("[20 - 40]")),
                 assertThatUnionOf(ranges("[30 - 40]"), with("[20 - 30]"), is("[20 - 40]")),
                 assertThatUnionOf(ranges("[30 - 40]"), with("[25 - 35]"), is("[25 - 40]")),
                 assertThatUnionOf(ranges("[30 - 40]"), with("[25 - 35)"), is("[25 - 40]")),
@@ -33,9 +33,9 @@ public class RangeSetUnionTest {
                 assertThatUnionOf(ranges("[30 - 40]"), with("[40 - 40]"), is("[30 - 40]")),
                 assertThatUnionOf(ranges("[30 - 40]"), with("[40 - 50]"), is("[30 - 50]")),
 
-                assertThatUnionOf(ranges("[30 - 40]"), with("(40 - 50]"), is("[30 - 40]", "(40 - 50]")),
+                assertThatUnionOf(ranges("[30 - 40]"), with("(40 - 50]"), is("[30 - 50]")),
                 assertThatUnionOf(ranges("[30 - 40)"), with("(40 - 50]"), is("[30 - 40)", "(40 - 50]")),
-                assertThatUnionOf(ranges("[30 - 40)"), with("[40 - 50]"), is("[30 - 40)", "[40 - 50]")),
+                assertThatUnionOf(ranges("[30 - 40)"), with("[40 - 50]"), is("[30 - 50]")),
                 assertThatUnionOf(ranges("[30 - 40]"), with("[50 - 60]"), is("[30 - 40]", "[50 - 60]")),
 
                 assertThatUnionOf(ranges("[30 - 40]", "[70 - 80]"), with("[50 - 60]"), is("[30 - 40]", "[50 - 60]", "[70 - 80]")),
@@ -44,7 +44,7 @@ public class RangeSetUnionTest {
 
                 assertThatUnionOf(ranges("[30 - 40]"), with("(* - *)"), is("(* - *)")),
                 assertThatUnionOf(ranges("(* - *)"), with("[30 - 40]"), is("(* - *)")),
-                assertThatUnionOf(ranges("(* - 30)"), with("[30 - 40]"), is("(* - 30)", "[30 - 40]")),
+                assertThatUnionOf(ranges("(* - 30)"), with("[30 - 40]"), is("(* - 40]")),
                 assertThatUnionOf(ranges("(* - 30]"), with("[30 - 40]"), is("(* - 40]")),
                 assertThatUnionOf(ranges("(* - 35)"), with("[30 - 40]"), is("(* - 40]")),
                 assertThatUnionOf(ranges("(30 - *)"), with("[30 - 40]"), is("[30 - *)")),
