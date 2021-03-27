@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.function.Function;
 
 import com.kush.lib.indexing.Index;
-import com.kush.lib.indexing.MultiKey;
 
 public class IndexFactory<T> {
 
@@ -20,9 +19,5 @@ public class IndexFactory<T> {
 
     public <K> Index<K, T> createIndexWithHashedKeys(Function<T, K> keyGetter) {
         return new HashBasedIndex<>(keyGetter);
-    }
-
-    public Index<MultiKey, T> composite(Index<MultiKey, T> index) {
-        return new CompositeKeyIndex<>(index);
     }
 }
