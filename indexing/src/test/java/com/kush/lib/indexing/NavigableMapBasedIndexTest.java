@@ -2,11 +2,9 @@ package com.kush.lib.indexing;
 
 import static com.kush.utils.testhelpers.SampleObjectUtils.obj;
 import static com.kush.utils.testhelpers.SampleObjectsTestRepository.addObjects;
-import static java.util.Comparator.naturalOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
-import java.util.Comparator;
 import java.util.function.Function;
 
 import org.junit.Rule;
@@ -15,20 +13,20 @@ import org.junit.Test;
 import com.kush.lib.collections.iterables.IterableResult;
 import com.kush.lib.collections.ranges.Range;
 import com.kush.lib.collections.ranges.RangeSets;
-import com.kush.lib.indexing.factory.SortedKeyBasedIndex;
+import com.kush.lib.indexing.factory.IndexFactory;
 import com.kush.utils.testhelpers.SampleObject;
 
 public class NavigableMapBasedIndexTest {
 
-    private static final Comparator<String> COMPARATOR = naturalOrder();
+    private final IndexFactory<SampleObject> indexFactory = new IndexFactory<>();
 
     @Rule
     public IndexableSampleObjectsTestRepository repository = new IndexableSampleObjectsTestRepository();
 
     @Test
     public void getMatchesForKey() throws Exception {
-        SortedKeyBasedIndex<String, SampleObject> index = createIndex(SampleObject::getName);
-        repository.setUpdateHandler(index);
+        Index<String, SampleObject> index = createIndex(SampleObject::getName);
+        setUpdateHandler(index);
 
         addObjects(repository,
                 obj("id1", "name1"),
@@ -44,8 +42,8 @@ public class NavigableMapBasedIndexTest {
 
     @Test
     public void getMatchesForKeys() throws Exception {
-        SortedKeyBasedIndex<String, SampleObject> index = createIndex(SampleObject::getName);
-        repository.setUpdateHandler(index);
+        Index<String, SampleObject> index = createIndex(SampleObject::getName);
+        setUpdateHandler(index);
 
         addObjects(repository,
                 obj("id1", "name1"),
@@ -62,8 +60,8 @@ public class NavigableMapBasedIndexTest {
 
     @Test
     public void getMatchesForRange() throws Exception {
-        SortedKeyBasedIndex<String, SampleObject> index = createIndex(SampleObject::getName);
-        repository.setUpdateHandler(index);
+        Index<String, SampleObject> index = createIndex(SampleObject::getName);
+        setUpdateHandler(index);
 
         addObjects(repository,
                 obj("id1", "name1"),
@@ -82,7 +80,12 @@ public class NavigableMapBasedIndexTest {
                 obj("id4")));
     }
 
-    private SortedKeyBasedIndex<String, SampleObject> createIndex(Function<SampleObject, String> keyGetter) {
-        return new SortedKeyBasedIndex<>(COMPARATOR, keyGetter);
+    private Index<String, SampleObject> createIndex(Function<SampleObject, String> keyGetter) {
+        return indexFactory.createIndexWithSortedKeys(keyGetter);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setUpdateHandler(Index<String, SampleObject> index) {
+        repository.setUpdateHandler((UpdateHandler<SampleObject>) index);
     }
 }
