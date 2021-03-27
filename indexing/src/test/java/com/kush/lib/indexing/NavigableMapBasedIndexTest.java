@@ -15,7 +15,7 @@ import org.junit.Test;
 import com.kush.lib.collections.iterables.IterableResult;
 import com.kush.lib.collections.ranges.Range;
 import com.kush.lib.collections.ranges.RangeSets;
-import com.kush.lib.indexing.implementations.SortedKeyBasedIndex;
+import com.kush.lib.indexing.factory.SortedKeyBasedIndex;
 import com.kush.utils.testhelpers.SampleObject;
 
 public class NavigableMapBasedIndexTest {

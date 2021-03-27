@@ -1,11 +1,12 @@
-package com.kush.lib.indexing.implementations;
+package com.kush.lib.indexing.factory;
+
+import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Function;
 
@@ -15,17 +16,14 @@ import com.kush.lib.collections.iterables.IterableResult;
 import com.kush.lib.collections.ranges.Range;
 import com.kush.lib.collections.ranges.RangeSet;
 import com.kush.lib.collections.utils.NullableOptional;
-import com.kush.lib.indexing.Index;
 import com.kush.lib.indexing.UpdateHandler;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @NotThreadSafe
-public class SortedKeyBasedIndex<K, T> implements Index<K, T>, UpdateHandler<T>, Cloneable {
+class SortedKeyBasedIndex<K, T> extends BaseIndex<K, T> implements UpdateHandler<T>, Cloneable {
 
     private final Comparator<K> comparator;
-    private final Function<T, K> keyGetter;
-
     private final NavigableMap<K, Collection<T>> indexedValues;
 
     public SortedKeyBasedIndex(Comparator<K> comparator, Function<T, K> keyGetter) {
@@ -34,22 +32,44 @@ public class SortedKeyBasedIndex<K, T> implements Index<K, T>, UpdateHandler<T>,
 
     private SortedKeyBasedIndex(Comparator<K> comparator, Function<T, K> keyGetter,
             NavigableMap<K, Collection<T>> indexedValues) {
+        super(keyGetter);
         this.comparator = comparator;
-        this.keyGetter = keyGetter;
         this.indexedValues = indexedValues;
     }
 
     @Override
     public IterableResult<T> getMatches(RangeSet<K> rangeSet) {
-        List<IterableResult<T>> results = new LinkedList<>();
-        rangeSet.getRanges().forEach(range -> {
-            IterableResult<T> matches = getMatchesForRange(range);
-            results.add(matches);
-        });
-        return IterableResult.merge(results);
+        return IterableResult.merge(rangeSet.getRanges().stream()
+            .map(this::getMatchForRange)
+            .filter(Objects::nonNull)
+            .collect(toList()));
     }
 
-    private IterableResult<T> getMatchesForRange(Range<K> range) {
+    @Override
+    protected void addToIndexedValues(K key, T object) {
+        indexedValues.computeIfAbsent(key, k -> new ObjectOpenHashSet<>()).add(object);
+    }
+
+    @Override
+    protected void removeFromIndexedValues(K key, T object) {
+        indexedValues.computeIfPresent(key, (k, objects) -> {
+            objects.remove(object);
+            return objects.isEmpty() ? null : objects;
+        });
+    }
+
+    @Override
+    protected boolean areKeysEqual(K key1, K key2) {
+        return comparator.compare(key1, key2) == 0;
+    }
+
+    @Override
+    public SortedKeyBasedIndex<K, T> clone() {
+        NavigableMap<K, Collection<T>> indexedValuesClone = cloneIndexedValues();
+        return new SortedKeyBasedIndex<>(comparator, getKeyGetter(), indexedValuesClone);
+    }
+
+    private IterableResult<T> getMatchForRange(Range<K> range) {
         NullableOptional<K> start = range.getStart();
         NullableOptional<K> end = range.getEnd();
         NavigableMap<K, Collection<T>> resultMap;
@@ -63,38 +83,6 @@ public class SortedKeyBasedIndex<K, T> implements Index<K, T>, UpdateHandler<T>,
             resultMap = indexedValues;
         }
         return IterableResult.fromCollections(resultMap.values());
-    }
-
-    @Override
-    public SortedKeyBasedIndex<K, T> clone() {
-        NavigableMap<K, Collection<T>> indexedValuesClone = cloneIndexedValues();
-        return new SortedKeyBasedIndex<>(comparator, keyGetter, indexedValuesClone);
-    }
-
-    @Override
-    public void onUpdate(T oldObject, T newObject) {
-        K oldKey = oldObject == null ? null : keyGetter.apply(oldObject);
-        K newKey = newObject == null ? null : keyGetter.apply(newObject);
-        if (oldObject == newObject && comparator.compare(oldKey, newKey) == 0) {
-            return;
-        }
-        if (oldObject != null) {
-            removeFromIndexedValues(oldKey, oldObject);
-        }
-        if (newObject != null) {
-            addToIndexedValues(newKey, newObject);
-        }
-    }
-
-    private void addToIndexedValues(K key, T object) {
-        indexedValues.computeIfAbsent(key, k -> new ObjectOpenHashSet<>()).add(object);
-    }
-
-    private void removeFromIndexedValues(K key, T object) {
-        indexedValues.computeIfPresent(key, (k, objects) -> {
-            objects.remove(object);
-            return objects.isEmpty() ? null : objects;
-        });
     }
 
     private NavigableMap<K, Collection<T>> cloneIndexedValues() {
