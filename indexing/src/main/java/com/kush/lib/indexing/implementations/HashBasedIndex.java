@@ -24,7 +24,7 @@ public class HashBasedIndex<K, T> implements Index<K, T> {
     public IterableResult<T> getMatches(RangeSet<K> rangeSet) {
         List<Collection<T>> matchingLists = indexedValues.entrySet()
             .stream()
-            .filter(entry -> rangeSet.isInRangeSet(entry.getKey()))
+            .filter(entry -> rangeSet.contains(entry.getKey()))
             .map(entry -> entry.getValue())
             .collect(toList());
         return IterableResult.fromCollections(matchingLists);

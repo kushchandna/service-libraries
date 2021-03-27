@@ -39,7 +39,7 @@ public class RangeOperator<T> {
         return comparision > 0;
     }
 
-    public boolean isInRange(Range<T> range, T key) {
+    public boolean contains(Range<T> range, T key) {
         return locate(range, key) == 0;
     }
 
@@ -84,14 +84,14 @@ public class RangeOperator<T> {
         NullableOptional<T> maxStart = max(range1.getStart(), range2.getStart(), startComparator());
         if (maxStart.isPresent()) {
             T startValue = maxStart.get();
-            boolean isStartInclusive = isInRange(range1, startValue) && isInRange(range2, startValue);
+            boolean isStartInclusive = contains(range1, startValue) && contains(range2, startValue);
             rangeBuilder = rangeBuilder.startingFrom(startValue, isStartInclusive);
         }
 
         NullableOptional<T> minEnd = min(range1.getEnd(), range2.getEnd(), endComparator());
         if (minEnd.isPresent()) {
             T endValue = minEnd.get();
-            boolean isEndInclusive = isInRange(range1, endValue) && isInRange(range2, endValue);
+            boolean isEndInclusive = contains(range1, endValue) && contains(range2, endValue);
             rangeBuilder = rangeBuilder.endingAt(endValue, isEndInclusive);
         }
 
@@ -116,14 +116,14 @@ public class RangeOperator<T> {
             NullableOptional<T> minStart = min(range1.getStart(), range2.getStart(), startComparator());
             if (minStart.isPresent()) {
                 T startValue = minStart.get();
-                boolean isStartInclusive = isInRange(range1, startValue) && isInRange(range2, startValue);
+                boolean isStartInclusive = contains(range1, startValue) && contains(range2, startValue);
                 rangeBuilder = rangeBuilder.startingFrom(startValue, isStartInclusive);
             }
 
             NullableOptional<T> maxEnd = max(range1.getEnd(), range2.getEnd(), endComparator());
             if (maxEnd.isPresent()) {
                 T endValue = maxEnd.get();
-                boolean isEndInclusive = isInRange(range1, endValue) && isInRange(range2, endValue);
+                boolean isEndInclusive = contains(range1, endValue) && contains(range2, endValue);
                 rangeBuilder = rangeBuilder.endingAt(endValue, isEndInclusive);
             }
 

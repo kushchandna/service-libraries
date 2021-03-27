@@ -51,8 +51,8 @@ public class RangeSet<T> {
         return unmodifiableList(ranges);
     }
 
-    public boolean isInRangeSet(T value) {
-        return ranges.stream().anyMatch(range -> rangeOperator.isInRange(range, value));
+    public boolean contains(T value) {
+        return ranges.stream().anyMatch(range -> rangeOperator.contains(range, value));
     }
 
     public RangeSet<T> union(RangeSet<T> rangeSet) {
