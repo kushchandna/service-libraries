@@ -70,6 +70,10 @@ public class RangeSet<T> {
         return intersection;
     }
 
+    public boolean containsAllPointRanges() {
+        return ranges.stream().allMatch(Range::isPointRange);
+    }
+
     @Override
     public String toString() {
         return "RangeSet [ranges=" + ranges + ", isInvalid=" + isInvalid + "]";

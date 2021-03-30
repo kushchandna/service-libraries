@@ -1,37 +1,27 @@
 package com.kush.lib.indexing.query.policies;
 
 import java.util.Iterator;
-import java.util.Optional;
 
 import com.kush.lib.collections.iterables.IterableResult;
-import com.kush.lib.collections.ranges.RangeSet;
 import com.kush.lib.indexing.Index;
 import com.kush.lib.indexing.Indexes.IndexOption;
+import com.kush.lib.indexing.MultiKey;
 import com.kush.lib.indexing.query.IndexQuery;
-import com.kush.lib.indexing.query.IndexQueryExecutor;
 import com.kush.lib.indexing.query.IndexResponse;
 
-public class MostSelectiveIndexPolicy<T> implements IndexQueryExecutor.IndexSelectionPolicy<T> {
+public class MostSelectiveIndexPolicy<T> extends BaseIndexSelectionPolicy<T> {
 
     @Override
-    public IndexResponse<T> execute(IndexQuery query, Iterator<IndexOption<T>> indexOptions) {
+    public <K> IndexResponse<T> execute(IndexQuery query, Iterator<IndexOption<K, T>> indexOptions,
+            MultiKey.Factory multiKeyFactory) {
         IterableResult<T> mostSelectiveResult = null;
         while (indexOptions.hasNext()) {
-            IndexOption<T> indexOption = indexOptions.next();
-            Index<Object, T> index = indexOption.getIndex();
+            IndexOption<K, T> indexOption = indexOptions.next();
+            Index<K, T> index = indexOption.getIndex();
             Object[] fields = indexOption.getIndexedFields();
-            if (fields.length == 1) {
-                // single select
-                Optional<RangeSet<Object>> ranges = query.getRanges(fields[0]);
-                if (ranges.isPresent()) {
-                    IterableResult<T> result = index.getMatches(ranges.get());
-                    if (mostSelectiveResult == null || result.count() < mostSelectiveResult.count()) {
-                        mostSelectiveResult = result;
-                    }
-                }
-            } else {
-                // TODO multi-select
-                throw new UnsupportedOperationException();
+            IterableResult<T> result = getResultFromIndex(index, query, fields).orElse(null);
+            if (result != null && (mostSelectiveResult == null || result.count() < mostSelectiveResult.count())) {
+                mostSelectiveResult = result;
             }
         }
         return IndexResponse.with(mostSelectiveResult);

@@ -6,5 +6,5 @@ import com.kush.lib.collections.ranges.RangeSet;
 
 public interface IndexQuery {
 
-    Optional<RangeSet<Object>> getRanges(Object field);
+    <K> Optional<RangeSet<K>> getRanges(Object field);
 }
