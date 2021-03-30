@@ -8,10 +8,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.kush.lib.indexing.factory.IndexFactory;
+import com.kush.lib.indexing.query.IndexQueryExecutor;
 
 public final class Indexes<T> {
 
-    private final Map<String, Index<?, T>> indexes = new HashMap<>();
+    private final Map<String, Index<Object, T>> indexes = new HashMap<>();
     private final Map<Object[], List<String>> fieldsVsIndexNames = new HashMap<>();
     private final Map<String, Object[]> indexNameVsFields = new HashMap<>();
 
@@ -26,7 +27,7 @@ public final class Indexes<T> {
     public synchronized <K> void addIndex(String indexName, Object[] fields, IndexGenerator<T> indexGenerator)
             throws IndexException {
         checkNoIndexWithSameNameExist(indexName);
-        Index<?, T> index = indexGenerator.generate(indexFactory);
+        Index<Object, T> index = indexGenerator.generate(indexFactory);
 
         List<String> indexNames = fieldsVsIndexNames.get(fields);
         if (indexNames == null) {
@@ -41,9 +42,13 @@ public final class Indexes<T> {
         indexNameVsFields.put(indexName, fields);
     }
 
-    Iterator<IndexOption<T>> getOptions() {
+    public IndexQueryExecutor<T> getQueryExecutor() {
+        return (query, policy) -> policy.execute(query, getOptions());
+    }
 
-        Iterator<Map.Entry<String, Index<?, T>>> indexesIterator = indexes.entrySet().iterator();
+    private Iterator<IndexOption<T>> getOptions() {
+
+        Iterator<Map.Entry<String, Index<Object, T>>> indexesIterator = indexes.entrySet().iterator();
 
         return new Iterator<IndexOption<T>>() {
 
@@ -54,7 +59,7 @@ public final class Indexes<T> {
 
             @Override
             public IndexOption<T> next() {
-                Entry<String, Index<?, T>> entry = indexesIterator.next();
+                Entry<String, Index<Object, T>> entry = indexesIterator.next();
                 return new IndexOption<T>() {
 
                     @Override
@@ -68,9 +73,8 @@ public final class Indexes<T> {
                     }
 
                     @Override
-                    @SuppressWarnings("unchecked")
-                    public <K> Index<K, T> getIndex() {
-                        return (Index<K, T>) entry.getValue();
+                    public Index<Object, T> getIndex() {
+                        return entry.getValue();
                     }
                 };
             }
@@ -82,10 +86,10 @@ public final class Indexes<T> {
         return (UpdateHandler<T>) index;
     }
 
-    private void checkNoIndexWithSameTypeExistForSameField(Index<?, T> index, List<String> indexNames)
+    private void checkNoIndexWithSameTypeExistForSameField(Index<Object, T> index, List<String> indexNames)
             throws IndexException {
         for (String existingIndexName : indexNames) {
-            Index<?, T> existingIndex = indexes.get(existingIndexName);
+            Index<Object, T> existingIndex = indexes.get(existingIndexName);
             if (existingIndex.getClass().equals(index.getClass())) {
                 throw new IndexException();
             }
@@ -104,7 +108,7 @@ public final class Indexes<T> {
 
         Object[] getIndexedFields();
 
-        <K> Index<K, T> getIndex();
+        Index<Object, T> getIndex();
     }
 
     public interface IndexGenerator<T> {
