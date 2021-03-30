@@ -28,8 +28,7 @@ public class RangeSet<T> {
     }
 
     public static <T> RangeSet<T> withRange(RangeOperator<T> rangeOperator, Range<T> range) {
-        RangeSet<T> rangeSet = empty(rangeOperator);
-        return rangeSet.union(range);
+        return withRanges(rangeOperator, asList(range));
     }
 
     // assumes specified lists are valid
