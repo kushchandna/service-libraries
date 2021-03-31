@@ -1,4 +1,4 @@
-package com.kush.lib.indexing;
+package com.kush.lib.indexing.composite;
 
 public interface MultiKey extends Comparable<MultiKey> {
 

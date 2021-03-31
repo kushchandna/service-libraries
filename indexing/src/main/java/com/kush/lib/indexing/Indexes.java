@@ -5,7 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.kush.lib.indexing.MultiKey.Factory;
+import com.kush.lib.indexing.composite.MultiKey;
+import com.kush.lib.indexing.composite.MultiKey.Factory;
 import com.kush.lib.indexing.factory.IndexFactory;
 import com.kush.lib.indexing.query.IndexQueryExecutor;
 

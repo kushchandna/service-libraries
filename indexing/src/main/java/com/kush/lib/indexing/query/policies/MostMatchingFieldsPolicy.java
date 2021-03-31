@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.kush.lib.collections.iterables.IterableResult;
 import com.kush.lib.collections.ranges.RangeSet;
 import com.kush.lib.indexing.Indexes.IndexOption;
-import com.kush.lib.indexing.MultiKey;
+import com.kush.lib.indexing.composite.MultiKey;
 import com.kush.lib.indexing.query.IndexQuery;
 import com.kush.lib.indexing.query.IndexResponse;
 
