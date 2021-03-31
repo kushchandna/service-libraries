@@ -13,7 +13,7 @@ import com.kush.lib.indexing.factory.IndexGenerator;
 import com.kush.lib.indexing.query.IndexOption;
 import com.kush.lib.indexing.query.IndexQueryExecutor;
 
-public final class Indexes<T> {
+public final class IndexManager<T> {
 
     private final Map<String, FieldsIndex> indexes = new LinkedHashMap<>();
 
@@ -21,7 +21,7 @@ public final class Indexes<T> {
     private final UpdateHandlersRegistrar<T> registrar;
     private final MultiKey.Factory multiKeyFactory;
 
-    public Indexes(IndexFactory<T> indexFactory, UpdateHandlersRegistrar<T> registrar, MultiKey.Factory multiKeyFactory) {
+    public IndexManager(IndexFactory<T> indexFactory, UpdateHandlersRegistrar<T> registrar, MultiKey.Factory multiKeyFactory) {
         this.indexFactory = indexFactory;
         this.registrar = registrar;
         this.multiKeyFactory = multiKeyFactory;
