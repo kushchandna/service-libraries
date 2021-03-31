@@ -5,18 +5,21 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.checkerframework.checker.units.qual.K;
+
 import com.kush.lib.indexing.composite.MultiKey;
-import com.kush.lib.indexing.composite.MultiKey.Factory;
 import com.kush.lib.indexing.factory.IndexFactory;
+import com.kush.lib.indexing.factory.IndexGenerator;
+import com.kush.lib.indexing.query.IndexOption;
 import com.kush.lib.indexing.query.IndexQueryExecutor;
 
-public final class Indexes<K, T> {
+public final class Indexes<T> {
 
     private final Map<String, FieldsIndex> indexes = new LinkedHashMap<>();
 
     private final IndexFactory<T> indexFactory;
     private final UpdateHandlersRegistrar<T> registrar;
-    private final Factory multiKeyFactory;
+    private final MultiKey.Factory multiKeyFactory;
 
     public Indexes(IndexFactory<T> indexFactory, UpdateHandlersRegistrar<T> registrar, MultiKey.Factory multiKeyFactory) {
         this.indexFactory = indexFactory;
@@ -24,7 +27,7 @@ public final class Indexes<K, T> {
         this.multiKeyFactory = multiKeyFactory;
     }
 
-    public synchronized void addIndex(String indexName, Object[] fields, IndexGenerator<K, T> indexGenerator)
+    public synchronized void addIndex(String indexName, Object[] fields, IndexGenerator<T> indexGenerator)
             throws IndexException {
         checkNoIndexWithSameNameExist(indexName);
         Index<K, T> index = indexGenerator.generate(indexFactory);
@@ -37,7 +40,7 @@ public final class Indexes<K, T> {
         if (fieldsIndex == null) {
             throw new IndexException();
         }
-        Index<K, T> index = fieldsIndex.getIndex();
+        Index<?, T> index = fieldsIndex.getIndex();
         registrar.unregister(asUpdateHandler(index));
     }
 
@@ -45,9 +48,9 @@ public final class Indexes<K, T> {
         return (query, policy) -> policy.execute(query, getOptions(), multiKeyFactory);
     }
 
-    private Iterator<IndexOption<K, T>> getOptions() {
+    private Iterator<IndexOption<T>> getOptions() {
         Iterator<Map.Entry<String, FieldsIndex>> indexesIterator = indexes.entrySet().iterator();
-        return new Iterator<IndexOption<K, T>>() {
+        return new Iterator<IndexOption<T>>() {
 
             @Override
             public boolean hasNext() {
@@ -55,7 +58,7 @@ public final class Indexes<K, T> {
             }
 
             @Override
-            public IndexOption<K, T> next() {
+            public IndexOption<T> next() {
                 Entry<String, FieldsIndex> entry = indexesIterator.next();
                 return new FieldIndexOption(entry);
             }
@@ -73,7 +76,7 @@ public final class Indexes<K, T> {
         }
     }
 
-    private final class FieldIndexOption implements IndexOption<K, T> {
+    private final class FieldIndexOption implements IndexOption<T> {
 
         private final Entry<String, FieldsIndex> entry;
 
@@ -92,7 +95,7 @@ public final class Indexes<K, T> {
         }
 
         @Override
-        public Index<K, T> getIndex() {
+        public Index<?, T> getIndex() {
             return entry.getValue().getIndex();
         }
     }
@@ -100,9 +103,9 @@ public final class Indexes<K, T> {
     private class FieldsIndex {
 
         private final Object[] fields;
-        private final Index<K, T> index;
+        private final Index<?, T> index;
 
-        public FieldsIndex(Object[] fields, Index<K, T> index) {
+        public FieldsIndex(Object[] fields, Index<?, T> index) {
             this.fields = fields;
             this.index = index;
         }
@@ -111,22 +114,8 @@ public final class Indexes<K, T> {
             return fields;
         }
 
-        public Index<K, T> getIndex() {
+        public Index<?, T> getIndex() {
             return index;
         }
-    }
-
-    public interface IndexOption<K, T> {
-
-        String getIndexName();
-
-        Object[] getIndexedFields();
-
-        Index<K, T> getIndex();
-    }
-
-    public interface IndexGenerator<K, T> {
-
-        <I extends Index<K, T> & UpdateHandler<T>> I generate(IndexFactory<T> indexFactory);
     }
 }

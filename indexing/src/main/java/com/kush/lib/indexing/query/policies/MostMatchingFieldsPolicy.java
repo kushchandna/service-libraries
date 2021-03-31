@@ -3,22 +3,23 @@ package com.kush.lib.indexing.query.policies;
 import java.util.Iterator;
 import java.util.Optional;
 
+import org.checkerframework.checker.units.qual.K;
+
 import com.kush.lib.collections.iterables.IterableResult;
 import com.kush.lib.collections.ranges.RangeSet;
-import com.kush.lib.indexing.Indexes.IndexOption;
 import com.kush.lib.indexing.composite.MultiKey;
+import com.kush.lib.indexing.query.IndexOption;
 import com.kush.lib.indexing.query.IndexQuery;
 import com.kush.lib.indexing.query.IndexResponse;
 
 public class MostMatchingFieldsPolicy<T> extends BaseIndexSelectionPolicy<T> {
 
     @Override
-    public <K> IndexResponse<T> execute(IndexQuery query, Iterator<IndexOption<K, T>> indexOptions,
-            MultiKey.Factory multiKeyFactory) {
+    public IndexResponse<T> execute(IndexQuery query, Iterator<IndexOption<T>> indexOptions, MultiKey.Factory multiKeyFactory) {
         int maxMatchingFields = 0;
-        IndexOption<K, T> bestOption = null;
+        IndexOption<T> bestOption = null;
         while (indexOptions.hasNext()) {
-            IndexOption<K, T> indexOption = indexOptions.next();
+            IndexOption<T> indexOption = indexOptions.next();
             Object[] fields = indexOption.getIndexedFields();
             int matchingFields = 0;
             for (Object field : fields) {
