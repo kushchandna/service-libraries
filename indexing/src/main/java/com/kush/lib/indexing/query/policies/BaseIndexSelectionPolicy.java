@@ -21,7 +21,7 @@ public abstract class BaseIndexSelectionPolicy<T> implements IndexSelectionPolic
         }
     }
 
-    protected final <K> Optional<IterableResult<T>> getResultFromSingleFieldIndex(Index<K, T> index, IndexQuery query,
+    private <K> Optional<IterableResult<T>> getResultFromSingleFieldIndex(Index<K, T> index, IndexQuery query,
             Object field) {
         Optional<RangeSet<K>> ranges = query.getRanges(field);
         if (ranges.isPresent()) {
@@ -31,9 +31,13 @@ public abstract class BaseIndexSelectionPolicy<T> implements IndexSelectionPolic
         return Optional.empty();
     }
 
-    protected final Optional<IterableResult<T>> getResultFromMultiFieldsIndex(Index<MultiKey, T> index, IndexQuery query,
+    private Optional<IterableResult<T>> getResultFromMultiFieldsIndex(Index<MultiKey, T> index, IndexQuery query,
             Object[] fields, MultiKeyRangeSetGenerator rangeSetGenerator) {
-        throw new UnsupportedOperationException();
+        if (query.hasRangeDefinedFor(fields[0])) {
+            RangeSet<MultiKey> rangeSet = rangeSetGenerator.generate(fields, query);
+            return Optional.of(index.getMatches(rangeSet));
+        }
+        return Optional.empty();
     }
 
     @SuppressWarnings("unchecked")
