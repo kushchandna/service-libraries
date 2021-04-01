@@ -1,15 +1,16 @@
-package com.kush.lib.indexing;
+package com.kush.lib.indexing.management;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.checkerframework.checker.units.qual.K;
-
-import com.kush.lib.indexing.composite.MultiKey;
+import com.kush.lib.indexing.Index;
+import com.kush.lib.indexing.IndexException;
+import com.kush.lib.indexing.UpdateHandler;
+import com.kush.lib.indexing.UpdateHandlersRegistrar;
+import com.kush.lib.indexing.composite.MultiKeyRangeSetGenerator;
 import com.kush.lib.indexing.factory.IndexFactory;
-import com.kush.lib.indexing.factory.IndexGenerator;
 import com.kush.lib.indexing.query.IndexOption;
 import com.kush.lib.indexing.query.IndexQueryExecutor;
 
@@ -19,15 +20,16 @@ public final class IndexManager<T> {
 
     private final IndexFactory<T> indexFactory;
     private final UpdateHandlersRegistrar<T> registrar;
-    private final MultiKey.Factory multiKeyFactory;
+    private final MultiKeyRangeSetGenerator rangeSetGenerator;
 
-    public IndexManager(IndexFactory<T> indexFactory, UpdateHandlersRegistrar<T> registrar, MultiKey.Factory multiKeyFactory) {
+    public IndexManager(IndexFactory<T> indexFactory, UpdateHandlersRegistrar<T> registrar,
+            MultiKeyRangeSetGenerator rangeSetGenerator) {
         this.indexFactory = indexFactory;
         this.registrar = registrar;
-        this.multiKeyFactory = multiKeyFactory;
+        this.rangeSetGenerator = rangeSetGenerator;
     }
 
-    public synchronized void addIndex(String indexName, Object[] fields, IndexGenerator<T> indexGenerator)
+    public synchronized <K> void addIndex(String indexName, Object[] fields, IndexGenerator<K, T> indexGenerator)
             throws IndexException {
         checkNoIndexWithSameNameExist(indexName);
         Index<K, T> index = indexGenerator.generate(indexFactory);
@@ -45,7 +47,7 @@ public final class IndexManager<T> {
     }
 
     public synchronized IndexQueryExecutor<T> getQueryExecutor() {
-        return (query, policy) -> policy.execute(query, getOptions(), multiKeyFactory);
+        return (query, policy) -> policy.execute(query, getOptions(), rangeSetGenerator);
     }
 
     private Iterator<IndexOption<T>> getOptions() {

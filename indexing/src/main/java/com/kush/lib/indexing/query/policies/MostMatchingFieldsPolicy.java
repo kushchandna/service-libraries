@@ -7,7 +7,7 @@ import org.checkerframework.checker.units.qual.K;
 
 import com.kush.lib.collections.iterables.IterableResult;
 import com.kush.lib.collections.ranges.RangeSet;
-import com.kush.lib.indexing.composite.MultiKey;
+import com.kush.lib.indexing.composite.MultiKeyRangeSetGenerator;
 import com.kush.lib.indexing.query.IndexOption;
 import com.kush.lib.indexing.query.IndexQuery;
 import com.kush.lib.indexing.query.IndexResponse;
@@ -15,7 +15,8 @@ import com.kush.lib.indexing.query.IndexResponse;
 public class MostMatchingFieldsPolicy<T> extends BaseIndexSelectionPolicy<T> {
 
     @Override
-    public IndexResponse<T> execute(IndexQuery query, Iterator<IndexOption<T>> indexOptions, MultiKey.Factory multiKeyFactory) {
+    public IndexResponse<T> execute(IndexQuery query, Iterator<IndexOption<T>> indexOptions,
+            MultiKeyRangeSetGenerator rangeSetGenerator) {
         int maxMatchingFields = 0;
         IndexOption<T> bestOption = null;
         while (indexOptions.hasNext()) {
@@ -37,7 +38,8 @@ public class MostMatchingFieldsPolicy<T> extends BaseIndexSelectionPolicy<T> {
         if (bestOption == null) {
             return IndexResponse.empty();
         }
-        Optional<IterableResult<T>> result = getResultFromIndex(bestOption.getIndex(), query, bestOption.getIndexedFields());
+        Optional<IterableResult<T>> result =
+                getResultFromIndex(bestOption.getIndex(), query, bestOption.getIndexedFields(), rangeSetGenerator);
         return IndexResponse.with(result.get());
     }
 }
