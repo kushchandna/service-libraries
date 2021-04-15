@@ -9,10 +9,10 @@ import com.kush.lib.indexing.Index;
 import com.kush.lib.indexing.IndexException;
 import com.kush.lib.indexing.UpdateHandler;
 import com.kush.lib.indexing.UpdateHandlersRegistrar;
-import com.kush.lib.indexing.composite.MultiKeyRangeSetGenerator;
 import com.kush.lib.indexing.factory.IndexFactory;
 import com.kush.lib.indexing.query.IndexOption;
 import com.kush.lib.indexing.query.IndexQueryExecutor;
+import com.kush.lib.indexing.ranges.IndexableRangeSetFinder;
 
 public final class IndexManager<T> {
 
@@ -20,13 +20,13 @@ public final class IndexManager<T> {
 
     private final IndexFactory<T> indexFactory;
     private final UpdateHandlersRegistrar<T> registrar;
-    private final MultiKeyRangeSetGenerator rangeSetGenerator;
+    private final IndexableRangeSetFinder<?> rangeSetFinder;
 
     public IndexManager(IndexFactory<T> indexFactory, UpdateHandlersRegistrar<T> registrar,
-            MultiKeyRangeSetGenerator rangeSetGenerator) {
+            IndexableRangeSetFinder<?> rangeSetFinder) {
         this.indexFactory = indexFactory;
         this.registrar = registrar;
-        this.rangeSetGenerator = rangeSetGenerator;
+        this.rangeSetFinder = rangeSetFinder;
     }
 
     public synchronized <K> void addIndex(String indexName, Object[] fields, IndexGenerator<K, T> indexGenerator)
@@ -47,7 +47,7 @@ public final class IndexManager<T> {
     }
 
     public synchronized IndexQueryExecutor<T> getQueryExecutor() {
-        return (query, policy) -> policy.execute(query, getOptions(), rangeSetGenerator);
+        return (query, policy) -> policy.execute(query, getOptions(), rangeSetFinder);
     }
 
     private Iterator<IndexOption<T>> getOptions() {

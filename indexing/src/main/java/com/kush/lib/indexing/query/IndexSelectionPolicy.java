@@ -2,10 +2,10 @@ package com.kush.lib.indexing.query;
 
 import java.util.Iterator;
 
-import com.kush.lib.indexing.composite.MultiKeyRangeSetGenerator;
+import com.kush.lib.indexing.ranges.IndexableRangeSetFinder;
 
 public interface IndexSelectionPolicy<T> {
 
-    IndexResponse<T> execute(IndexQuery query, Iterator<IndexOption<T>> indexOptions,
-            MultiKeyRangeSetGenerator rangeSetGenerator);
+    <K> IndexResponse<T> execute(IndexQuery query, Iterator<IndexOption<T>> indexOptions,
+            IndexableRangeSetFinder<K> rangeSetFinder);
 }

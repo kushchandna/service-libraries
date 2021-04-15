@@ -3,6 +3,7 @@ package com.kush.lib.collections.ranges;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,10 @@ public class RangeSet<T> {
 
     public static <T> RangeSet<T> invalid(RangeOperator<T> rangeOperator) {
         return new RangeSet<>(rangeOperator, true, emptyList());
+    }
+
+    public static <T> RangeSet<T> universal(RangeOperator<T> rangeOperator) {
+        return withRange(rangeOperator, Range.all());
     }
 
     public static <T> RangeSet<T> withRange(RangeOperator<T> rangeOperator, Range<T> range) {
@@ -72,6 +77,12 @@ public class RangeSet<T> {
 
     public boolean containsAllPointRanges() {
         return ranges.stream().allMatch(Range::isPointRange);
+    }
+
+    public List<RangeSet<T>> split() {
+        return getRanges().stream()
+            .map(range -> RangeSet.withRange(rangeOperator, range))
+            .collect(toList());
     }
 
     @Override

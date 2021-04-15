@@ -11,7 +11,11 @@ public interface IndexResponse<T> {
     }
 
     static <T> IndexResponse<T> with(IterableResult<T> result) {
-        return result == null ? empty() : () -> Optional.of(result);
+        return () -> Optional.of(result);
+    }
+
+    static <T> IndexResponse<T> with(Optional<IterableResult<T>> result) {
+        return result.isPresent() ? with(result.get()) : empty();
     }
 
     Optional<IterableResult<T>> getResult();
