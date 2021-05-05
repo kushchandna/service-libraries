@@ -8,12 +8,8 @@
 	<url>http://maven.apache.org</url>
 	<packaging>jar</packaging>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<parent>
-		<groupId>com.kush.lib</groupId>
+		<groupId>com.kush.service-lib</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
@@ -21,7 +17,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>com.kush</groupId>
+				<groupId>com.kush.service-core</groupId>
 				<artifactId>serviceclient-maven-plugin</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 				<dependencies>
@@ -66,12 +62,12 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.kush</groupId>
+			<groupId>com.kush.service-core</groupId>
 			<artifactId>service</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.kush</groupId>
+			<groupId>com.kush.service-core</groupId>
 			<artifactId>service</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>

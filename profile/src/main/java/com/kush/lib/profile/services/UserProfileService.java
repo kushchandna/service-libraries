@@ -1,6 +1,6 @@
 package com.kush.lib.profile.services;
 
-import static com.kush.lib.collections.utils.CollectionUtils.singletonMultiValueMap;
+import static com.kush.commons.utils.CollectionUtils.singletonMultiValueMap;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;

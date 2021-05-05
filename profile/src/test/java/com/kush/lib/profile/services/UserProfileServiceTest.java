@@ -1,7 +1,7 @@
 package com.kush.lib.profile.services;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static com.kush.lib.collections.utils.CollectionUtils.singletonMultiValueMap;
+import static com.kush.commons.utils.CollectionUtils.singletonMultiValueMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
@@ -63,12 +63,12 @@ public class UserProfileServiceTest extends BaseServiceTest {
     @Test
     public void invalidEmailId() throws Exception {
         runAuthenticatedOperation(() -> {
-        	assertThrows(""
+            assertThrows(""
                     + "Invalid value specified for field Email Id. "
-                    + "Reason: 'invalid_email_id' is not a valid email id", 
-                    ValidationFailedException.class, 
+                    + "Reason: 'invalid_email_id' is not a valid email id",
+                    ValidationFailedException.class,
                     () -> {
-                    	profileService.updateProfileField(FIELD_EMAIL, "invalid_email_id");
+                        profileService.updateProfileField(FIELD_EMAIL, "invalid_email_id");
                     });
         });
     }
@@ -103,10 +103,10 @@ public class UserProfileServiceTest extends BaseServiceTest {
 
         User user2 = user(1);
         runAuthenticatedOperation(user2, () -> {
-        	assertThrows("User with Email Id 'testuser@domain.com' already exists.", 
-                    ValidationFailedException.class, 
+            assertThrows("User with Email Id 'testuser@domain.com' already exists.",
+                    ValidationFailedException.class,
                     () -> {
-                    	profileService.updateProfileField(FIELD_EMAIL, "testuser@domain.com");
+                        profileService.updateProfileField(FIELD_EMAIL, "testuser@domain.com");
                     });
         });
     }
