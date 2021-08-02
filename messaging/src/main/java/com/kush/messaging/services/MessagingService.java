@@ -10,6 +10,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.kush.commons.id.Identifiable;
+import com.kush.commons.id.Identifier;
 import com.kush.lib.contacts.entities.Contact;
 import com.kush.lib.contacts.services.ContactsService;
 import com.kush.lib.group.entities.Group;
@@ -31,8 +33,6 @@ import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
 import com.kush.service.auth.AuthenticationRequired;
 import com.kush.utils.exceptions.ValidationFailedException;
-import com.kush.utils.id.Identifiable;
-import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.SignalEmitter;
 import com.kush.utils.signaling.SignalEmitters;
 import com.kush.utils.signaling.SignalSpace;

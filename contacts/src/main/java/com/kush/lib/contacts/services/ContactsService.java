@@ -4,6 +4,8 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.kush.commons.id.Identifiable;
+import com.kush.commons.id.Identifier;
 import com.kush.lib.contacts.entities.Contact;
 import com.kush.lib.contacts.persistors.ContactsPersister;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
@@ -13,8 +15,6 @@ import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
 import com.kush.service.auth.AuthenticationRequired;
 import com.kush.utils.exceptions.ValidationFailedException;
-import com.kush.utils.id.Identifiable;
-import com.kush.utils.id.Identifier;
 
 @Service
 public class ContactsService extends BaseService {

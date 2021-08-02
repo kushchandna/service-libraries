@@ -5,6 +5,7 @@ import static com.kush.messaging.destination.Destination.DestinationType.USER;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.kush.commons.id.Identifier;
 import com.kush.lib.persistence.api.DelegatingPersister;
 import com.kush.lib.persistence.api.Persister;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
@@ -14,7 +15,6 @@ import com.kush.messaging.destination.Destination.DestinationType;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.metadata.Metadata;
 import com.kush.messaging.ordering.RecentFirst;
-import com.kush.utils.id.Identifier;
 
 public class DefaultMessagePersistor extends DelegatingPersister<Message> implements MessagePersister {
 

@@ -2,8 +2,8 @@ package com.kush.lib.group.entities;
 
 import java.time.LocalDateTime;
 
-import com.kush.utils.id.Identifiable;
-import com.kush.utils.id.Identifier;
+import com.kush.commons.id.Identifiable;
+import com.kush.commons.id.Identifier;
 
 public class GroupMembership implements Identifiable {
 

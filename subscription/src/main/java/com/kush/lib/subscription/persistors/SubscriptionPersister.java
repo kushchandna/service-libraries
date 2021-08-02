@@ -3,10 +3,10 @@ package com.kush.lib.subscription.persistors;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.kush.commons.id.Identifier;
 import com.kush.lib.persistence.api.Persister;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.subscription.entities.Subscription;
-import com.kush.utils.id.Identifier;
 
 public interface SubscriptionPersister extends Persister<Subscription> {
 

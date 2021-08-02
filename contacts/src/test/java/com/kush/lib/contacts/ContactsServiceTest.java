@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.kush.commons.id.Identifiable;
 import com.kush.lib.contacts.entities.Contact;
 import com.kush.lib.contacts.persistors.ContactsPersister;
 import com.kush.lib.contacts.persistors.DefaultContactsPersistor;
@@ -19,7 +20,6 @@ import com.kush.lib.contacts.services.ContactsService;
 import com.kush.lib.persistence.api.Persister;
 import com.kush.lib.persistence.helpers.InMemoryPersister;
 import com.kush.service.BaseServiceTest;
-import com.kush.utils.id.Identifiable;
 
 public class ContactsServiceTest extends BaseServiceTest {
 

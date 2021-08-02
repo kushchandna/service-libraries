@@ -1,7 +1,7 @@
 package com.kush.lib.questionnaire;
 
-import com.kush.utils.id.Identifiable;
-import com.kush.utils.id.Identifier;
+import com.kush.commons.id.Identifiable;
+import com.kush.commons.id.Identifier;
 
 public class PreferenceOption implements ContentContainer, Identifiable {
 

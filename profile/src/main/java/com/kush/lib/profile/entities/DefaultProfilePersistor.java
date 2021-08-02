@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.kush.commons.id.Identifier;
 import com.kush.lib.persistence.api.DelegatingPersister;
 import com.kush.lib.persistence.api.Persister;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.profile.persistors.ProfilePersister;
 import com.kush.lib.service.remoting.auth.User;
-import com.kush.utils.id.Identifier;
 
 public class DefaultProfilePersistor extends DelegatingPersister<Profile> implements ProfilePersister {
 

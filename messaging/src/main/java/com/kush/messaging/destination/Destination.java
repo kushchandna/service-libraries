@@ -2,9 +2,9 @@ package com.kush.messaging.destination;
 
 import java.io.Serializable;
 
+import com.kush.commons.id.Identifier;
 import com.kush.service.annotations.Exportable;
 import com.kush.utils.commons.AssociatedClasses;
-import com.kush.utils.id.Identifier;
 
 @AssociatedClasses({ UserIdBasedDestination.class, GroupIdBasedDestination.class })
 @Exportable

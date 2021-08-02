@@ -28,6 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Sets;
+import com.kush.commons.id.Identifiable;
+import com.kush.commons.id.Identifier;
 import com.kush.lib.contacts.entities.Contact;
 import com.kush.lib.contacts.persistors.ContactsPersister;
 import com.kush.lib.contacts.persistors.DefaultContactsPersistor;
@@ -52,8 +54,6 @@ import com.kush.messaging.persistors.DefaultMessagePersistor;
 import com.kush.messaging.persistors.MessagePersister;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.service.BaseServiceTest;
-import com.kush.utils.id.Identifiable;
-import com.kush.utils.id.Identifier;
 
 public class MessagingServiceTest extends BaseServiceTest {
 

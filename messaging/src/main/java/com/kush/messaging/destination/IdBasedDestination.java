@@ -1,7 +1,7 @@
 package com.kush.messaging.destination;
 
+import com.kush.commons.id.Identifier;
 import com.kush.service.annotations.Exportable;
-import com.kush.utils.id.Identifier;
 
 @Exportable
 public abstract class IdBasedDestination implements Destination {

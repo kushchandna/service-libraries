@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.kush.commons.id.Identifier;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.subscription.entities.Subscription;
 import com.kush.lib.subscription.persistors.SubscriptionPersister;
@@ -12,7 +13,6 @@ import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
 import com.kush.service.auth.AuthenticationRequired;
 import com.kush.utils.exceptions.ValidationFailedException;
-import com.kush.utils.id.Identifier;
 
 @Service
 public class SubscriptionService extends BaseService {

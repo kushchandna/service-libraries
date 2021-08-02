@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.kush.commons.id.Identifiable;
+import com.kush.commons.id.Identifier;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.service.annotations.Exportable;
-import com.kush.utils.id.Identifiable;
-import com.kush.utils.id.Identifier;
 
 @Exportable
 public class Profile implements Identifiable, Serializable {

@@ -1,7 +1,7 @@
 package com.kush.messaging.push.signal;
 
+import com.kush.commons.id.Identifier;
 import com.kush.messaging.message.Message;
-import com.kush.utils.id.Identifier;
 import com.kush.utils.signaling.Signal;
 
 public class MessageSignal extends Signal<MessageSignalHandler> {

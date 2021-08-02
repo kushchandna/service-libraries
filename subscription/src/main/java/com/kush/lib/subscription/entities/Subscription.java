@@ -3,9 +3,9 @@ package com.kush.lib.subscription.entities;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.kush.commons.id.Identifiable;
+import com.kush.commons.id.Identifier;
 import com.kush.service.annotations.Exportable;
-import com.kush.utils.id.Identifiable;
-import com.kush.utils.id.Identifier;
 
 @Exportable
 public class Subscription implements Identifiable, Serializable {

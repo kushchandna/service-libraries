@@ -6,11 +6,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kush.commons.id.Identifier;
 import com.kush.lib.group.persistors.GroupPersister;
 import com.kush.lib.persistence.api.DelegatingPersister;
 import com.kush.lib.persistence.api.Persister;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
-import com.kush.utils.id.Identifier;
 
 public class DefaultGroupPersistor extends DelegatingPersister<Group> implements GroupPersister {
 
