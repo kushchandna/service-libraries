@@ -8,7 +8,7 @@ import com.kush.commons.id.Identifiable;
 import com.kush.commons.id.Identifier;
 import com.kush.lib.contacts.entities.Contact;
 import com.kush.lib.contacts.persistors.ContactsPersister;
-import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.lib.persistence.api.PersistenceOperationFailedException;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
@@ -21,7 +21,7 @@ public class ContactsService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public Contact addToContacts(Identifiable contactObject) throws ValidationFailedException, PersistorOperationFailedException {
+    public Contact addToContacts(Identifiable contactObject) throws ValidationFailedException, PersistenceOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         if (contactObject instanceof User && currentUserId.equals(contactObject.getId())) {
             throw new ValidationFailedException("Can not add self to contacts");
@@ -34,7 +34,7 @@ public class ContactsService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public void removeFromContacts(Identifiable contactObject) throws PersistorOperationFailedException {
+    public void removeFromContacts(Identifiable contactObject) throws PersistenceOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         ContactsPersister persistor = getInstance(ContactsPersister.class);
         persistor.removeContact(currentUserId, contactObject);
@@ -42,7 +42,7 @@ public class ContactsService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public List<Contact> getContacts() throws PersistorOperationFailedException {
+    public List<Contact> getContacts() throws PersistenceOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         ContactsPersister persistor = getInstance(ContactsPersister.class);
         return persistor.getContacts(currentUserId);
@@ -50,7 +50,7 @@ public class ContactsService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public Contact getContact(Identifiable contactObject) throws PersistorOperationFailedException {
+    public Contact getContact(Identifiable contactObject) throws PersistenceOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         ContactsPersister persistor = getInstance(ContactsPersister.class);
         return persistor.getContact(currentUserId, contactObject);

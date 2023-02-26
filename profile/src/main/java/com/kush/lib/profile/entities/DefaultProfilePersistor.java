@@ -9,7 +9,7 @@ import java.util.Set;
 import com.kush.commons.id.Identifier;
 import com.kush.lib.persistence.api.DelegatingPersister;
 import com.kush.lib.persistence.api.Persister;
-import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.lib.persistence.api.PersistenceOperationFailedException;
 import com.kush.lib.profile.persistors.ProfilePersister;
 import com.kush.lib.service.remoting.auth.User;
 
@@ -20,27 +20,27 @@ public class DefaultProfilePersistor extends DelegatingPersister<Profile> implem
     }
 
     @Override
-    public Profile createProfile(User owner) throws PersistorOperationFailedException {
+    public Profile createProfile(User owner) throws PersistenceOperationFailedException {
         Profile profile = new Profile(owner, Collections.emptyMap());
         return save(profile);
     }
 
     @Override
-    public Profile getProfile(User owner) throws PersistorOperationFailedException {
+    public Profile getProfile(User owner) throws PersistenceOperationFailedException {
         List<Profile> filteredProfiles = fetch(p -> p.getOwner().equals(owner));
         return filteredProfiles.isEmpty() ? null : filteredProfiles.get(0);
     }
 
     @Override
     public void updateProfileField(Identifier profileId, String fieldName, Object value)
-            throws PersistorOperationFailedException {
+            throws PersistenceOperationFailedException {
         Profile profile = fetch(profileId);
         profile.updateField(fieldName, value);
     }
 
     @Override
     public List<Profile> getMatchingProfiles(Map<String, Set<Object>> fieldVsValues)
-            throws PersistorOperationFailedException {
+            throws PersistenceOperationFailedException {
         List<Profile> allProfiles = fetchAll();
         List<Profile> matchingProfiles = new ArrayList<>();
         for (Profile profile : allProfiles) {

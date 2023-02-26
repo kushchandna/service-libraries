@@ -7,16 +7,16 @@ import com.kush.commons.id.Identifiable;
 import com.kush.commons.id.Identifier;
 import com.kush.lib.contacts.entities.Contact;
 import com.kush.lib.persistence.api.Persister;
-import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.lib.persistence.api.PersistenceOperationFailedException;
 
 public interface ContactsPersister extends Persister<Contact> {
 
     Contact addContact(Identifier ownerUserId, Identifiable contactObject, LocalDateTime contactAddTime)
-            throws PersistorOperationFailedException;
+            throws PersistenceOperationFailedException;
 
-    void removeContact(Identifier currentUserId, Identifiable contactObject) throws PersistorOperationFailedException;
+    void removeContact(Identifier currentUserId, Identifiable contactObject) throws PersistenceOperationFailedException;
 
-    List<Contact> getContacts(Identifier ownerUserId) throws PersistorOperationFailedException;
+    List<Contact> getContacts(Identifier ownerUserId) throws PersistenceOperationFailedException;
 
-    Contact getContact(Identifier ownerUserId, Identifiable contactObject) throws PersistorOperationFailedException;
+    Contact getContact(Identifier ownerUserId, Identifiable contactObject) throws PersistenceOperationFailedException;
 }

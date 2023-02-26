@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.lib.persistence.api.PersistenceOperationFailedException;
 import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.fields.Field;
 import com.kush.lib.profile.persistors.ProfilePersister;
@@ -31,7 +31,7 @@ public class UserProfileService extends BaseService {
     @AuthenticationRequired
     @ServiceMethod
     public void updateProfileField(String fieldName, Object value)
-            throws ValidationFailedException, PersistorOperationFailedException, NoSuchFieldException {
+            throws ValidationFailedException, PersistenceOperationFailedException, NoSuchFieldException {
         User currentUser = getCurrentUser();
         ProfileTemplate template = getInstance(ProfileTemplate.class);
         ProfilePersister profilePersistor = getProfilePersistor();
@@ -52,7 +52,7 @@ public class UserProfileService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public Profile getProfile() throws PersistorOperationFailedException {
+    public Profile getProfile() throws PersistenceOperationFailedException {
         User currentUser = getCurrentUser();
         ProfilePersister profilePersistor = getProfilePersistor();
         return profilePersistor.getProfile(currentUser);
@@ -60,7 +60,7 @@ public class UserProfileService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public List<User> findMatchingUsers(Map<String, Set<Object>> fieldVsValues) throws PersistorOperationFailedException {
+    public List<User> findMatchingUsers(Map<String, Set<Object>> fieldVsValues) throws PersistenceOperationFailedException {
         checkSessionActive();
         ProfilePersister profilePersistor = getProfilePersistor();
         List<Profile> profiles = profilePersistor.getMatchingProfiles(fieldVsValues);
@@ -74,7 +74,7 @@ public class UserProfileService extends BaseService {
     }
 
     private Profile getOrCreateProfile(ProfilePersister profilePersistor, User user)
-            throws PersistorOperationFailedException {
+            throws PersistenceOperationFailedException {
         Profile profile = profilePersistor.getProfile(user);
         if (profile == null) {
             profile = profilePersistor.createProfile(user);

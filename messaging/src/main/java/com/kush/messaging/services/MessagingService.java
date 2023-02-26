@@ -17,7 +17,7 @@ import com.kush.lib.contacts.services.ContactsService;
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
 import com.kush.lib.group.service.UserGroupService;
-import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.lib.persistence.api.PersistenceOperationFailedException;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.messaging.contacts.MessagingContact;
 import com.kush.messaging.content.Content;
@@ -44,7 +44,7 @@ public class MessagingService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public Message sendMessage(Content content, Set<Destination> destinations) throws PersistorOperationFailedException {
+    public Message sendMessage(Content content, Set<Destination> destinations) throws PersistenceOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         Metadata metadata = prepareMetadata(currentUserId, destinations);
         MessagePersister persistor = getInstance(MessagePersister.class);
@@ -61,7 +61,7 @@ public class MessagingService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public List<Message> getAllMessages() throws PersistorOperationFailedException {
+    public List<Message> getAllMessages() throws PersistenceOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         MessagePersister persistor = getInstance(MessagePersister.class);
         Set<Message> allMessages = new LinkedHashSet<>();
@@ -92,7 +92,7 @@ public class MessagingService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public List<MessagingContact> getMessagingContacts() throws PersistorOperationFailedException {
+    public List<MessagingContact> getMessagingContacts() throws PersistenceOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         ContactsService contactsService = getInstance(ContactsService.class);
         List<Contact> contacts = contactsService.getContacts();
@@ -106,7 +106,7 @@ public class MessagingService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public List<Message> getMessagesWithUser(Identifier userId) throws PersistorOperationFailedException {
+    public List<Message> getMessagesWithUser(Identifier userId) throws PersistenceOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         MessagePersister persistor = getInstance(MessagePersister.class);
         return persistor.fetchRecentMessagesBetweenUsers(currentUserId, userId, -1);
@@ -114,7 +114,7 @@ public class MessagingService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public List<Message> getMessagesInGroup(Identifier groupId) throws PersistorOperationFailedException {
+    public List<Message> getMessagesInGroup(Identifier groupId) throws PersistenceOperationFailedException {
         checkSessionActive();
         MessagePersister persistor = getInstance(MessagePersister.class);
         return persistor.fetchRecentMessagesInGroup(groupId, -1);
@@ -136,13 +136,13 @@ public class MessagingService extends BaseService {
         try {
             List<Message> recentMessages = getRecentMessages(currentUserId, contactObject, messagePersistor);
             return new MessagingContact(contact, recentMessages);
-        } catch (PersistorOperationFailedException e) {
+        } catch (PersistenceOperationFailedException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
 
     private List<Message> getRecentMessages(Identifier currentUserId, Identifiable contactObject,
-            MessagePersister messagePersistor) throws PersistorOperationFailedException {
+            MessagePersister messagePersistor) throws PersistenceOperationFailedException {
         Identifier id = contactObject.getId();
         if (contactObject instanceof User) {
             return messagePersistor.fetchRecentMessagesBetweenUsers(currentUserId, id, COUNT_LATEST_MESSAGES);
@@ -160,7 +160,7 @@ public class MessagingService extends BaseService {
     }
 
     private void sendMessageSignal(Destination destination, Message message)
-            throws PersistorOperationFailedException, ValidationFailedException {
+            throws PersistenceOperationFailedException, ValidationFailedException {
         switch (destination.getType()) {
         case GROUP:
             UserGroupService groupService = getInstance(UserGroupService.class);

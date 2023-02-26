@@ -12,7 +12,7 @@ import com.kush.commons.id.Identifier;
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
 import com.kush.lib.group.persistors.GroupPersister;
-import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.lib.persistence.api.PersistenceOperationFailedException;
 import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
@@ -27,7 +27,7 @@ public class UserGroupService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public Group createGroup(String groupName) throws PersistorOperationFailedException {
+    public Group createGroup(String groupName) throws PersistenceOperationFailedException {
         LOGGER.info("Creating group with name %s", groupName);
         Identifier currentUserId = getCurrentUser().getId();
         LocalDateTime currentDateTime = getCurrentDateTime();
@@ -41,7 +41,7 @@ public class UserGroupService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public void removeGroup(Identifier groupId) throws PersistorOperationFailedException, ServiceRequestFailedException {
+    public void removeGroup(Identifier groupId) throws PersistenceOperationFailedException, ServiceRequestFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         GroupPersister groupPersistor = getGroupPersistor();
         Group group = groupPersistor.getGroup(groupId);
@@ -62,7 +62,7 @@ public class UserGroupService extends BaseService {
             try {
                 groupPersistor.addGroupMember(groupId, userId, currentDateTime);
                 LOGGER.info("Added user %s to group %s", userId, groupId);
-            } catch (PersistorOperationFailedException e) {
+            } catch (PersistenceOperationFailedException e) {
                 // notify partial failure
                 LOGGER.error("Could not add user %s to group %s. Reason: %s", userId, groupId, e.getMessage());
                 LOGGER.error(e);
@@ -73,7 +73,7 @@ public class UserGroupService extends BaseService {
     @AuthenticationRequired
     @ServiceMethod
     public List<GroupMembership> getGroupMembers(Identifier groupId)
-            throws PersistorOperationFailedException, ValidationFailedException {
+            throws PersistenceOperationFailedException, ValidationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         GroupPersister groupPersistor = getGroupPersistor();
         List<GroupMembership> groupMembers = groupPersistor.getGroupMembers(groupId);
@@ -86,7 +86,7 @@ public class UserGroupService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod
-    public List<Group> getGroups() throws PersistorOperationFailedException {
+    public List<Group> getGroups() throws PersistenceOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         GroupPersister groupPersistor = getGroupPersistor();
         return groupPersistor.getGroups(currentUserId);

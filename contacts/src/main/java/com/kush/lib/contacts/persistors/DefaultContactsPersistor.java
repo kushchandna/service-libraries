@@ -9,7 +9,7 @@ import com.kush.commons.id.Identifier;
 import com.kush.lib.contacts.entities.Contact;
 import com.kush.lib.persistence.api.DelegatingPersister;
 import com.kush.lib.persistence.api.Persister;
-import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.lib.persistence.api.PersistenceOperationFailedException;
 
 public class DefaultContactsPersistor extends DelegatingPersister<Contact> implements ContactsPersister {
 
@@ -19,22 +19,22 @@ public class DefaultContactsPersistor extends DelegatingPersister<Contact> imple
 
     @Override
     public Contact addContact(Identifier ownerUserId, Identifiable contactObject, LocalDateTime contactAddTime)
-            throws PersistorOperationFailedException {
+            throws PersistenceOperationFailedException {
         Contact existing = getMatchingContact(ownerUserId, contactObject);
         if (existing != null) {
-            throw new PersistorOperationFailedException("Already exists");
+            throw new PersistenceOperationFailedException("Already exists");
         }
         return save(new Contact(ownerUserId, contactObject, contactAddTime));
     }
 
     @Override
-    public void removeContact(Identifier ownerUserId, Identifiable contactObject) throws PersistorOperationFailedException {
+    public void removeContact(Identifier ownerUserId, Identifiable contactObject) throws PersistenceOperationFailedException {
         Contact existingContact = getExistingContact(ownerUserId, contactObject);
         remove(existingContact.getId());
     }
 
     @Override
-    public List<Contact> getContacts(Identifier ownerUserId) throws PersistorOperationFailedException {
+    public List<Contact> getContacts(Identifier ownerUserId) throws PersistenceOperationFailedException {
         return fetch(c -> c.getOwnerUserId().equals(ownerUserId), new Comparator<Contact>() {
 
             @Override
@@ -45,28 +45,28 @@ public class DefaultContactsPersistor extends DelegatingPersister<Contact> imple
     }
 
     @Override
-    public Contact getContact(Identifier ownerUserId, Identifiable contactObject) throws PersistorOperationFailedException {
+    public Contact getContact(Identifier ownerUserId, Identifiable contactObject) throws PersistenceOperationFailedException {
         return getExistingContact(ownerUserId, contactObject);
     }
 
     private Contact getExistingContact(Identifier ownerUserId, Identifiable contactObject)
-            throws PersistorOperationFailedException {
+            throws PersistenceOperationFailedException {
         Contact existingContact = getMatchingContact(ownerUserId, contactObject);
         if (existingContact == null) {
-            throw new PersistorOperationFailedException("No such contact found");
+            throw new PersistenceOperationFailedException("No such contact found");
         }
         return existingContact;
     }
 
     private Contact getMatchingContact(Identifier ownerUserId, Identifiable contactObject)
-            throws PersistorOperationFailedException {
+            throws PersistenceOperationFailedException {
         List<Contact> matchingContacts =
                 fetch(c -> c.getOwnerUserId().equals(ownerUserId) && c.getContactObject().equals(contactObject));
         if (matchingContacts.isEmpty()) {
             return null;
         }
         if (matchingContacts.size() > 1) {
-            throw new PersistorOperationFailedException("More than one matching contacts found");
+            throw new PersistenceOperationFailedException("More than one matching contacts found");
         }
         return matchingContacts.get(0);
     }
