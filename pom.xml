@@ -19,8 +19,8 @@
 		<module>location</module>
 		<module>messaging</module>
 		<module>profile</module>
-		<module>questionnaire</module>
-		<module>subscription</module>
+		<!-- <module>questionnaire</module> -->
+		<!-- <module>subscription</module> -->
 	</modules>
 
 </project>

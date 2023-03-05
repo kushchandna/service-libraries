@@ -1,16 +1,16 @@
 package com.kush.messaging.services;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static com.kush.messaging.destination.Destination.DestinationType.GROUP;
-import static com.kush.messaging.destination.Destination.DestinationType.USER;
+import static com.kush.messaging_old.destination.Destination.DestinationType.GROUP;
+import static com.kush.messaging_old.destination.Destination.DestinationType.USER;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.time.Clock;
@@ -42,17 +42,18 @@ import com.kush.lib.group.service.UserGroupService;
 import com.kush.lib.persistence.api.Persister;
 import com.kush.lib.persistence.helpers.InMemoryPersister;
 import com.kush.lib.service.remoting.auth.User;
-import com.kush.messaging.contacts.MessagingContact;
-import com.kush.messaging.content.Content;
-import com.kush.messaging.content.TextContent;
-import com.kush.messaging.destination.Destination;
-import com.kush.messaging.destination.GroupIdBasedDestination;
-import com.kush.messaging.destination.UserIdBasedDestination;
-import com.kush.messaging.message.Message;
-import com.kush.messaging.metadata.Metadata;
-import com.kush.messaging.persistors.DefaultMessagePersistor;
-import com.kush.messaging.persistors.MessagePersister;
-import com.kush.messaging.push.MessageHandler;
+import com.kush.messaging_old.contacts.MessagingContact;
+import com.kush.messaging_old.content.Content;
+import com.kush.messaging_old.content.TextContent;
+import com.kush.messaging_old.destination.Destination;
+import com.kush.messaging_old.destination.GroupIdBasedDestination;
+import com.kush.messaging_old.destination.UserIdBasedDestination;
+import com.kush.messaging_old.message.Message;
+import com.kush.messaging_old.metadata.Metadata;
+import com.kush.messaging_old.persistors.DefaultMessagePersistor;
+import com.kush.messaging_old.persistors.MessagePersister;
+import com.kush.messaging_old.push.MessageHandler;
+import com.kush.messaging_old.services.MessagingService;
 import com.kush.service.BaseServiceTest;
 
 public class MessagingServiceTest extends BaseServiceTest {

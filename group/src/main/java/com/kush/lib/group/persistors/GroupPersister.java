@@ -23,4 +23,6 @@ public interface GroupPersister extends Persister<Group> {
     List<Group> getGroups(Identifier memberUserId) throws PersistenceOperationFailedException;
 
     boolean removeGroup(Identifier groupId) throws PersistenceOperationFailedException;
+
+	boolean isMember(Identifier currentUserId, Identifier toGroupId);
 }
